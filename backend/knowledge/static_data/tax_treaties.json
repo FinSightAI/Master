@@ -1,0 +1,135 @@
+{
+  "last_updated": "2025-01-01",
+  "notes": "This is a simplified treaty database. Always verify current treaty provisions with official sources.",
+  "key_treaties": {
+    "US-UK": {
+      "countries": ["USA", "UK"],
+      "signed": 2001,
+      "dividends_withholding": {"treaty_rate": 0.15, "qualified_rate": 0.05, "qualified_note": "5% if >10% ownership"},
+      "interest_withholding": 0,
+      "royalties_withholding": 0,
+      "capital_gains": "generally_source_country",
+      "tiebreaker_residency": "center_of_vital_interests",
+      "savings_clause": true,
+      "savings_clause_note": "US taxes its citizens regardless of treaty"
+    },
+    "US-Germany": {
+      "countries": ["USA", "Germany"],
+      "signed": 1989,
+      "dividends_withholding": {"treaty_rate": 0.15, "qualified_rate": 0.05},
+      "interest_withholding": 0,
+      "royalties_withholding": 0,
+      "savings_clause": true
+    },
+    "US-France": {
+      "countries": ["USA", "France"],
+      "signed": 1994,
+      "dividends_withholding": {"treaty_rate": 0.15, "qualified_rate": 0.05},
+      "interest_withholding": 0,
+      "royalties_withholding": 0,
+      "savings_clause": true
+    },
+    "US-Israel": {
+      "countries": ["USA", "Israel"],
+      "signed": 1975,
+      "dividends_withholding": 0.125,
+      "interest_withholding": 0.175,
+      "royalties_withholding": 0.10,
+      "savings_clause": true
+    },
+    "US-UAE": {
+      "countries": ["USA", "UAE"],
+      "status": "NO TREATY",
+      "notes": "No income tax treaty exists between USA and UAE"
+    },
+    "UK-UAE": {
+      "countries": ["UK", "UAE"],
+      "signed": 2016,
+      "dividends_withholding": 0,
+      "interest_withholding": 0,
+      "royalties_withholding": 0,
+      "notes": "Limited treaty - mainly applies to UAE nationals with UK income"
+    },
+    "Germany-UAE": {
+      "countries": ["Germany", "UAE"],
+      "signed": 1995,
+      "dividends_withholding": 0.10,
+      "interest_withholding": 0,
+      "royalties_withholding": 0,
+      "notes": "Can be used to structure dividends from UAE companies"
+    },
+    "UK-Ireland": {
+      "countries": ["UK", "Ireland"],
+      "signed": 1976,
+      "dividends_withholding": 0,
+      "interest_withholding": 0,
+      "royalties_withholding": 0,
+      "notes": "Very favorable. Important for UK-Ireland structures"
+    },
+    "Germany-Cyprus": {
+      "countries": ["Germany", "Cyprus"],
+      "signed": 1977,
+      "dividends_withholding": 0.15,
+      "interest_withholding": 0,
+      "royalties_withholding": 0
+    },
+    "France-Monaco": {
+      "countries": ["France", "Monaco"],
+      "signed": 1963,
+      "notes": "French nationals who move to Monaco remain subject to French tax for first 5 years. Special bilateral arrangement.",
+      "key_provisions": "French citizens in Monaco do NOT escape French tax for 5 years after moving"
+    },
+    "Singapore-USA": {
+      "countries": ["Singapore", "USA"],
+      "status": "LIMITED - No comprehensive income tax treaty",
+      "notes": "Only limited agreement on certain shipping/aviation income",
+      "savings_clause": true
+    },
+    "UK-Portugal": {
+      "countries": ["UK", "Portugal"],
+      "signed": 1969,
+      "dividends_withholding": 0.10,
+      "interest_withholding": 0.10,
+      "royalties_withholding": 0.05
+    },
+    "Israel-UK": {
+      "countries": ["Israel", "UK"],
+      "signed": 1962,
+      "dividends_withholding": 0.15,
+      "interest_withholding": 0.15,
+      "royalties_withholding": 0
+    },
+    "Germany-Switzerland": {
+      "countries": ["Germany", "Switzerland"],
+      "signed": 1971,
+      "dividends_withholding": 0.15,
+      "interest_withholding": 0,
+      "royalties_withholding": 0,
+      "exit_tax_interaction": "Important for German residents with Swiss structure before leaving Germany"
+    }
+  },
+  "withholding_tax_general": {
+    "OECD_model_dividends": "15% (5% for substantial holdings)",
+    "OECD_model_interest": "10%",
+    "OECD_model_royalties": "10%",
+    "note": "Actual rates vary significantly by specific treaty. Always check the specific bilateral treaty."
+  },
+  "countries_with_most_treaties": {
+    "France": 125,
+    "UK": 130,
+    "Germany": 96,
+    "Netherlands": 95,
+    "Switzerland": 102,
+    "Sweden": 85,
+    "Spain": 90,
+    "Singapore": 90,
+    "USA": 68
+  },
+  "low_treaty_countries": {
+    "Cayman Islands": 0,
+    "Monaco": 1,
+    "UAE": 50,
+    "Panama": 16,
+    "Paraguay": 12
+  }
+}

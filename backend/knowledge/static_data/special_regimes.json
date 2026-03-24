@@ -1,0 +1,371 @@
+{
+  "last_updated": "2025-01-01",
+  "regimes": {
+    "portugal_ifici": {
+      "name": "Portugal IFICI (ex-NHR)",
+      "full_name": "Incentivo Fiscal à Capitalização e ao Investimento",
+      "country": "Portugal",
+      "status": "active",
+      "replaced": "NHR (Non-Habitual Resident) - ended Dec 31, 2023",
+      "flat_rate": 0.20,
+      "duration_years": 10,
+      "eligible_income_types": ["employment", "self_employment", "business", "professional_services"],
+      "foreign_income_treatment": "exempt in most cases",
+      "eligible_activities": [
+        "Highly qualified professionals (list of qualifying activities)",
+        "Scientists and researchers",
+        "Technology and innovation",
+        "Startups ecosystem professionals"
+      ],
+      "eligibility_requirements": [
+        "Not have been Portuguese tax resident in last 5 years",
+        "Become tax resident in Portugal",
+        "Perform qualifying activity"
+      ],
+      "application_deadline": "March 31 of following year",
+      "investment_required": false,
+      "notable_benefits": "20% flat rate on qualifying Portuguese income. Foreign income may be exempt.",
+      "pitfalls": [
+        "Qualifying activities list is restricted (not everyone qualifies)",
+        "Less generous than old NHR for passive income",
+        "Must have qualifying employment/activity"
+      ],
+      "compatible_with": ["Portugal Golden Visa"],
+      "best_for": ["Tech professionals", "Scientists", "Startup founders relocating to Portugal"]
+    },
+    "uae_golden_visa": {
+      "name": "UAE Golden Visa",
+      "country": "UAE",
+      "status": "active",
+      "duration_years": 10,
+      "renewable": true,
+      "investment_required": true,
+      "investment_options": [
+        "AED 2M in real estate",
+        "AED 2M in deposit/investment",
+        "Specific net worth AED 5M+",
+        "Salary above AED 30,000/month",
+        "Entrepreneurs/investors"
+      ],
+      "tax_rate": 0,
+      "family_included": true,
+      "physical_presence_required": false,
+      "physical_presence_note": "No minimum days required to maintain golden visa",
+      "benefits": [
+        "10-year renewable residency",
+        "0% personal income tax",
+        "Sponsor family members",
+        "No minimum stay requirement",
+        "Live, work, study in UAE"
+      ],
+      "banking_access": "excellent",
+      "best_for": ["HNWI", "Entrepreneurs", "Real estate investors", "Remote workers", "Crypto investors"]
+    },
+    "cyprus_non_dom": {
+      "name": "Cyprus Non-Domicile Regime",
+      "country": "Cyprus",
+      "status": "active",
+      "duration_years": 17,
+      "dividend_tax": 0,
+      "interest_tax": 0,
+      "income_from_abroad": "only taxed on income from Cyprus",
+      "eligibility_requirements": [
+        "Not domiciled in Cyprus (not born there OR domicile of origin elsewhere)",
+        "Tax resident in Cyprus (183 days OR 60-day rule)",
+        "Never been Cyprus tax resident for >17 of last 20 years"
+      ],
+      "sixty_day_rule": {
+        "description": "Can establish Cyprus tax residency with just 60 days presence",
+        "conditions": [
+          "Spend at least 60 days in Cyprus",
+          "Not spend more than 183 days in any other country",
+          "Not be tax resident in any other country",
+          "Have economic ties to Cyprus (work/business/property)"
+        ]
+      },
+      "corporate_tax": 0.125,
+      "ip_box_regime": true,
+      "ip_box_rate": 0.025,
+      "benefits": [
+        "0% tax on dividends from worldwide companies",
+        "0% tax on interest",
+        "0% on gains from securities (stocks, bonds, ETFs)",
+        "Low 12.5% corporate tax",
+        "EU member state"
+      ],
+      "best_for": ["Investors with dividend income", "Crypto holders", "Entrepreneurs", "Fund managers"]
+    },
+    "malta_non_dom": {
+      "name": "Malta Non-Dom Regime",
+      "country": "Malta",
+      "status": "active",
+      "minimum_tax": 5000,
+      "minimum_tax_note": "EUR 5,000 minimum annual tax payment",
+      "foreign_income": "taxed only if remitted to Malta",
+      "eligibility": "Be tax resident but not domiciled in Malta",
+      "benefits": [
+        "Foreign income and gains exempt unless remitted",
+        "Capital gains from foreign assets exempt",
+        "EU membership benefits",
+        "Mediterranean lifestyle"
+      ],
+      "pitfalls": [
+        "Min EUR 5,000 tax regardless",
+        "Must be careful about remittance"
+      ],
+      "best_for": ["HNWI with foreign investments", "Those wanting EU base without high tax"]
+    },
+    "malta_hnwi": {
+      "name": "Malta HNWI Programme",
+      "country": "Malta",
+      "status": "active",
+      "flat_rate": 0.15,
+      "minimum_tax": 25000,
+      "minimum_tax_note": "Minimum EUR 25,000 per year",
+      "eligibility": [
+        "Min annual income EUR 100,000+ from abroad",
+        "Must own/rent property in Malta",
+        "Must not be in employment in Malta"
+      ],
+      "best_for": ["High income individuals wanting EU residence with low flat rate"]
+    },
+    "italy_flat_tax_100k": {
+      "name": "Italy Foreign Income Flat Tax",
+      "country": "Italy",
+      "status": "active",
+      "flat_amount_eur": 100000,
+      "flat_amount_note": "EUR 100,000 per year covers ALL foreign income",
+      "additional_family": 25000,
+      "additional_family_note": "EUR 25,000 extra per qualifying family member",
+      "duration_years": 15,
+      "eligibility": [
+        "Not been Italian tax resident in 9 of last 10 years",
+        "Transfer tax residence to Italy",
+        "No minimum investment required"
+      ],
+      "foreign_income_coverage": "ALL foreign source income regardless of amount",
+      "benefits": [
+        "Covers unlimited foreign income for EUR 100k/year",
+        "No reporting of foreign assets held pre-move",
+        "Can exclude specific countries (for foreign tax credits)",
+        "Excellent quality of life"
+      ],
+      "pitfalls": [
+        "Italian domestic income taxed at regular rates",
+        "Crypto: complex treatment if bought in Italy",
+        "High cost if foreign income is small"
+      ],
+      "best_for": ["HNWI with large foreign income", "Billionaires", "Foreign retirees with pensions"]
+    },
+    "italy_7pct_south": {
+      "name": "Italy 7% Southern Regime",
+      "country": "Italy",
+      "status": "active",
+      "flat_rate": 0.07,
+      "duration_years": 10,
+      "eligible_regions": ["Sicily", "Sardinia", "Calabria", "Campania", "Basilicata", "Abruzzo", "Molise", "Puglia"],
+      "municipality_size": "under 20,000 inhabitants",
+      "eligibility": [
+        "Foreign retiree with pension from abroad",
+        "Not Italian tax resident in last 5 years",
+        "Must buy/rent in qualifying municipality"
+      ],
+      "covers": "All foreign pension income",
+      "best_for": ["Foreign retirees seeking EU lifestyle at very low tax"]
+    },
+    "swiss_lump_sum": {
+      "name": "Switzerland Lump-Sum Taxation",
+      "country": "Switzerland",
+      "status": "active",
+      "eligibility": [
+        "Non-Swiss nationality",
+        "First time taking Swiss residency OR absent 10+ years",
+        "Not gainfully employed in Switzerland"
+      ],
+      "tax_base": "Annual living expenses in Switzerland (min varies by canton)",
+      "minimum_tax_typical": 400000,
+      "minimum_tax_note": "Minimum CHF ~400k/year basis in most cantons. Actual varies significantly",
+      "canton_examples": {
+        "Valais": "CHF ~300k minimum tax base",
+        "Graubunden": "CHF ~300k minimum",
+        "Vaud": "CHF 450k minimum",
+        "Geneva": "CHF ~600k minimum"
+      },
+      "benefits": [
+        "Based on lifestyle expenses, not actual income",
+        "Can have unlimited foreign income/wealth",
+        "Covers worldwide income",
+        "Double tax treaty benefits available"
+      ],
+      "pitfalls": [
+        "Cannot work in Switzerland",
+        "Some cantons have abolished it (Zurich, Bern, Basel)",
+        "High minimum in some cantons"
+      ],
+      "best_for": ["Ultra-HNWI with large foreign income", "Retirees seeking stability and security"]
+    },
+    "israel_oleh_exemption": {
+      "name": "Israel New Immigrant (Oleh) Exemption",
+      "country": "Israel",
+      "status": "active",
+      "duration_years": 10,
+      "exemption": "100% exemption on ALL foreign income and assets",
+      "reporting_required": false,
+      "reporting_note": "No reporting of foreign income required during exemption period",
+      "eligibility": [
+        "Make aliyah (immigrate to Israel) as new immigrant",
+        "OR returning resident after 10+ consecutive years abroad"
+      ],
+      "covers": [
+        "All foreign employment income",
+        "All foreign business income",
+        "All foreign investment income",
+        "All foreign capital gains",
+        "All foreign trusts and structures"
+      ],
+      "benefits": [
+        "Complete exemption - no Israeli tax on any foreign income",
+        "No reporting requirements on foreign assets",
+        "Valid for full 10 years from immigration date",
+        "Can extend with additional conditions in some cases"
+      ],
+      "pitfalls": [
+        "Must actually live in Israel (center of life)",
+        "Israeli-source income taxed normally",
+        "High cost of living in major cities",
+        "Military service obligations"
+      ],
+      "best_for": ["Jewish individuals with large foreign income", "Entrepreneurs selling companies abroad"]
+    },
+    "singapore_global_investor": {
+      "name": "Singapore Global Investor Programme",
+      "country": "Singapore",
+      "status": "active",
+      "minimum_investment": 2500000,
+      "investment_options": [
+        "SGD 2.5M in new/existing Singapore business",
+        "SGD 2.5M in Singapore-based fund",
+        "SGD 2.5M in family office"
+      ],
+      "leads_to": "Permanent Residency",
+      "processing_time": "3-6 months",
+      "benefits": [
+        "Singapore PR and path to citizenship",
+        "Territorial tax system (0% on foreign income)",
+        "0% CGT",
+        "0% dividend tax",
+        "Global financial hub"
+      ],
+      "best_for": ["Entrepreneurs", "Investors seeking Asian base"]
+    },
+    "greece_100k_flat_tax": {
+      "name": "Greece Alternative Taxation for Foreign Income",
+      "country": "Greece",
+      "status": "active",
+      "flat_amount_eur": 100000,
+      "additional_family": 20000,
+      "duration_years": 15,
+      "investment_required": true,
+      "minimum_investment": 500000,
+      "investment_note": "Must invest EUR 500k in Greek real estate, businesses or securities",
+      "eligibility": [
+        "Not Greek tax resident in 7 of last 8 years",
+        "Transfer tax residence to Greece",
+        "Invest EUR 500k+ in Greece"
+      ],
+      "benefits": [
+        "All foreign income covered for EUR 100k/year flat",
+        "Golden Visa if investment is real estate (EUR 250k+)",
+        "EU residence"
+      ],
+      "best_for": ["HNWI wanting Mediterranean EU lifestyle"]
+    },
+    "uae_freezone": {
+      "name": "UAE Free Zone Company",
+      "country": "UAE",
+      "status": "active",
+      "corporate_tax": 0,
+      "corporate_tax_note": "0% for qualifying freezone companies on qualifying income",
+      "qualifying_activities": [
+        "Manufacturing",
+        "Trading within freezone",
+        "Services to non-UAE clients",
+        "Technology"
+      ],
+      "key_freezones": [
+        "DIFC (Dubai International Financial Centre)",
+        "ADGM (Abu Dhabi Global Market)",
+        "DMCC (Dubai Multi Commodities Centre)",
+        "Dubai Silicon Oasis",
+        "RAKEZ"
+      ],
+      "substance_required": true,
+      "substance_note": "Must have real economic substance for 0% rate",
+      "best_for": ["Entrepreneurs", "Service businesses", "Digital businesses", "Traders"]
+    },
+    "georgia_virtual_zone": {
+      "name": "Georgia Virtual Zone",
+      "country": "Georgia",
+      "status": "active",
+      "corporate_tax": 0,
+      "corporate_tax_note": "0% on IT services delivered outside Georgia",
+      "personal_dividend_tax": 0.05,
+      "eligibility": ["IT companies providing services outside Georgia"],
+      "registration_time": "1-2 weeks",
+      "annual_cost": "low",
+      "best_for": ["IT companies", "Software developers", "Tech startups"]
+    },
+    "portugal_golden_visa": {
+      "name": "Portugal Golden Visa",
+      "country": "Portugal",
+      "status": "modified",
+      "status_note": "Real estate option removed 2023. Investment funds/VC/jobs remain",
+      "residency_granted": "renewable 2-year permit",
+      "citizenship_timeline": "5 years",
+      "physical_presence": "7 days per year minimum",
+      "investment_options": [
+        "EUR 500k+ in investment funds/VC",
+        "EUR 500k+ in company creating 5+ jobs",
+        "EUR 500k scientific research",
+        "Cultural heritage EUR 250k+"
+      ],
+      "benefits": [
+        "Path to EU citizenship in 5 years",
+        "Only 7 days/year required",
+        "Travel freedom across EU/Schengen",
+        "Can combine with IFICI regime"
+      ],
+      "best_for": ["Those seeking EU citizenship with minimal residency"]
+    },
+    "cyprus_60_day": {
+      "name": "Cyprus 60-Day Rule",
+      "country": "Cyprus",
+      "status": "active",
+      "days_required": 60,
+      "conditions": [
+        "Spend at least 60 days in Cyprus per year",
+        "Not spend more than 183 days in any single country",
+        "Not be tax resident in another country",
+        "Have economic connection to Cyprus (work, business, property)"
+      ],
+      "enables": "Full Cyprus tax residency and non-dom status",
+      "benefits": "0% dividend, 0% interest, low corporate tax, no CGT on securities",
+      "best_for": ["Digital nomads", "Investors with flexible location", "Those with foreign company dividends"]
+    },
+    "netherlands_30pct": {
+      "name": "Netherlands 30% Ruling",
+      "country": "Netherlands",
+      "status": "modified",
+      "status_note": "Duration reduced from 5 to max 5 years (with evaluation)",
+      "discount": 0.30,
+      "discount_note": "30% of gross salary can be paid tax-free as expense allowance",
+      "eligibility": [
+        "Recruited from abroad",
+        "Must have lived more than 150km from Dutch border before",
+        "Specific salary threshold required"
+      ],
+      "effective_reduction": "Reduces effective tax rate significantly on qualifying salary",
+      "best_for": ["Expat employees transferring to Netherlands"]
+    }
+  }
+}
