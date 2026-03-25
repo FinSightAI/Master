@@ -2,6 +2,22 @@ import { UserProfile, StreamEvent, SavingsAnalysis } from './types';
 
 const API_BASE = '/api';
 
+export async function fetchCountry(code: string): Promise<{ code: string; data: Record<string, unknown>; exit_tax: Record<string, unknown> }> {
+  const res = await fetch(`${API_BASE}/country/${code}`);
+  if (!res.ok) throw new Error('Failed to fetch country data');
+  return res.json();
+}
+
+export async function analyzeDocument(filename: string, contentBase64: string, mediaType: string, language: string): Promise<{ analysis?: string; error?: string }> {
+  const res = await fetch(`${API_BASE}/analyze`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename, content_base64: contentBase64, media_type: mediaType, language }),
+  });
+  if (!res.ok) throw new Error('Failed to analyze document');
+  return res.json();
+}
+
 export async function fetchSavings(profile: UserProfile): Promise<SavingsAnalysis> {
   const res = await fetch(`${API_BASE}/savings`, {
     method: 'POST',

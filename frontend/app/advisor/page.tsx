@@ -5,9 +5,10 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
   Send, Settings, ChevronDown, ChevronUp, Zap,
-  RotateCcw, Globe, BarChart3, X, Plus, TrendingDown, History, Clock
+  RotateCcw, Globe, BarChart3, X, Plus, TrendingDown, History, Clock,
+  FileText, Download, Calculator, ClipboardCheck
 } from 'lucide-react';
-import { streamChat, fetchSavings } from '../../lib/api';
+import { streamChat, fetchSavings, fetchCountry, analyzeDocument } from '../../lib/api';
 import { UserProfile, ChatMessage, ToolEvent, DEFAULT_PROFILE, TOOL_DISPLAY_NAMES, TOOL_ICONS, SavingsAnalysis, SavedSession } from '../../lib/types';
 import { Lang, useTranslation } from '../../lib/i18n';
 
@@ -360,9 +361,248 @@ function ToolActivity({ tools, lang }: { tools: ToolEvent[]; lang: Lang }) {
   );
 }
 
+// ─── Country Detail Modal ──────────────────────────────────────────────────────
+function CountryDetailModal({ code, savingsRow, lang, onAsk, onClose }: {
+  code: string;
+  savingsRow: { name: string; estimated_tax: number; annual_savings: number; ten_year_savings: number; effective_rate: number; special_regimes: string[]; territorial: boolean };
+  lang: Lang;
+  onAsk: (msg: string) => void;
+  onClose: () => void;
+}) {
+  const tr = useTranslation(lang);
+  const [detail, setDetail] = useState<Record<string, unknown> | null>(null);
+  const [exitTax, setExitTax] = useState<Record<string, unknown>>({});
+
+  useEffect(() => {
+    fetchCountry(code).then(r => { setDetail(r.data as Record<string, unknown>); setExitTax(r.exit_tax as Record<string, unknown>); }).catch(() => {});
+  }, [code]);
+
+  const fmt = (n: number) => {
+    if (Math.abs(n) >= 1000000) return `$${(n / 1000000).toFixed(1)}M`;
+    if (Math.abs(n) >= 1000) return `$${(n / 1000).toFixed(0)}K`;
+    return `$${n}`;
+  };
+
+  const fmtRate = (v: unknown) => {
+    if (v == null) return '—';
+    if (typeof v === 'string') return v;
+    return `${Math.round((v as number) * 100)}%`;
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={onClose}>
+      <div className="rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto p-6 relative"
+        style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+        onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} className="absolute top-4 right-4 p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}>
+          <X size={18} />
+        </button>
+
+        <h2 className="font-bold text-xl mb-1">{savingsRow.name}</h2>
+        <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{detail?.region as string}</p>
+
+        {/* Key numbers */}
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="rounded-xl p-3 text-center" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+            <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{tr.annualSavings}</div>
+            <div className="font-bold text-sm" style={{ color: '#10b981' }}>+{fmt(savingsRow.annual_savings)}/yr</div>
+          </div>
+          <div className="rounded-xl p-3 text-center" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+            <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{tr.effectiveRate}</div>
+            <div className="font-bold text-sm">{savingsRow.effective_rate}%</div>
+          </div>
+          <div className="rounded-xl p-3 text-center" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+            <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{tr.tenYearSavings}</div>
+            <div className="font-bold text-sm">{fmt(savingsRow.ten_year_savings)}</div>
+          </div>
+        </div>
+
+        {detail && (
+          <>
+            {/* Tax rates */}
+            <div className="rounded-xl p-4 mb-3" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              <h3 className="font-semibold text-sm mb-3">{lang === 'he' ? 'שיעורי מס' : 'Tax Rates'}</h3>
+              <div className="space-y-2">
+                {[
+                  [tr.incomeTax, detail.personal_income_tax_top ?? detail.personal_income_tax],
+                  [tr.capitalGainsTax, detail.capital_gains_tax],
+                  [tr.dividendTax, detail.dividend_tax],
+                ].map(([label, val]) => (
+                  <div key={label as string} className="flex justify-between text-sm">
+                    <span style={{ color: 'var(--text-muted)' }}>{label as string}</span>
+                    <span className="font-semibold">{fmtRate(val)}</span>
+                  </div>
+                ))}
+                <div className="flex justify-between text-sm">
+                  <span style={{ color: 'var(--text-muted)' }}>{tr.territorial}</span>
+                  <span className="font-semibold">{savingsRow.territorial ? '✅' : '—'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Special regimes */}
+            {savingsRow.special_regimes.length > 0 && (
+              <div className="rounded-xl p-4 mb-3" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.2)' }}>
+                <h3 className="font-semibold text-sm mb-2" style={{ color: 'var(--accent)' }}>✨ {tr.specialRegimes}</h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {savingsRow.special_regimes.map(r => (
+                    <span key={r} className="text-xs px-2 py-1 rounded-full"
+                      style={{ background: 'var(--accent)', color: 'white' }}>
+                      {r.replace(/_/g, ' ')}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Exit tax warning */}
+            {exitTax?.note && (
+              <div className="rounded-xl p-4 mb-3" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}>
+                <div className="font-semibold text-sm mb-1" style={{ color: '#f59e0b' }}>⚠️ Exit Tax</div>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{exitTax.note as string}</div>
+              </div>
+            )}
+
+            {/* Notable for */}
+            {detail.notable_for && (
+              <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>💡 {detail.notable_for as string}</p>
+            )}
+          </>
+        )}
+
+        <button
+          onClick={() => { onAsk(lang === 'he' ? `ספר לי הכל על תושבות מס ב${savingsRow.name} — מה הדרישות, המסים בפועל, ומה צריך לדעת לפני המעבר?` : `Tell me everything about tax residency in ${savingsRow.name} — requirements, actual taxes, and what to know before moving.`); onClose(); }}
+          className="w-full py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
+          style={{ background: 'var(--accent)', color: 'white' }}>
+          {tr.askAboutCountry}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Exit Tax Calculator Panel ─────────────────────────────────────────────────
+function ExitTaxPanel({ lang, profile, savingsData, onClose }: {
+  lang: Lang; profile: UserProfile; savingsData: SavingsAnalysis | null; onClose: () => void;
+}) {
+  const tr = useTranslation(lang);
+  const [assets, setAssets] = useState({ ...profile.assets });
+
+  const EXIT_TAXES_DISPLAY: Record<string, { rate: number; note: string }> = {
+    GERMANY: { rate: 0.25, note: 'Wegzugsteuer 25%' },
+    NETHERLANDS: { rate: 0.249, note: 'Exit tax 24.9%' },
+    ISRAEL: { rate: 0.25, note: 'Section 100A 25%' },
+    FRANCE: { rate: 0.128, note: 'Exit tax 12.8%' },
+    CANADA: { rate: 0.27, note: 'Departure tax 27%' },
+    AUSTRALIA: { rate: 0.30, note: 'CGT event I1 30%' },
+    SWEDEN: { rate: 0.30, note: 'Exit tax 30%' },
+    SPAIN: { rate: 0.23, note: 'Exit tax 23%' },
+    NORWAY: { rate: 0.37, note: 'Exit tax 37%' },
+    DENMARK: { rate: 0.42, note: 'Exit tax 42%' },
+  };
+
+  const fmt = (n: number) => {
+    if (Math.abs(n) >= 1000000) return `$${(n / 1000000).toFixed(1)}M`;
+    if (Math.abs(n) >= 1000) return `$${(n / 1000).toFixed(0)}K`;
+    return `$${n}`;
+  };
+
+  const currentCode = (profile.current_residency || '').toUpperCase().replace(' ', '_');
+  const exitInfo = EXIT_TAXES_DISPLAY[currentCode];
+  const taxableBase = ((assets.stocks || 0) + (assets.crypto_holdings || 0) + (assets.business_value || 0)) * 0.5;
+  const exitTaxAmount = exitInfo ? Math.round(taxableBase * exitInfo.rate) : 0;
+
+  return (
+    <div className="border-b overflow-y-auto" style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '65vh' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <Calculator size={18} style={{ color: 'var(--accent)' }} />
+              {tr.exitTaxTitle}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.exitTaxSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        {!exitInfo ? (
+          <div className="text-center py-10 text-sm" style={{ color: 'var(--text-muted)' }}>{tr.exitTaxNoData}</div>
+        ) : (
+          <>
+            <div className="rounded-xl p-4 mb-4" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}>
+              <div className="font-semibold mb-1" style={{ color: '#f59e0b' }}>⚠️ {currentCode} — {exitInfo.note}</div>
+              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                {lang === 'he' ? 'על 50% מהנכסים הבאים (רווח לא ממומש משוער):' : 'Applied to ~50% of taxable assets (estimated unrealized gain):'}
+              </div>
+            </div>
+
+            {/* Asset inputs */}
+            <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              <h3 className="font-semibold text-sm mb-3">{lang === 'he' ? 'ערך נכסים (USD)' : 'Asset Values (USD)'}</h3>
+              {(['stocks', 'crypto_holdings', 'business_value'] as const).map(field => (
+                <div key={field} className="flex items-center gap-3 mb-2">
+                  <label className="text-xs w-36 flex-shrink-0" style={{ color: 'var(--text-muted)' }}>
+                    {field === 'stocks' ? (lang === 'he' ? 'מניות/ניירות ערך' : 'Stocks/Securities') :
+                     field === 'crypto_holdings' ? (lang === 'he' ? 'קריפטו' : 'Crypto') :
+                     (lang === 'he' ? 'שווי עסק' : 'Business Value')}
+                  </label>
+                  <input type="number" value={assets[field] || ''}
+                    onChange={e => setAssets(a => ({ ...a, [field]: parseFloat(e.target.value) || 0 }))}
+                    className="flex-1 px-3 py-1.5 rounded-lg text-sm outline-none"
+                    style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+                </div>
+              ))}
+            </div>
+
+            {/* Result */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="rounded-xl p-4 text-center" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'בסיס חייב במס' : 'Taxable base'}</div>
+                <div className="font-bold text-lg">{fmt(taxableBase)}</div>
+              </div>
+              <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}>
+                <div className="text-xs mb-1" style={{ color: '#ef4444' }}>{lang === 'he' ? 'מס יציאה משוער' : 'Est. exit tax'}</div>
+                <div className="font-bold text-lg" style={{ color: '#ef4444' }}>{fmt(exitTaxAmount)}</div>
+              </div>
+            </div>
+
+            {/* Break-even table */}
+            {savingsData && savingsData.results.length > 0 && (
+              <div>
+                <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
+                  {tr.netSavingsAfterExit} / {tr.breakEvenYears}
+                </div>
+                <div className="space-y-1.5" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                  {savingsData.results.filter(r => r.annual_savings > 0).slice(0, 8).map(r => {
+                    const breakEven = r.annual_savings > 0 ? (exitTaxAmount / r.annual_savings).toFixed(1) : '∞';
+                    return (
+                      <div key={r.code} className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm"
+                        style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                        <span className="flex-1 font-medium">{r.name}</span>
+                        <span style={{ color: '#10b981' }}>+{fmt(r.annual_savings)}/yr</span>
+                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'var(--surface)', color: 'var(--text-muted)' }}>
+                          {lang === 'he' ? `${breakEven} שנים` : `${breakEven}y`}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Savings Panel ─────────────────────────────────────────────────────────────
-function SavingsPanel({ lang, profile, onAsk, onClose }: {
-  lang: Lang; profile: UserProfile; onAsk: (msg: string) => void; onClose: () => void;
+function SavingsPanel({ lang, profile, onAsk, onDetail, onSavingsLoaded, onClose }: {
+  lang: Lang; profile: UserProfile; onAsk: (msg: string) => void;
+  onDetail: (code: string, row: { name: string; estimated_tax: number; annual_savings: number; ten_year_savings: number; effective_rate: number; special_regimes: string[]; territorial: boolean }) => void;
+  onSavingsLoaded?: (d: SavingsAnalysis) => void;
+  onClose: () => void;
 }) {
   const tr = useTranslation(lang);
   const [data, setData] = useState<SavingsAnalysis | null>(null);
@@ -370,7 +610,7 @@ function SavingsPanel({ lang, profile, onAsk, onClose }: {
 
   useEffect(() => {
     fetchSavings(profile)
-      .then(d => { setData(d); setLoading(false); })
+      .then(d => { setData(d); setLoading(false); onSavingsLoaded?.(d); })
       .catch(() => setLoading(false));
   }, [profile]);
 
@@ -379,6 +619,34 @@ function SavingsPanel({ lang, profile, onAsk, onClose }: {
     if (abs >= 1000000) return `$${(n / 1000000).toFixed(1)}M`;
     if (abs >= 1000) return `$${(n / 1000).toFixed(0)}K`;
     return `$${n.toLocaleString()}`;
+  };
+
+  const exportReport = () => {
+    if (!data) return;
+    const rows = data.results.filter(r => r.annual_savings > 0).slice(0, 10)
+      .map((r, i) => `  ${i + 1}. ${r.name.padEnd(20)} ${fmt(r.annual_savings).padStart(10)}/yr   ${r.effective_rate}% effective rate   10yr: ${fmt(r.ten_year_savings)}`)
+      .join('\n');
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Tax Master AI Report</title>
+<style>body{font-family:Arial,sans-serif;max-width:700px;margin:40px auto;color:#1a1a1a;line-height:1.6}
+h1{color:#6366f1}table{width:100%;border-collapse:collapse;margin:20px 0}
+th{background:#6366f1;color:white;padding:8px 12px;text-align:left}
+td{padding:8px 12px;border-bottom:1px solid #e5e7eb}tr:hover{background:#f9fafb}
+.green{color:#10b981;font-weight:bold}.warn{background:#fff7ed;border:1px solid #f59e0b;padding:12px;border-radius:8px;margin:16px 0}
+</style></head><body>
+<h1>💰 Tax Master AI — Tax Optimization Report</h1>
+<p><strong>Current situation:</strong> ${data.current_country_name} — ${fmt(data.current_tax)}/yr (${data.current_effective_rate}% effective rate)</p>
+<p><strong>Total income:</strong> ${fmt(data.total_income)}</p>
+${data.exit_tax_info?.note ? `<div class="warn">⚠️ <strong>Exit Tax Warning:</strong> ${data.exit_tax_info.note}</div>` : ''}
+<h2>Top Countries by Tax Savings</h2>
+<table><tr><th>#</th><th>Country</th><th>Annual Savings</th><th>10-Year</th><th>Effective Rate</th></tr>
+${data.results.filter(r => r.annual_savings > 0).slice(0, 10).map((r, i) =>
+  `<tr><td>${i + 1}</td><td>${r.name}</td><td class="green">+${fmt(r.annual_savings)}</td><td>${fmt(r.ten_year_savings)}</td><td>${r.effective_rate}%</td></tr>`
+).join('')}
+</table>
+<p style="color:#9ca3af;font-size:12px;margin-top:40px">⚠️ For informational purposes only. Always consult a licensed tax advisor. Generated by Tax Master AI.</p>
+</body></html>`;
+    const win = window.open('', '_blank');
+    if (win) { win.document.write(html); win.document.close(); setTimeout(() => win.print(), 500); }
   };
 
   return (
@@ -392,7 +660,15 @@ function SavingsPanel({ lang, profile, onAsk, onClose }: {
             </h2>
             <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.savingsSubtitle}</p>
           </div>
-          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+          <div className="flex items-center gap-2">
+            {data && !data.error && (
+              <button onClick={exportReport} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:opacity-80"
+                style={{ background: 'var(--surface-2)', color: 'var(--accent)', border: '1px solid var(--border)' }}>
+                <Download size={12} />{tr.exportReport}
+              </button>
+            )}
+            <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+          </div>
         </div>
 
         {loading && (
@@ -448,12 +724,7 @@ function SavingsPanel({ lang, profile, onAsk, onClose }: {
                 <div key={r.code}
                   className="rounded-xl px-3 py-2.5 flex items-center gap-3 cursor-pointer transition-all hover:opacity-80"
                   style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}
-                  onClick={() => {
-                    const msg = lang === 'he'
-                      ? `ספר לי יותר על תכנון מס ב${r.name} — אני יכול לחסוך ${fmt(r.annual_savings)} לשנה. מה הדרישות והצעדים הנדרשים?`
-                      : `Tell me more about moving to ${r.name} for tax purposes — I could save ${fmt(r.annual_savings)}/year. What are the requirements and key steps?`;
-                    onAsk(msg); onClose();
-                  }}>
+                  onClick={() => onDetail(r.code, r)}>
                   <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
                     style={{ background: i < 3 ? 'var(--accent)' : 'var(--surface)', color: i < 3 ? 'white' : 'var(--text-muted)', border: '1px solid var(--border)' }}>
                     {i + 1}
@@ -509,10 +780,15 @@ export default function AdvisorPage() {
   const [showCompare, setShowCompare] = useState(false);
   const [showSavings, setShowSavings] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showExitTax, setShowExitTax] = useState(false);
+  const [planMode, setPlanMode] = useState(false);
+  const [savingsData, setSavingsData] = useState<SavingsAnalysis | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<{ code: string; row: Parameters<typeof CountryDetailModal>[0]['savingsRow'] } | null>(null);
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
   const [profileSaved, setProfileSaved] = useState(false);
   const [savedSessions, setSavedSessions] = useState<SavedSession[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const conversationHistoryRef = useRef<Array<{ role: string; content: string }>>([]);
 
   const tr = useTranslation(lang);
@@ -556,6 +832,27 @@ export default function AdvisorPage() {
     persistSessions(savedSessions.filter(s => s.id !== id));
   };
 
+  const handleFileUpload = async (file: File) => {
+    const userMsg: ChatMessage = { id: Date.now().toString(), role: 'user', content: `📎 ${file.name}`, timestamp: new Date() };
+    const assistantMsg: ChatMessage = { id: (Date.now() + 1).toString(), role: 'assistant', content: '', tools: [], timestamp: new Date() };
+    setMessages(prev => [...prev, userMsg, assistantMsg]);
+    setIsLoading(true);
+    try {
+      const buf = await file.arrayBuffer();
+      const bytes = new Uint8Array(buf);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const b64 = btoa(binary);
+      const result = await analyzeDocument(file.name, b64, file.type || 'application/pdf', lang);
+      const text = result.analysis || (result.error ? `❌ ${result.error}` : '❌ Error');
+      setMessages(prev => { const u = [...prev]; u[u.length - 1] = { ...u[u.length - 1], content: text }; return u; });
+    } catch {
+      setMessages(prev => { const u = [...prev]; u[u.length - 1] = { ...u[u.length - 1], content: '❌ Upload failed.' }; return u; });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -573,8 +870,13 @@ export default function AdvisorPage() {
   };
 
   const sendMessage = useCallback(async (text?: string) => {
-    const messageText = text || input.trim();
-    if (!messageText || isLoading) return;
+    const raw = text || input.trim();
+    if (!raw || isLoading) return;
+    const messageText = planMode && !text
+      ? (lang === 'he'
+          ? `📋 בדיקת תוכנית מס:\n${raw}\n\nנא לנתח את התוכנית הזו ולזהות: 1) סיכוני מס ומלכודות, 2) שלבים חסרים, 3) שיקולי תזמון, 4) חלופות טובות יותר, 5) מה נכון בתוכנית.`
+          : `📋 Tax Plan Review:\n${raw}\n\nPlease analyze this plan and identify: 1) Tax risks and pitfalls, 2) Missing steps, 3) Timing considerations, 4) Better alternatives, 5) What's correct.`)
+      : raw;
 
     setInput('');
     setIsLoading(true);
@@ -639,6 +941,7 @@ export default function AdvisorPage() {
   };
 
   return (
+    <>
     <div className="flex h-screen overflow-hidden" dir={dir} style={{ background: 'var(--background)' }}>
       {/* ── Sidebar ── */}
       <div className="w-60 flex-shrink-0 flex flex-col border-r"
@@ -682,11 +985,17 @@ export default function AdvisorPage() {
             <BarChart3 size={14} />
             {tr.compare}
           </button>
-          <button onClick={() => { setShowSavings(!showSavings); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { setShowSavings(!showSavings); setShowProfile(false); setShowCompare(false); setShowExitTax(false); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showSavings ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSavings ? 'var(--accent)' : 'var(--text-muted)', border: showSavings ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <TrendingDown size={14} />
             {tr.savings}
+          </button>
+          <button onClick={() => { setShowExitTax(!showExitTax); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showExitTax ? 'var(--accent-glow)' : 'var(--surface-2)', color: showExitTax ? 'var(--accent)' : 'var(--text-muted)', border: showExitTax ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Calculator size={14} />
+            {tr.exitTaxCalc}
           </button>
           <button onClick={() => setShowHistory(!showHistory)}
             className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
@@ -769,7 +1078,14 @@ export default function AdvisorPage() {
         )}
         {showSavings && (
           <SavingsPanel lang={lang} profile={profile}
-            onAsk={msg => sendMessage(msg)} onClose={() => setShowSavings(false)} />
+            onAsk={msg => sendMessage(msg)}
+            onDetail={(code, row) => setSelectedCountry({ code, row })}
+            onSavingsLoaded={d => setSavingsData(d)}
+            onClose={() => setShowSavings(false)} />
+        )}
+        {showExitTax && (
+          <ExitTaxPanel lang={lang} profile={profile} savingsData={savingsData}
+            onClose={() => setShowExitTax(false)} />
         )}
 
         {/* Messages */}
@@ -843,11 +1159,32 @@ export default function AdvisorPage() {
         {/* Input */}
         <div className="flex-shrink-0 p-4 border-t" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
           <div className="max-w-3xl mx-auto">
+            {planMode && (
+              <div className="mb-2 px-3 py-1.5 rounded-lg text-xs flex items-center gap-2"
+                style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid var(--accent)', color: 'var(--accent)' }}>
+                <ClipboardCheck size={12} />
+                {tr.checkPlanActive} — {lang === 'he' ? 'תאר את תוכנית המס שלך לניתוח מעמיק' : 'Describe your tax plan for deep analysis'}
+              </div>
+            )}
             <div className="flex gap-2 items-end rounded-2xl p-2"
-              style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              style={{ background: 'var(--surface-2)', border: `1px solid ${planMode ? 'var(--accent)' : 'var(--border)'}` }}>
+              <input ref={fileInputRef} type="file" accept=".pdf,.txt,.png,.jpg,.jpeg" className="hidden"
+                onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(f); e.target.value = ''; }} />
+              <button onClick={() => fileInputRef.current?.click()} disabled={isLoading}
+                title={tr.uploadDoc}
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all hover:opacity-70 disabled:opacity-30"
+                style={{ color: 'var(--text-muted)' }}>
+                <FileText size={15} />
+              </button>
+              <button onClick={() => setPlanMode(p => !p)} disabled={isLoading}
+                title={tr.checkPlan}
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all hover:opacity-70"
+                style={{ color: planMode ? 'var(--accent)' : 'var(--text-muted)', background: planMode ? 'rgba(99,102,241,0.12)' : 'transparent' }}>
+                <ClipboardCheck size={15} />
+              </button>
               <textarea value={input} onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown} disabled={isLoading}
-                placeholder={tr.inputPlaceholder} rows={1}
+                placeholder={planMode ? tr.checkPlanPlaceholder : tr.inputPlaceholder} rows={1}
                 dir={lang === 'he' ? 'rtl' : 'ltr'}
                 className="flex-1 bg-transparent outline-none resize-none text-sm px-2 py-1"
                 style={{ color: 'var(--text)', minHeight: '36px', maxHeight: '120px' }}
@@ -869,5 +1206,16 @@ export default function AdvisorPage() {
         </div>
       </div>
     </div>
+
+    {selectedCountry && (
+      <CountryDetailModal
+        code={selectedCountry.code}
+        savingsRow={selectedCountry.row}
+        lang={lang}
+        onAsk={msg => { sendMessage(msg); setSelectedCountry(null); }}
+        onClose={() => setSelectedCountry(null)}
+      />
+    )}
+    </>
   );
 }

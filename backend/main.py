@@ -166,6 +166,7 @@ def estimate_tax(code: str, cdata: dict, income: dict, profile: dict) -> float:
     current_country = (profile.get("current_residency") or "").upper().replace(" ", "_")
     crypto_lt       = bool(profile.get("crypto_long_term", False))
     usd_to_local    = USD_TO_LOCAL.get(code, 1.0)
+    citizenships    = [c.strip().upper().replace(" ", "_") for c in (profile.get("citizenships") or [])]
 
     # ── True zero-tax countries ────────────────────────────────────────────────
     if (float(cdata.get("personal_income_tax", 1) or 1) == 0
@@ -279,9 +280,33 @@ def estimate_tax(code: str, cdata: dict, income: dict, profile: dict) -> float:
                 div_rate = cdata.get("personal_income_tax_top", 0.25)
             if isinstance(div_rate, str): div_rate = 0.25
             div_rate = float(div_rate)
+            # Apply treaty reduction if applicable
+            for cit in citizenships:
+                treaty_rate = treaty_dividend_rate(cit, code, div_rate)
+                div_rate = min(div_rate, treaty_rate)
         tax += div * div_rate
 
     return tax
+
+
+def treaty_dividend_rate(citizenship_country: str, dest_code: str, statutory_rate: float) -> float:
+    """Return reduced dividend rate from tax treaty, or statutory_rate if no treaty."""
+    from pathlib import Path as P
+    try:
+        tp = P(__file__).parent / "knowledge" / "static_data" / "tax_treaties.json"
+        with open(tp) as f:
+            treaties = json.load(f).get("key_treaties", {})
+        for treaty in treaties.values():
+            countries = [c.upper() for c in treaty.get("countries", [])]
+            if citizenship_country.upper() in countries and dest_code.upper() in countries:
+                dw = treaty.get("dividends_withholding")
+                if isinstance(dw, dict):
+                    return float(dw.get("treaty_rate", statutory_rate))
+                if isinstance(dw, (int, float)):
+                    return float(dw)
+    except Exception:
+        pass
+    return statutory_rate
 
 
 EXIT_TAXES = {
@@ -296,6 +321,69 @@ EXIT_TAXES = {
     "NORWAY": {"rate": 0.37, "note": "Exit tax on unrealized gains on shares", "applicable": "company shares"},
     "DENMARK": {"rate": 0.42, "note": "Exit tax on unrealized capital gains", "applicable": "various assets"},
 }
+
+
+@app.get("/api/country/{code}")
+async def get_country_detail(code: str):
+    """Return full tax data for a single country."""
+    from pathlib import Path as P
+    data_path = P(__file__).parent / "knowledge" / "static_data" / "tax_rates.json"
+    with open(data_path) as f:
+        tax_data = json.load(f)
+    cdata = tax_data["countries"].get(code.upper())
+    if not cdata:
+        return {"error": "not_found"}
+    exit_info = EXIT_TAXES.get(code.upper(), {})
+    return {"code": code.upper(), "data": cdata, "exit_tax": exit_info}
+
+
+class AnalyzeReq(BaseModel):
+    filename: str = ""
+    content_base64: str
+    media_type: str = "application/pdf"
+    language: str = "he"
+
+
+@app.post("/api/analyze")
+async def analyze_document(request: AnalyzeReq):
+    """Analyze an uploaded document and return tax insights."""
+    import anthropic as _anthropic
+
+    client = _anthropic.Anthropic()
+
+    is_image = request.media_type.startswith("image/")
+    if is_image:
+        content_block = {
+            "type": "image",
+            "source": {"type": "base64", "media_type": request.media_type, "data": request.content_base64},
+        }
+    else:
+        content_block = {
+            "type": "document",
+            "source": {"type": "base64", "media_type": request.media_type, "data": request.content_base64},
+        }
+
+    question = (
+        "נתח את המסמך הזה מבחינת מיסים. זהה: 1) סוג ההכנסה והסכומים, 2) גובה המס המשולם, "
+        "3) השלכות מס שצריך לדעת, 4) הזדמנויות לאופטימיזציה או חיסכון. "
+        "ענה בעברית, בצורה ממוקדת ופרקטית."
+        if request.language == "he" else
+        "Analyze this document for tax purposes. Identify: 1) Income type and amounts, "
+        "2) Tax paid or withheld, 3) Key tax implications, 4) Optimization opportunities. "
+        "Be concise and practical."
+    )
+
+    try:
+        resp = client.messages.create(
+            model="claude-opus-4-6",
+            max_tokens=2000,
+            thinking={"type": "adaptive"},
+            messages=[{"role": "user", "content": [content_block, {"type": "text", "text": question}]}],
+        )
+        text = "".join(b.text for b in resp.content if hasattr(b, "text"))
+        return {"analysis": text}
+    except Exception as e:
+        return {"error": str(e)}
 
 
 class SavingsReq(BaseModel):
