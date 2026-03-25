@@ -164,7 +164,11 @@ export interface IsraelAnalysis {
     residency_req_en: string;
     pros: string[];
     cons: string[];
+    annual_tax_estimate: number | null;
+    annual_savings_vs_israel: number | null;
   }>;
+  israel_annual_tax: number;
+  total_income_usd: number;
   exit_process: Array<{
     step: number;
     category: string;

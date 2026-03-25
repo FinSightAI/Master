@@ -802,6 +802,20 @@ async def israel_analysis(request: IsraelReq):
     if has_company:
         residency_risks.append({"severity": "medium", "text_he": "חברה ישראלית פעילה — עלולה לשמש ראיה לקשר לישראל. בדוק CFC rules.", "text_en": "Active Israeli company — may constitute connection to Israel. Check CFC rules."})
 
+    # ── Load tax data for per-country estimates ────────────────────────────────
+    from pathlib import Path as P
+    tax_rates_path = P(__file__).parent / "knowledge" / "static_data" / "tax_rates.json"
+    tax_country_data: dict = {}
+    try:
+        with open(tax_rates_path) as f:
+            tax_country_data = json.load(f)
+    except Exception:
+        pass
+
+    # Current Israel tax (for savings baseline)
+    israel_data = tax_country_data.get("ISRAEL", {})
+    israel_annual_tax = estimate_tax("ISRAEL", israel_data, income, p) if israel_data else total_income * 0.35
+
     # ── Country recommendations ────────────────────────────────────────────────
     # Adjust scores based on profile
     scored_countries = []
@@ -819,7 +833,17 @@ async def israel_analysis(request: IsraelReq):
         # Boost if Israeli community
         if "גדולה" in c.get("israeli_community", "") or "Very large" in c.get("israeli_community_en", ""):
             score += 4
-        scored_countries.append({**c, "adjusted_score": score})
+        # Estimate annual tax in this country
+        cdata = tax_country_data.get(c["code"], {})
+        annual_tax = estimate_tax(c["code"], cdata, income, p) if cdata else None
+        annual_savings = (israel_annual_tax - annual_tax) if annual_tax is not None else None
+
+        scored_countries.append({
+            **c,
+            "adjusted_score": score,
+            "annual_tax_estimate": round(annual_tax) if annual_tax is not None else None,
+            "annual_savings_vs_israel": round(annual_savings) if annual_savings is not None else None,
+        })
 
     scored_countries.sort(key=lambda x: x["adjusted_score"], reverse=True)
 
@@ -843,6 +867,8 @@ async def israel_analysis(request: IsraelReq):
         "pension_rules": ISRAEL_PENSION_RULES,
         "residency_rules": ISRAEL_RESIDENCY_RULES,
         "section_100a": ISRAEL_SECTION_100A,
+        "israel_annual_tax": round(israel_annual_tax),
+        "total_income_usd": round(total_income),
     }
 
 

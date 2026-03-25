@@ -822,7 +822,7 @@ function IsraelExitWizard({
         {/* Step tabs */}
         {analysis && (
           <div className="flex gap-1 mb-4 flex-wrap">
-            {[tr.israelStep0, tr.israelStep1, tr.israelStep2, tr.israelStep3].map((label, i) => (
+            {[tr.israelStep0, tr.israelStep1, tr.israelStep2, tr.israelStep3, tr.israelProjection].map((label, i) => (
               <button key={i} onClick={() => setStep(i)}
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
                 style={{
@@ -1130,6 +1130,100 @@ function IsraelExitWizard({
             </div>
           </div>
         )}
+
+        {/* Step 4: 5-Year projection */}
+        {step === 4 && analysis && (() => {
+          const exitTax = analysis.exit_tax_analysis.exit_tax_estimate;
+          const khNet = analysis.kh_analysis.status === 'tax_free'
+            ? (analysis.kh_analysis.withdrawal_net || 0)
+            : (analysis.kh_analysis.withdrawal_net_now || 0);
+          const khBonus = analysis.kh_analysis.status === 'tax_free'
+            ? (analysis.kh_analysis.withdrawal_net || 0) - (analysis.kh_analysis.withdrawal_net || 0) * 0.25
+            : 0; // extra saved vs non-resident withdrawal
+
+          const countries = analysis.country_recommendations.filter(c => c.annual_savings_vs_israel !== null);
+          const israelTax = analysis.israel_annual_tax || 0;
+
+          return (
+            <div className="space-y-4">
+              <div className="rounded-xl p-3" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.israelProjectionSubtitle}</div>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="text-center rounded-lg p-2" style={{ background: 'var(--surface)' }}>
+                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.israelCurrentTax}</div>
+                    <div className="font-bold">${fmt(israelTax)}/yr</div>
+                  </div>
+                  <div className="text-center rounded-lg p-2" style={{ background: 'rgba(239,68,68,0.07)' }}>
+                    <div className="text-xs" style={{ color: '#ef4444' }}>{isHe ? 'מס יציאה' : 'Exit tax'}</div>
+                    <div className="font-bold" style={{ color: '#ef4444' }}>-${fmt(exitTax)}</div>
+                  </div>
+                </div>
+              </div>
+
+              {countries.map(c => {
+                const annualSaving = c.annual_savings_vs_israel!;
+                const rows = [1, 2, 3, 5].map(year => {
+                  const cumSavings = annualSaving * year + khBonus;
+                  const netAfterExit = cumSavings - exitTax;
+                  return { year, cumSavings, netAfterExit };
+                });
+                const breakEvenYear = exitTax > 0
+                  ? Math.ceil(exitTax / Math.max(annualSaving + khBonus / 5, 1))
+                  : 0;
+                const net5y = rows[3].netAfterExit;
+
+                return (
+                  <div key={c.code} className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
+                    <div className="flex items-center justify-between px-4 py-2.5" style={{ background: 'var(--surface-2)' }}>
+                      <div className="font-semibold text-sm">{isHe ? c.name : c.name_en}</div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                          {isHe ? 'חיסכון שנתי:' : 'Annual saving:'} <span className="font-bold" style={{ color: '#10b981' }}>${fmt(annualSaving)}</span>
+                        </span>
+                        <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: net5y > 0 ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', color: net5y > 0 ? '#10b981' : '#ef4444' }}>
+                          5yr: {net5y > 0 ? '+' : ''}{fmt(net5y)}
+                        </span>
+                      </div>
+                    </div>
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
+                          <th className="px-3 py-1.5 text-left font-medium" style={{ color: 'var(--text-muted)' }}>{tr.israelProjectionYear}</th>
+                          <th className="px-3 py-1.5 text-right font-medium" style={{ color: 'var(--text-muted)' }}>{isHe ? 'חיסכון מצטבר' : 'Cumulative saving'}</th>
+                          <th className="px-3 py-1.5 text-right font-medium" style={{ color: 'var(--text-muted)' }}>{tr.israelProjectionNetGain}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rows.map(r => (
+                          <tr key={r.year} style={{ borderBottom: '1px solid var(--border)' }}>
+                            <td className="px-3 py-2 font-medium">{r.year}</td>
+                            <td className="px-3 py-2 text-right font-medium" style={{ color: '#10b981' }}>
+                              +${fmt(r.cumSavings)}
+                            </td>
+                            <td className="px-3 py-2 text-right font-bold" style={{ color: r.netAfterExit >= 0 ? '#10b981' : '#ef4444' }}>
+                              {r.netAfterExit >= 0 ? '+' : ''}{fmt(r.netAfterExit)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {breakEvenYear > 0 && (
+                      <div className="px-4 py-2 text-xs" style={{ background: 'rgba(245,158,11,0.05)', color: 'var(--text-muted)' }}>
+                        ⏱ {tr.israelBreakEven}: <strong style={{ color: '#f59e0b' }}>{isHe ? `שנה ${breakEvenYear}` : `Year ${breakEvenYear}`}</strong>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {countries.length === 0 && (
+                <div className="text-center py-6 text-sm" style={{ color: 'var(--text-muted)' }}>
+                  {isHe ? 'הכנס הכנסות בפרופיל לחישוב תחזית מדויקת' : 'Enter income in your profile for accurate projections'}
+                </div>
+              )}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
@@ -1300,7 +1394,7 @@ export default function AdvisorPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, profile, profileSaved]);
+  }, [input, isLoading, profile, profileSaved, planMode, lang]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -1468,28 +1562,61 @@ export default function AdvisorPage() {
         <div className="flex-1 overflow-y-auto p-4">
           <div className="max-w-3xl mx-auto space-y-6">
             {messages.length === 0 && (
-              <div className="text-center py-12 slide-in">
-                <div className="text-6xl mb-4">🌍</div>
-                <h1 className="text-2xl font-bold mb-2">{tr.welcomeTitle}</h1>
-                <p className="mb-6 max-w-md mx-auto" style={{ color: 'var(--text-muted)' }}>
-                  {tr.welcomeSubtitle}
-                </p>
+              <div className="slide-in">
+                <div className="text-center pt-8 pb-6">
+                  <div className="text-5xl mb-3">🌍</div>
+                  <h1 className="text-2xl font-bold mb-2">{tr.welcomeTitle}</h1>
+                  <p className="max-w-md mx-auto text-sm" style={{ color: 'var(--text-muted)' }}>
+                    {tr.welcomeSubtitle}
+                  </p>
+                </div>
+
                 {!profileSaved && (
-                  <button onClick={() => setShowProfile(true)}
-                    className="mb-6 px-4 py-2 rounded-lg text-sm transition-all hover:opacity-80 inline-flex items-center gap-2"
-                    style={{ background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>
-                    <Plus size={14} />
-                    {tr.setupProfile}
-                  </button>
-                )}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-2xl mx-auto">
-                  {tr.sampleQuestions.map((q, i) => (
-                    <button key={i} onClick={() => sendMessage(q)}
-                      className="p-3 rounded-xl text-sm transition-all hover:opacity-80"
-                      style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', textAlign: lang === 'he' ? 'right' : 'left' }}>
-                      {q}
+                  <div className="max-w-2xl mx-auto mb-4 rounded-xl p-3 flex items-center justify-between"
+                    style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid var(--accent)' }}>
+                    <span className="text-sm" style={{ color: 'var(--accent)' }}>{tr.setupProfile}</span>
+                    <button onClick={() => setShowProfile(true)}
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:opacity-80"
+                      style={{ background: 'var(--accent)', color: 'white' }}>
+                      <Plus size={12} className="inline mr-1" />
+                      {lang === 'he' ? 'הגדר' : 'Set up'}
                     </button>
-                  ))}
+                  </div>
+                )}
+
+                {/* Israeli quick-start actions */}
+                {lang === 'he' && (
+                  <div className="max-w-2xl mx-auto mb-4">
+                    <div className="text-xs font-semibold mb-2 px-1" style={{ color: 'var(--text-muted)' }}>🇮🇱 כלים לישראלים</div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {[
+                        { icon: '📊', label: 'כמה אחסוך בחו"ל?', action: () => setShowSavings(true) },
+                        { icon: '🇮🇱', label: 'תכנון עזיבת ישראל', action: () => setShowIsraelWizard(true) },
+                        { icon: '⚖️', label: 'מחשבון מס יציאה', action: () => setShowExitTax(true) },
+                        { icon: '🔍', label: 'בדוק תוכנית מס', action: () => setPlanMode(true) },
+                      ].map((card, i) => (
+                        <button key={i} onClick={card.action}
+                          className="rounded-xl p-3 text-center transition-all hover:opacity-80"
+                          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                          <div className="text-2xl mb-1">{card.icon}</div>
+                          <div className="text-xs font-medium">{card.label}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="max-w-2xl mx-auto">
+                  <div className="text-xs font-semibold mb-2 px-1" style={{ color: 'var(--text-muted)' }}>{tr.quickQuestions}</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {tr.sampleQuestions.map((q, i) => (
+                      <button key={i} onClick={() => sendMessage(q)}
+                        className="p-3 rounded-xl text-sm transition-all hover:opacity-80"
+                        style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', textAlign: lang === 'he' ? 'right' : 'left' }}>
+                        {q}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
