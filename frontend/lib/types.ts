@@ -92,6 +92,94 @@ export interface SavingsAnalysis {
   error?: string;
 }
 
+export interface IsraelProfile {
+  keren_hishtalmut_value: number;
+  keren_hishtalmut_years: number;
+  keren_pansiya_value: number;
+  kupat_gemel_value: number;
+  bituach_menahalim_value: number;
+  days_in_israel_this_year: number;
+  years_as_israeli_resident: number;
+  has_israeli_company: boolean;
+  family_in_israel: boolean;
+}
+
+export const DEFAULT_ISRAEL_PROFILE: IsraelProfile = {
+  keren_hishtalmut_value: 0,
+  keren_hishtalmut_years: 0,
+  keren_pansiya_value: 0,
+  kupat_gemel_value: 0,
+  bituach_menahalim_value: 0,
+  days_in_israel_this_year: 0,
+  years_as_israeli_resident: 0,
+  has_israeli_company: false,
+  family_in_israel: false,
+};
+
+export interface IsraelAnalysis {
+  kh_analysis: {
+    status: string;
+    status_he: string;
+    status_en: string;
+    withdrawal_net?: number;
+    tax_if_withdraw_now?: number;
+    withdrawal_net_now?: number;
+    withdrawal_net_if_wait?: number;
+    advice_he: string;
+    advice_en: string;
+  };
+  pension_analysis: Array<{
+    type: string;
+    name_he: string;
+    value: number;
+    strategy_he: string;
+    strategy_en: string;
+  }>;
+  exit_tax_analysis: {
+    unrealized_gain_estimate: number;
+    exit_tax_estimate: number;
+    rate: number;
+    note_he: string;
+    note_en: string;
+    deferral_options_he: string[];
+    deferral_options_en: string[];
+  };
+  residency_risks: Array<{
+    severity: string;
+    text_he: string;
+    text_en: string;
+  }>;
+  country_recommendations: Array<{
+    code: string;
+    name: string;
+    name_en: string;
+    adjusted_score: number;
+    treaty_with_israel: boolean;
+    flight_hours: number;
+    israeli_community: string;
+    israeli_community_en: string;
+    tax_benefit: string;
+    tax_benefit_en: string;
+    residency_req: string;
+    residency_req_en: string;
+    pros: string[];
+    cons: string[];
+  }>;
+  exit_process: Array<{
+    step: number;
+    category: string;
+    title_he: string;
+    title_en: string;
+    detail_he: string;
+    detail_en: string;
+  }>;
+  timing_messages: Array<{
+    priority: string;
+    text_he: string;
+    text_en: string;
+  }>;
+}
+
 export interface SavedSession {
   id: string;
   title: string;

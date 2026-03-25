@@ -1,4 +1,4 @@
-import { UserProfile, StreamEvent, SavingsAnalysis } from './types';
+import { UserProfile, StreamEvent, SavingsAnalysis, IsraelProfile, IsraelAnalysis } from './types';
 
 const API_BASE = '/api';
 
@@ -25,6 +25,16 @@ export async function fetchSavings(profile: UserProfile): Promise<SavingsAnalysi
     body: JSON.stringify({ profile }),
   });
   if (!res.ok) throw new Error('Failed to fetch savings data');
+  return res.json();
+}
+
+export async function fetchIsraelAnalysis(profile: UserProfile | null, israelProfile: IsraelProfile): Promise<IsraelAnalysis> {
+  const res = await fetch(`${API_BASE}/israel`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ profile: profile || {}, israel_profile: israelProfile }),
+  });
+  if (!res.ok) throw new Error('Failed to fetch Israel analysis');
   return res.json();
 }
 

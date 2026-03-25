@@ -8,8 +8,8 @@ import {
   RotateCcw, Globe, BarChart3, X, Plus, TrendingDown, History, Clock,
   FileText, Download, Calculator, ClipboardCheck
 } from 'lucide-react';
-import { streamChat, fetchSavings, fetchCountry, analyzeDocument } from '../../lib/api';
-import { UserProfile, ChatMessage, ToolEvent, DEFAULT_PROFILE, TOOL_DISPLAY_NAMES, TOOL_ICONS, SavingsAnalysis, SavedSession } from '../../lib/types';
+import { streamChat, fetchSavings, fetchCountry, analyzeDocument, fetchIsraelAnalysis } from '../../lib/api';
+import { UserProfile, ChatMessage, ToolEvent, DEFAULT_PROFILE, TOOL_DISPLAY_NAMES, TOOL_ICONS, SavingsAnalysis, SavedSession, IsraelProfile, DEFAULT_ISRAEL_PROFILE, IsraelAnalysis } from '../../lib/types';
 import { Lang, useTranslation } from '../../lib/i18n';
 
 // ─── Country Comparison Panel ────────────────────────────────────────────────
@@ -770,6 +770,371 @@ ${data.results.filter(r => r.annual_savings > 0).slice(0, 10).map((r, i) =>
   );
 }
 
+// ─── Israel Exit Wizard ───────────────────────────────────────────────────────
+function IsraelExitWizard({
+  lang, profile, onAsk, onClose
+}: {
+  lang: Lang; profile: UserProfile; onAsk: (msg: string) => void; onClose: () => void;
+}) {
+  const tr = useTranslation(lang);
+  const isHe = lang === 'he';
+  const [step, setStep] = useState(0);
+  const [ip, setIp] = useState<IsraelProfile>(DEFAULT_ISRAEL_PROFILE);
+  const [analysis, setAnalysis] = useState<IsraelAnalysis | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [checklist, setChecklist] = useState<Record<number, boolean>>({});
+
+  const updIp = (field: keyof IsraelProfile, value: number | boolean) =>
+    setIp(p => ({ ...p, [field]: value }));
+
+  const analyze = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchIsraelAnalysis(profile, ip);
+      setAnalysis(res);
+      setStep(1);
+    } catch { /* ignore */ }
+    finally { setLoading(false); }
+  };
+
+  const fmt = (n: number) => {
+    if (Math.abs(n) >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+    if (Math.abs(n) >= 1000) return `${(n / 1000).toFixed(0)}K`;
+    return `${n.toLocaleString()}`;
+  };
+
+  const severityColor = (s: string) => s === 'high' ? '#ef4444' : '#f59e0b';
+
+  return (
+    <div className="border-b overflow-y-auto" style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '75vh' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              🇮🇱 {tr.israelWizard}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.israelWizardSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        {/* Step tabs */}
+        {analysis && (
+          <div className="flex gap-1 mb-4 flex-wrap">
+            {[tr.israelStep0, tr.israelStep1, tr.israelStep2, tr.israelStep3].map((label, i) => (
+              <button key={i} onClick={() => setStep(i)}
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                style={{
+                  background: step === i ? 'var(--accent)' : 'var(--surface-2)',
+                  color: step === i ? 'white' : 'var(--text-muted)',
+                  border: `1px solid ${step === i ? 'var(--accent)' : 'var(--border)'}`,
+                }}>
+                {i + 1}. {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Step 0: Input form */}
+        {step === 0 && (
+          <div className="space-y-4">
+            <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              <h3 className="font-semibold text-sm mb-3">
+                {isHe ? 'מוצרים פיננסיים ישראלים' : 'Israeli Financial Products'}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {([
+                  ['keren_hishtalmut_value', tr.israelKHValue],
+                  ['keren_hishtalmut_years', tr.israelKHYears],
+                  ['keren_pansiya_value', tr.israelPension],
+                  ['kupat_gemel_value', tr.israelGemel],
+                  ['bituach_menahalim_value', tr.israelBituach],
+                ] as [keyof IsraelProfile, string][]).map(([field, label]) => (
+                  <div key={field}>
+                    <label className="text-xs mb-1 block" style={{ color: 'var(--text-muted)' }}>{label}</label>
+                    <input type="number" value={(ip[field] as number) || ''}
+                      onChange={e => updIp(field, parseFloat(e.target.value) || 0)}
+                      placeholder="0" className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                      style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              <h3 className="font-semibold text-sm mb-3">
+                {isHe ? 'סטטוס תושבות' : 'Residency Status'}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs mb-1 block" style={{ color: 'var(--text-muted)' }}>{tr.israelDaysInIsrael}</label>
+                  <input type="number" value={ip.days_in_israel_this_year || ''}
+                    onChange={e => updIp('days_in_israel_this_year', parseFloat(e.target.value) || 0)}
+                    placeholder="0" min={0} max={365}
+                    className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+                </div>
+                <div>
+                  <label className="text-xs mb-1 block" style={{ color: 'var(--text-muted)' }}>{tr.israelYearsResident}</label>
+                  <input type="number" value={ip.years_as_israeli_resident || ''}
+                    onChange={e => updIp('years_as_israeli_resident', parseFloat(e.target.value) || 0)}
+                    placeholder="0"
+                    className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+                </div>
+              </div>
+              <div className="mt-3 space-y-2">
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input type="checkbox" checked={ip.has_israeli_company}
+                    onChange={e => updIp('has_israeli_company', e.target.checked)} className="rounded" />
+                  {tr.israelHasCompany}
+                </label>
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input type="checkbox" checked={ip.family_in_israel}
+                    onChange={e => updIp('family_in_israel', e.target.checked)} className="rounded" />
+                  {tr.israelFamilyInIsrael}
+                </label>
+              </div>
+            </div>
+
+            <button onClick={analyze} disabled={loading}
+              className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
+              style={{ background: 'var(--accent)', color: 'white' }}>
+              {loading ? tr.israelAnalyzing : tr.israelAnalyze}
+            </button>
+          </div>
+        )}
+
+        {/* Step 1: Timing analysis */}
+        {step === 1 && analysis && (
+          <div className="space-y-4">
+            {/* Timing alerts */}
+            {analysis.timing_messages.length > 0 && (
+              <div className="space-y-2">
+                <div className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>{tr.israelTimingAlerts}</div>
+                {analysis.timing_messages.map((m, i) => (
+                  <div key={i} className="rounded-xl p-3" style={{
+                    background: m.priority === 'high' ? 'rgba(239,68,68,0.07)' : 'rgba(245,158,11,0.07)',
+                    border: `1px solid ${m.priority === 'high' ? 'rgba(239,68,68,0.25)' : 'rgba(245,158,11,0.25)'}`,
+                  }}>
+                    <div className="text-sm font-medium">{isHe ? m.text_he : m.text_en}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* KH analysis */}
+            {analysis.kh_analysis.status !== 'no_data' && (
+              <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                <h3 className="font-semibold text-sm mb-2">🏦 {tr.israelKH}</h3>
+                <div className="text-sm font-medium mb-2">{isHe ? analysis.kh_analysis.status_he : analysis.kh_analysis.status_en}</div>
+                <div className="text-sm" style={{ color: 'var(--text-muted)' }}>{isHe ? analysis.kh_analysis.advice_he : analysis.kh_analysis.advice_en}</div>
+                {analysis.kh_analysis.tax_if_withdraw_now !== undefined && (
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <div className="text-center rounded-lg p-2" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? 'תשלום מס עכשיו' : 'Tax if leave now'}</div>
+                      <div className="font-bold text-sm" style={{ color: '#ef4444' }}>₪{fmt(analysis.kh_analysis.tax_if_withdraw_now)}</div>
+                    </div>
+                    <div className="text-center rounded-lg p-2" style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? 'פדיון אחרי 6 שנה' : 'Withdrawal after 6y'}</div>
+                      <div className="font-bold text-sm" style={{ color: '#10b981' }}>₪{fmt(analysis.kh_analysis.withdrawal_net_if_wait || 0)}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Pension products */}
+            {analysis.pension_analysis.length > 0 && (
+              <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                <h3 className="font-semibold text-sm mb-3">🏛️ {isHe ? 'מוצרי פנסיה' : 'Pension Products'}</h3>
+                <div className="space-y-3">
+                  {analysis.pension_analysis.map((p, i) => (
+                    <div key={i} className="rounded-lg p-3" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                      <div className="font-medium text-sm mb-1">{p.name_he} — ₪{fmt(p.value)}</div>
+                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? p.strategy_he : p.strategy_en}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Exit tax */}
+            <div className="rounded-xl p-4" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)' }}>
+              <h3 className="font-semibold text-sm mb-2" style={{ color: '#f59e0b' }}>⚠️ {tr.israelExitTax}</h3>
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                <div className="text-center rounded-lg p-2" style={{ background: 'var(--surface)' }}>
+                  <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? 'רווח לא ממומש' : 'Unrealized gain'}</div>
+                  <div className="font-bold">${fmt(analysis.exit_tax_analysis.unrealized_gain_estimate)}</div>
+                </div>
+                <div className="text-center rounded-lg p-2" style={{ background: 'rgba(239,68,68,0.08)' }}>
+                  <div className="text-xs" style={{ color: '#ef4444' }}>{isHe ? 'מס יציאה (25%)' : 'Exit tax (25%)'}</div>
+                  <div className="font-bold" style={{ color: '#ef4444' }}>${fmt(analysis.exit_tax_analysis.exit_tax_estimate)}</div>
+                </div>
+              </div>
+              <div className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>{isHe ? 'אפשרויות דחייה:' : 'Deferral options:'}</div>
+              <div className="space-y-1">
+                {(isHe ? analysis.exit_tax_analysis.deferral_options_he : analysis.exit_tax_analysis.deferral_options_en).map((opt, i) => (
+                  <div key={i} className="text-xs rounded p-1.5" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>{opt}</div>
+                ))}
+              </div>
+              <div className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>{isHe ? analysis.exit_tax_analysis.note_he : analysis.exit_tax_analysis.note_en}</div>
+            </div>
+
+            {/* Residency risks */}
+            {analysis.residency_risks.length > 0 && (
+              <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                <h3 className="font-semibold text-sm mb-2">🔍 {tr.israelResidencyRisks}</h3>
+                <div className="space-y-2">
+                  {analysis.residency_risks.map((r, i) => (
+                    <div key={i} className="text-sm rounded-lg p-2.5 flex items-start gap-2"
+                      style={{ background: 'var(--surface)', border: `1px solid ${severityColor(r.severity)}33` }}>
+                      <span style={{ color: severityColor(r.severity) }}>{r.severity === 'high' ? '🔴' : '🟡'}</span>
+                      <span>{isHe ? r.text_he : r.text_en}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Step 2: Country recommendations */}
+        {step === 2 && analysis && (
+          <div className="space-y-3">
+            <div className="text-xs font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>
+              {isHe ? 'מדינות מומלצות לישראלים — ממוינות לפי פרופיל שלך' : 'Recommended countries for Israelis — sorted by your profile'}
+            </div>
+            {analysis.country_recommendations.map((c, i) => (
+              <div key={c.code} className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                      style={{ background: i === 0 ? '#f59e0b' : 'var(--surface)', color: i === 0 ? 'white' : 'var(--text-muted)', border: '1px solid var(--border)' }}>
+                      {i + 1}
+                    </span>
+                    <div>
+                      <span className="font-bold">{isHe ? c.name : c.name_en}</span>
+                      {i === 0 && <span className="ml-2 text-xs px-1.5 py-0.5 rounded-full font-medium" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b' }}>⭐ {isHe ? 'מומלץ' : 'Recommended'}</span>}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-lg" style={{ color: 'var(--accent)' }}>{c.adjusted_score}</div>
+                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? 'ציון' : 'score'}</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3 text-xs">
+                  <div className="rounded p-1.5 text-center" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                    <div style={{ color: 'var(--text-muted)' }}>{tr.israelFlightHours}</div>
+                    <div className="font-medium">✈️ {c.flight_hours}h</div>
+                  </div>
+                  <div className="rounded p-1.5 text-center" style={{ background: c.treaty_with_israel ? 'rgba(16,185,129,0.07)' : 'rgba(239,68,68,0.07)', border: `1px solid ${c.treaty_with_israel ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)'}` }}>
+                    <div style={{ color: 'var(--text-muted)' }}>{tr.israelTreaty}</div>
+                    <div className="font-medium" style={{ color: c.treaty_with_israel ? '#10b981' : '#ef4444' }}>
+                      {c.treaty_with_israel ? '✓' : '✗'}
+                    </div>
+                  </div>
+                  <div className="rounded p-1.5 text-center col-span-2" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                    <div style={{ color: 'var(--text-muted)' }}>{tr.israelCommunity}</div>
+                    <div className="font-medium">{isHe ? c.israeli_community : c.israeli_community_en}</div>
+                  </div>
+                </div>
+
+                <div className="text-xs space-y-1.5">
+                  <div className="rounded p-2" style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                    <span className="font-medium" style={{ color: '#10b981' }}>💰 {tr.israelTaxBenefit}: </span>
+                    {isHe ? c.tax_benefit : c.tax_benefit_en}
+                  </div>
+                  <div className="rounded p-2" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                    <span className="font-medium">📋 {tr.israelResidencyReq}: </span>
+                    {isHe ? c.residency_req : c.residency_req_en}
+                  </div>
+                </div>
+
+                <div className="mt-3 flex gap-2 flex-wrap">
+                  {c.pros.slice(0, 3).map((p, pi) => (
+                    <span key={pi} className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      ✓ {p}
+                    </span>
+                  ))}
+                  {c.cons.slice(0, 2).map((con, ci) => (
+                    <span key={ci} className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(239,68,68,0.08)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.15)' }}>
+                      − {con}
+                    </span>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => onAsk(isHe
+                    ? `ספר לי יותר על מעבר לגור ב${c.name} כתושב מס ישראלי עם הפרופיל שלי. מה הדרישות המדויקות לתושבות מס, מה האמנה עם ישראל אומרת, ואיך זה עובד בפועל?`
+                    : `Tell me more about relocating to ${c.name_en} as an Israeli tax resident with my profile. What are the exact tax residency requirements, what does the Israel tax treaty say, and how does it work in practice?`)}
+                  className="mt-3 w-full py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80"
+                  style={{ background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px solid var(--border)' }}>
+                  {isHe ? `שאל AI על ${c.name} →` : `Ask AI about ${c.name_en} →`}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Step 3: Action checklist */}
+        {step === 3 && analysis && (
+          <div className="space-y-2">
+            <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
+              {isHe ? 'סמן כל שלב שביצעת:' : 'Check each step as you complete it:'}
+            </div>
+            {analysis.exit_process.map(item => (
+              <div key={item.step}
+                className="rounded-xl p-3 transition-all cursor-pointer"
+                style={{
+                  background: checklist[item.step] ? 'rgba(16,185,129,0.07)' : 'var(--surface-2)',
+                  border: `1px solid ${checklist[item.step] ? 'rgba(16,185,129,0.25)' : 'var(--border)'}`,
+                  opacity: checklist[item.step] ? 0.7 : 1,
+                }}
+                onClick={() => setChecklist(c => ({ ...c, [item.step]: !c[item.step] }))}>
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                    style={{
+                      background: checklist[item.step] ? '#10b981' : 'var(--surface)',
+                      color: checklist[item.step] ? 'white' : 'var(--text-muted)',
+                      border: `1px solid ${checklist[item.step] ? '#10b981' : 'var(--border)'}`,
+                    }}>
+                    {checklist[item.step] ? '✓' : item.step}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs px-1.5 py-0.5 rounded font-medium"
+                        style={{ background: 'var(--surface)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
+                        {item.category}
+                      </span>
+                      <span className="font-medium text-sm" style={{ textDecoration: checklist[item.step] ? 'line-through' : 'none' }}>
+                        {isHe ? item.title_he : item.title_en}
+                      </span>
+                    </div>
+                    <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+                      {isHe ? item.detail_he : item.detail_en}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div className="rounded-xl p-3 text-center mt-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              <div className="font-bold text-lg" style={{ color: 'var(--accent)' }}>
+                {Object.values(checklist).filter(Boolean).length} / {analysis.exit_process.length}
+              </div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                {isHe ? 'שלבים הושלמו' : 'steps completed'}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function AdvisorPage() {
   const [lang, setLang] = useState<Lang>('he');
@@ -781,6 +1146,7 @@ export default function AdvisorPage() {
   const [showSavings, setShowSavings] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showExitTax, setShowExitTax] = useState(false);
+  const [showIsraelWizard, setShowIsraelWizard] = useState(false);
   const [planMode, setPlanMode] = useState(false);
   const [savingsData, setSavingsData] = useState<SavingsAnalysis | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<{ code: string; row: Parameters<typeof CountryDetailModal>[0]['savingsRow'] } | null>(null);
@@ -991,11 +1357,16 @@ export default function AdvisorPage() {
             <TrendingDown size={14} />
             {tr.savings}
           </button>
-          <button onClick={() => { setShowExitTax(!showExitTax); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { setShowExitTax(!showExitTax); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowIsraelWizard(false); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showExitTax ? 'var(--accent-glow)' : 'var(--surface-2)', color: showExitTax ? 'var(--accent)' : 'var(--text-muted)', border: showExitTax ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Calculator size={14} />
             {tr.exitTaxCalc}
+          </button>
+          <button onClick={() => { setShowIsraelWizard(!showIsraelWizard); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showIsraelWizard ? 'var(--accent-glow)' : 'var(--surface-2)', color: showIsraelWizard ? 'var(--accent)' : 'var(--text-muted)', border: showIsraelWizard ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            🇮🇱 {tr.israelWizard}
           </button>
           <button onClick={() => setShowHistory(!showHistory)}
             className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
@@ -1086,6 +1457,11 @@ export default function AdvisorPage() {
         {showExitTax && (
           <ExitTaxPanel lang={lang} profile={profile} savingsData={savingsData}
             onClose={() => setShowExitTax(false)} />
+        )}
+        {showIsraelWizard && (
+          <IsraelExitWizard lang={lang} profile={profile}
+            onAsk={msg => { sendMessage(msg); setShowIsraelWizard(false); }}
+            onClose={() => setShowIsraelWizard(false)} />
         )}
 
         {/* Messages */}
