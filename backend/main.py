@@ -16,8 +16,9 @@ app = FastAPI(title="Tax Master AI", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
-    allow_credentials=True,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", os.getenv("FRONTEND_URL", "")],
+    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -684,7 +685,370 @@ ISRAEL_COUNTRY_RANKING = [
         "pros": ["עלות מחיה נמוכה", "קהילה ישראלית", "אמנה עם ישראל", "פטור מס"],
         "cons": ["רחוק", "שפה", "בנקאות", "לא EU"],
     },
+    {
+        "code": "SPAIN", "name": "ספרד", "name_en": "Spain",
+        "score": 85,
+        "treaty_with_israel": True,
+        "flight_hours": 5.0,
+        "israeli_community": "גדולה מאוד — ברצלונה, מדריד",
+        "israeli_community_en": "Very large — Barcelona, Madrid",
+        "tax_benefit": "חוק בקהם: 24% flat tax על הכנסות עד €600K למשך 6 שנים. הכנסות זרות פטורות.",
+        "tax_benefit_en": "Beckham Law: 24% flat on income up to €600K for 6 years. Foreign income exempt.",
+        "residency_req": "183 ימים. לא גר בספרד 5 השנים האחרונות",
+        "residency_req_en": "183 days. Not resident in Spain last 5 years",
+        "min_investment": "אין — נדרש רק העברת מגורים",
+        "pros": ["קהילה ישראלית ענקית", "EU + דרכון", "24% flat לשש שנים", "אמנה עם ישראל", "איכות חיים גבוהה"],
+        "cons": ["אחרי 6 שנים — מס גבוה עד 47%", "מס עושר", "יוקר מחיה בברצלונה/מדריד"],
+    },
+    {
+        "code": "BULGARIA", "name": "בולגריה", "name_en": "Bulgaria",
+        "score": 88,
+        "treaty_with_israel": True,
+        "flight_hours": 2.5,
+        "israeli_community": "בינונית-גדולה — סופיה",
+        "israeli_community_en": "Medium-large — Sofia",
+        "tax_benefit": "10% flat על הכל — מס ההכנסה הנמוך ביותר ב-EU. 5% דיבידנדים.",
+        "tax_benefit_en": "10% flat on everything — lowest income tax in EU. 5% dividends.",
+        "residency_req": "183 ימים",
+        "residency_req_en": "183 days",
+        "min_investment": "אין השקעה מינימלית נדרשת",
+        "pros": ["EU + דרכון", "10% מס הכנסה", "5% דיבידנד", "עלות מחיה נמוכה מאוד", "אמנה עם ישראל"],
+        "cons": ["שפה (בולגרית)", "תשתיות", "ביורוקרטיה EU"],
+        "citizenship_bonus": "בעל דרכון רומני יכול לגור בבולגריה כאזרח EU ללא צורך בויזה נפרדת",
+    },
+    {
+        "code": "ROMANIA", "name": "רומניה", "name_en": "Romania",
+        "score": 80,
+        "treaty_with_israel": True,
+        "flight_hours": 3.0,
+        "israeli_community": "קטנה — בוקרשט",
+        "israeli_community_en": "Small — Bucharest",
+        "tax_benefit": "10% flat tax, מיקרו-חברה 1-3%, ללא מס ירושה, ללא מס עושר",
+        "tax_benefit_en": "10% flat tax, micro-company 1-3%, no inheritance tax, no wealth tax",
+        "residency_req": "183 ימים",
+        "residency_req_en": "183 days",
+        "min_investment": "אין",
+        "pros": ["EU + דרכון רומני", "10% מס", "מיקרו-חברה 1%", "אמנה עם ישראל", "דרכון ע\"פ מוצא זמין"],
+        "cons": ["תשתיות", "ביורוקרטיה", "שפה"],
+        "citizenship_note": "אזרחות רומנית זמינה ע\"פ מוצא — נכד/ילד של יוצא רומניה. מעניקה דרכון EU מלא. ניתן להחזיק בנוסף לאזרחות ישראלית.",
+    },
+    {
+        "code": "HUNGARY", "name": "הונגריה", "name_en": "Hungary",
+        "score": 75,
+        "treaty_with_israel": True,
+        "flight_hours": 3.0,
+        "israeli_community": "בינונית — בודפשט",
+        "israeli_community_en": "Medium — Budapest",
+        "tax_benefit": "15% flat tax, 9% מס חברות (הנמוך ב-EU), ללא מס ירושה",
+        "tax_benefit_en": "15% flat, 9% corporate (EU lowest), no inheritance tax",
+        "residency_req": "183 ימים",
+        "residency_req_en": "183 days",
+        "min_investment": "אין",
+        "pros": ["EU + דרכון", "15% flat", "9% חברות", "קהילה ישראלית היסטורית", "אמנה עם ישראל"],
+        "cons": ["27% מע\"מ", "פוליטיקה", "שפה"],
+    },
+    {
+        "code": "URUGUAY", "name": "אורוגוואי", "name_en": "Uruguay",
+        "score": 73,
+        "treaty_with_israel": False,
+        "flight_hours": 14,
+        "israeli_community": "גדולה מאוד — מונטווידאו",
+        "israeli_community_en": "Very large — Montevideo",
+        "tax_benefit": "0% על הכנסות זרות ל-10 שנים (territorial option). אחרי 10 שנים — 7% בלבד.",
+        "tax_benefit_en": "0% on foreign income for 10 years (territorial option). After 10 years — only 7%.",
+        "residency_req": "ללא מינימום ימים! נדרש מגורים בלבד",
+        "residency_req_en": "No minimum days! Just establish residence",
+        "min_investment": "$380K נדל\"ן או $1.7M השקעה, או אין — בקשה רגילה",
+        "pros": ["0% מס זר 10 שנים", "קהילה ישראלית ענקית", "דרכון שלישי (5 שנים)", "דמוקרטיה יציבה", "קל לברזילאים (MERCOSUR)"],
+        "cons": ["רחוק מישראל", "אין אמנה", "מטבע מקומי"],
+        "citizenship_bonus": "אזרחי ברזיל מקבלים תושבות אורוגוואי בקלות דרך הסכם MERCOSUR. נתיב מהיר לדרכון שלישי.",
+    },
+    {
+        "code": "MEXICO", "name": "מקסיקו", "name_en": "Mexico",
+        "score": 70,
+        "treaty_with_israel": True,
+        "flight_hours": 13,
+        "israeli_community": "גדולה — מקסיקו סיטי, תל אביב של מקסיקו (פולנקו)",
+        "israeli_community_en": "Large — Mexico City, Polanco neighborhood",
+        "tax_benefit": "הכנסות זרות — לא חייבות במס ברוב המקרים (territorial בפועל)",
+        "tax_benefit_en": "Foreign income untaxed in most cases (territorial in practice)",
+        "residency_req": "183 ימים, או תושבות זמנית 1-4 שנים",
+        "residency_req_en": "183 days, or temporary residency 1-4 years",
+        "min_investment": "אין",
+        "pros": ["0% על הכנסות זרות", "קהילה ישראלית גדולה", "אמנה עם ישראל", "עלות מחיה נמוכה"],
+        "cons": ["ביטחון", "ביורוקרטיה", "רחוק מישראל"],
+    },
+    {
+        "code": "BAHRAIN", "name": "בחריין", "name_en": "Bahrain",
+        "score": 86,
+        "treaty_with_israel": False,
+        "flight_hours": 2.5,
+        "israeli_community": "גוברת — בעקבות הסכמי אברהם",
+        "israeli_community_en": "Growing — following Abraham Accords",
+        "tax_benefit": "0% מס הכנסה. 0% רווחי הון. 0% דיבידנד. 10% מע\"מ בלבד.",
+        "tax_benefit_en": "0% income tax. 0% capital gains. 0% dividends. Only 10% VAT.",
+        "residency_req": "ויזת תושבות זהב, ויזת משקיע, או חברה מקומית",
+        "residency_req_en": "Golden Residency Visa, investor visa, or local company",
+        "min_investment": "משתנה לפי סוג הויזה",
+        "pros": ["אפס מס", "הסכמי אברהם (2020) — ישראלים מוזמנים", "טיסות ישירות מת\"א", "קרוב לישראל", "Gulf lifestyle"],
+        "cons": ["לא חתם אמנת מס עם ישראל (עדיין)", "מדינה קטנה"],
+        "israel_note": "בחריין חתמה על הסכמי אברהם 2020. יחסים עם ישראל מנורמלים. טיסות ישירות. ישראלים מוזמנים לגור ולהשקיע.",
+    },
+    {
+        "code": "ANDORRA", "name": "אנדורה", "name_en": "Andorra",
+        "score": 82,
+        "treaty_with_israel": False,
+        "flight_hours": 5.0,
+        "israeli_community": "קטנה אך גוברת",
+        "israeli_community_en": "Small but growing",
+        "tax_benefit": "0-10% מס הכנסה (0% עד €24K). 0% רווחי הון. 0% דיבידנד. 0% ירושה.",
+        "tax_benefit_en": "0-10% income tax (0% up to €24K). 0% CGT. 0% dividends. 0% inheritance.",
+        "residency_req": "183 ימים בשנה. תושבות פסיבית: €400K נדל\"ן",
+        "residency_req_en": "183 days/year. Passive residency: €400K real estate",
+        "min_investment": "תושבות פסיבית: €400K נדל\"ן",
+        "pros": ["10% מס מקסימלי", "0% רווחי הון + דיבידנד + ירושה", "3 שעות מברצלונה", "בנקאות מעולה", "פרטיות"],
+        "cons": ["לא EU", "אין אמנה עם ישראל", "קטנה", "183 יום חובה"],
+    },
+    {
+        "code": "AUSTRIA", "name": "אוסטריה", "name_en": "Austria",
+        "score": 65,
+        "treaty_with_israel": True,
+        "flight_hours": 3.5,
+        "israeli_community": "גדולה מאוד — וינה",
+        "israeli_community_en": "Very large — Vienna",
+        "tax_benefit": "27.5% KeSt flat על הכנסות הון. ללא מס ירושה. ללא מס עושר.",
+        "tax_benefit_en": "27.5% KeSt flat on investment income. No inheritance tax. No wealth tax.",
+        "residency_req": "183 ימים",
+        "residency_req_en": "183 days",
+        "min_investment": "אין",
+        "pros": ["EU + דרכון", "קהילה ישראלית ענקית בוינה", "אמנה עם ישראל", "ללא מס ירושה/עושר", "איכות חיים גבוהה"],
+        "cons": ["מס שולי 55%", "יוקר מחיה", "שפה גרמנית"],
+    },
+    {
+        "code": "NEW_ZEALAND", "name": "ניו זילנד", "name_en": "New Zealand",
+        "score": 68,
+        "treaty_with_israel": False,
+        "flight_hours": 24,
+        "israeli_community": "קטנה",
+        "israeli_community_en": "Small",
+        "tax_benefit": "4 שנות Transitional Resident: פטור ממס על רוב ההכנסות הזרות. 0% CGT.",
+        "tax_benefit_en": "4-year Transitional Resident: exempt from most foreign income tax. 0% CGT.",
+        "residency_req": "לא גר בNZ 10 שנים האחרונות",
+        "residency_req_en": "Not resident in NZ last 10 years",
+        "min_investment": "אין",
+        "pros": ["4 שנות פטור על הכנסות זרות", "0% CGT", "שלטון חוק חזק", "אנגלית", "איכות חיים"],
+        "cons": ["רחוק מישראל", "אין אמנה עם ישראל", "אחרי 4 שנים — מס גבוה"],
+    },
 ]
+
+
+# ─── Company Optimizer ────────────────────────────────────────────────────────
+COMPANY_JURISDICTIONS = [
+    {
+        "code": "CYPRUS", "flag": "🇨🇾", "name_he": "קפריסין", "name_en": "Cyprus",
+        "corp_tax": 0.125, "dividend_nondom": 0.0, "dividend_standard": 0.17,
+        "effective_nondom": 0.125, "effective_standard": 0.2735,
+        "setup_cost_usd": 2500, "annual_cost_usd": 2000,
+        "eu": True, "treaty_israel": True, "banking": "good",
+        "e_residency": False, "substance_required": True,
+        "notes_he": "12.5% מס חברות. Non-dom: 0% דיבידנד. מחייב substance אמיתי (מנהל מקומי + פגישות בקפריסין). חברת אחזקה EU מצוינת.",
+        "notes_en": "12.5% corporate. Non-dom: 0% dividends. Requires genuine substance (local director + board meetings in Cyprus). Excellent EU holding.",
+        "best_for_he": ["דיגיטל", "IP", "אחזקות", "ייעוץ"],
+        "best_for_en": ["Digital", "IP holding", "Holdings", "Consulting"],
+    },
+    {
+        "code": "ESTONIA", "flag": "🇪🇪", "name_he": "אסטוניה", "name_en": "Estonia",
+        "corp_tax": 0.0, "corp_tax_distribution": 0.20,
+        "dividend_nondom": 0.20, "dividend_standard": 0.20,
+        "effective_nondom": 0.20, "effective_standard": 0.20,
+        "setup_cost_usd": 500, "annual_cost_usd": 600,
+        "eu": True, "treaty_israel": True, "banking": "good",
+        "e_residency": True, "substance_required": False,
+        "notes_he": "0% על רווחים שמורים — מס 20% רק בחלוקת דיבידנד. e-Residency: ניהול מרחוק 100%. אידיאלי לצבירת הון ורינוסטמנט.",
+        "notes_en": "0% on retained earnings — 20% tax only on dividend distribution. e-Residency: 100% remote management. Ideal for capital accumulation.",
+        "best_for_he": ["ריינוסטמנט", "סטארטאפ", "דיגיטל", "צבירת הון"],
+        "best_for_en": ["Reinvestment", "Startup", "Digital", "Capital accumulation"],
+    },
+    {
+        "code": "BULGARIA", "flag": "🇧🇬", "name_he": "בולגריה", "name_en": "Bulgaria",
+        "corp_tax": 0.10, "dividend_nondom": 0.05, "dividend_standard": 0.05,
+        "effective_nondom": 0.145, "effective_standard": 0.145,
+        "setup_cost_usd": 800, "annual_cost_usd": 800,
+        "eu": True, "treaty_israel": True, "banking": "good",
+        "e_residency": False, "substance_required": False,
+        "notes_he": "10% מס חברות + 5% דיבידנד = 14.5% effective. הכי נמוך ב-EU. פשוט לניהול. אידיאלי עם דרכון EU/רומני.",
+        "notes_en": "10% corp + 5% dividend = 14.5% effective. Lowest in EU. Simple management. Ideal with EU/Romanian passport.",
+        "best_for_he": ["כל עסק", "EU", "פשטות", "דרכון רומני"],
+        "best_for_en": ["Any business", "EU base", "Simplicity", "Romanian passport"],
+    },
+    {
+        "code": "UAE", "flag": "🇦🇪", "name_he": "UAE (Free Zone)", "name_en": "UAE (Free Zone)",
+        "corp_tax": 0.0, "dividend_nondom": 0.0, "dividend_standard": 0.0,
+        "effective_nondom": 0.0, "effective_standard": 0.0,
+        "setup_cost_usd": 5000, "annual_cost_usd": 4000,
+        "eu": False, "treaty_israel": True, "banking": "excellent",
+        "e_residency": False, "substance_required": True,
+        "notes_he": "0% בFree Zone. 9% Mainland (מעל AED 375K). בנקאות מצוינת. מחייב ויזת תושבות (~$550K השקעה). אמנה עם ישראל (2022).",
+        "notes_en": "0% in Free Zone. 9% mainland (>AED 375K profit). Excellent banking. Requires residency visa. Israel treaty (2022).",
+        "best_for_he": ["trading", "קריפטו", "שירותים", "0% מס"],
+        "best_for_en": ["Trading", "Crypto", "Services", "Zero tax"],
+    },
+    {
+        "code": "GEORGIA_VZ", "flag": "🇬🇪", "name_he": "גיאורגיה (Virtual Zone)", "name_en": "Georgia (Virtual Zone)",
+        "corp_tax": 0.0, "dividend_nondom": 0.05, "dividend_standard": 0.05,
+        "effective_nondom": 0.05, "effective_standard": 0.05,
+        "setup_cost_usd": 300, "annual_cost_usd": 500,
+        "eu": False, "treaty_israel": False, "banking": "moderate",
+        "e_residency": False, "substance_required": False,
+        "notes_he": "Virtual Zone: 0% על הכנסות זרות מIT/גיימינג/ייעוץ. 5% דיבידנד. עלות נמוכה מאוד. ⚠️ אין אמנת מס עם ישראל.",
+        "notes_en": "Virtual Zone: 0% on foreign income from IT/gaming/consulting. 5% dividend. Very low cost. ⚠️ No Israel treaty.",
+        "best_for_he": ["IT", "גיימינג", "ייעוץ", "עלות נמוכה"],
+        "best_for_en": ["IT", "Gaming", "Consulting", "Low cost"],
+    },
+    {
+        "code": "ROMANIA_MICRO", "flag": "🇷🇴", "name_he": "רומניה (מיקרו-חברה)", "name_en": "Romania (Micro-company)",
+        "corp_tax": 0.01, "dividend_nondom": 0.08, "dividend_standard": 0.08,
+        "effective_nondom": 0.0892, "effective_standard": 0.0892,
+        "setup_cost_usd": 500, "annual_cost_usd": 600,
+        "eu": True, "treaty_israel": True, "banking": "good",
+        "e_residency": False, "substance_required": False,
+        "notes_he": "מיקרו-חברה: 1% על מחזור (עד €500K, עובד אחד+). 8% דיבידנד. EU. אידיאלי עם דרכון רומני.",
+        "notes_en": "Micro-company: 1% on turnover (up to €500K, 1+ employee). 8% dividend. EU. Ideal with Romanian passport.",
+        "best_for_he": ["EU", "מחזור נמוך-בינוני", "דרכון רומני"],
+        "best_for_en": ["EU", "Low-medium turnover", "Romanian passport"],
+    },
+    {
+        "code": "HUNGARY", "flag": "🇭🇺", "name_he": "הונגריה", "name_en": "Hungary",
+        "corp_tax": 0.09, "dividend_nondom": 0.15, "dividend_standard": 0.15,
+        "effective_nondom": 0.2265, "effective_standard": 0.2265,
+        "setup_cost_usd": 1000, "annual_cost_usd": 1000,
+        "eu": True, "treaty_israel": True, "banking": "good",
+        "e_residency": False, "substance_required": False,
+        "notes_he": "9% מס חברות — הכי נמוך ב-EU. 15% דיבידנד. EU. פשוט להקמה. אידיאלי לחברות שמחלקות דיבידנד.",
+        "notes_en": "9% corporate — EU lowest. 15% dividend. EU member. Simple to set up. Ideal for dividend-paying companies.",
+        "best_for_he": ["EU", "holding", "כל עסק"],
+        "best_for_en": ["EU", "Holding", "Any business"],
+    },
+    {
+        "code": "SINGAPORE", "flag": "🇸🇬", "name_he": "סינגפור", "name_en": "Singapore",
+        "corp_tax": 0.17, "dividend_nondom": 0.0, "dividend_standard": 0.0,
+        "effective_nondom": 0.17, "effective_standard": 0.17,
+        "setup_cost_usd": 2500, "annual_cost_usd": 2000,
+        "eu": False, "treaty_israel": True, "banking": "excellent",
+        "e_residency": False, "substance_required": True,
+        "notes_he": "17% מס חברות. 0% דיבידנד (one-tier). טריטוריאלי. בנקאות מעולה. אמנה עם ישראל. מחייב מנהל מקומי.",
+        "notes_en": "17% corporate. 0% dividend (one-tier). Territorial. Excellent banking. Israel treaty. Local director required.",
+        "best_for_he": ["Asia-Pacific", "trading", "fintech"],
+        "best_for_en": ["Asia-Pacific", "Trading", "Fintech"],
+    },
+    {
+        "code": "PANAMA", "flag": "🇵🇦", "name_he": "פנמה", "name_en": "Panama",
+        "corp_tax": 0.0, "dividend_nondom": 0.10, "dividend_standard": 0.10,
+        "effective_nondom": 0.10, "effective_standard": 0.10,
+        "setup_cost_usd": 1500, "annual_cost_usd": 1200,
+        "eu": False, "treaty_israel": False, "banking": "moderate",
+        "e_residency": False, "substance_required": False,
+        "notes_he": "מערכת טריטוריאלית: 0% על הכנסות מחוץ לפנמה. 10% דיבידנד. ⚠️ אין אמנה עם ישראל.",
+        "notes_en": "Territorial: 0% on foreign-source income. 10% dividend. ⚠️ No Israel treaty.",
+        "best_for_he": ["טריטוריאלי", "trading"],
+        "best_for_en": ["Territorial", "Trading"],
+    },
+]
+
+COST_OF_LIVING_INDEX = {
+    "ISRAEL": 100, "UAE": 95, "CYPRUS": 70, "PORTUGAL": 65, "SPAIN": 78,
+    "GEORGIA": 38, "BULGARIA": 43, "ROMANIA": 40, "HUNGARY": 50, "GREECE": 65,
+    "MALTA": 72, "THAILAND": 37, "MALAYSIA": 40, "PANAMA": 55, "URUGUAY": 62,
+    "MEXICO": 48, "BRAZIL": 52, "ANDORRA": 82, "BAHRAIN": 88, "AUSTRIA": 102,
+    "GERMANY": 108, "FRANCE": 100, "SWITZERLAND": 145, "UK": 108, "USA": 100,
+    "CANADA": 98, "AUSTRALIA": 108, "SINGAPORE": 112, "HONG_KONG": 118,
+    "MONACO": 195, "CAYMAN": 135, "IRELAND": 112, "NETHERLANDS": 108,
+    "ITALY": 85, "ESTONIA": 55, "PARAGUAY": 38, "SERBIA": 40,
+    "NEW_ZEALAND": 102, "JAPAN": 92, "COSTA_RICA": 55,
+}
+
+TAX_UPDATES_FEED = [
+    {"date": "2026-03", "country": "ISRAEL", "type": "alert",
+     "he": "ועדת רבינוביץ': הצעה להעלאת מס יציאה מ-25% ל-33% על נכסים מעל $3M. טרם אושר בכנסת.",
+     "en": "Rabinovitch Committee: proposal to raise exit tax from 25% to 33% on assets over $3M. Not yet approved by Knesset."},
+    {"date": "2025-12", "country": "UAE", "type": "positive",
+     "he": "אמנת מס ישראל-UAE נכנסה לתוקף מלא. דיבידנדים: 0-5%. ריבית: 0%. רווחי הון: 0%.",
+     "en": "Israel-UAE tax treaty fully in force. Dividends: 0-5%. Interest: 0%. Capital gains: 0%."},
+    {"date": "2025-10", "country": "UK", "type": "change",
+     "he": "Non-Dom בוטל. משטר FIG (4 שנות פטור) פעיל לכל עולים חדשים לבריטניה.",
+     "en": "Non-Dom abolished. FIG regime (4-year foreign income exemption) active for all new UK arrivals."},
+    {"date": "2025-09", "country": "PORTUGAL", "type": "change",
+     "he": "IFICI (יורש NHR): 20% flat על הכנסות זכאיות ל-10 שנים. הכנסות זרות: חלקית פטורות.",
+     "en": "IFICI (NHR successor): 20% flat on eligible income for 10 years. Foreign income: partially exempt."},
+    {"date": "2025-07", "country": "SPAIN", "type": "alert",
+     "he": "ספרד מציעה מס עושר פדרלי קבוע 0.5-3.5%. ממשלות אזוריות עלולות לאבד פטורים.",
+     "en": "Spain proposes permanent federal wealth tax 0.5-3.5%. Regional exemptions may be canceled."},
+    {"date": "2025-06", "country": "CYPRUS", "type": "positive",
+     "he": "קפריסין הבהירה: קריפטו לnon-dom — 0% CGT, 0% הכנסה. ממשיך לחול.",
+     "en": "Cyprus clarified: crypto for non-dom — 0% CGT, 0% income tax. Continues to apply."},
+    {"date": "2025-04", "country": "GEORGIA", "type": "change",
+     "he": "גיאורגיה מחמירה כללי VHB: נדרשת הכנסה פסיבית מינימלית $50K/שנה להוכחת קשר כלכלי.",
+     "en": "Georgia tightening VHB rules: minimum $50K/year passive income required to prove economic ties."},
+    {"date": "2025-03", "country": "THAILAND", "type": "change",
+     "he": "תאילנד: הכנסות זרות שהועברו — חייבות במס גם משנים קודמות. LTV visa: 0.17% flat נשאר.",
+     "en": "Thailand: foreign income remitted now taxable from prior years. LTV visa: 0.17% flat remains."},
+    {"date": "2025-01", "country": "BAHRAIN", "type": "positive",
+     "he": "בחריין פתחה נציגות מסחרית ישראלית. קהילה ישראלית עסקית גוברת. טיסות El Al ישירות.",
+     "en": "Bahrain opened Israeli commercial representation. Growing Israeli business community. Direct El Al flights."},
+    {"date": "2024-11", "country": "BULGARIA", "type": "positive",
+     "he": "בולגריה: 10% flat + 5% דיבידנד נשארים ללא שינוי. אין עדכוני מס מתוכננים עד 2028.",
+     "en": "Bulgaria: 10% flat + 5% dividend unchanged. No tax updates planned until 2028."},
+    {"date": "2024-09", "country": "ROMANIA", "type": "change",
+     "he": "רומניה: דיבידנד עלה מ-5% ל-8% (אוגוסט 2023). מיקרו-חברה 1% נשאר. EU passport יתרון.",
+     "en": "Romania: dividend rose from 5% to 8% (August 2023). Micro-company 1% unchanged. EU passport advantage."},
+]
+
+
+class CompanyReq(BaseModel):
+    annual_profit_usd: float = 100000
+    owner_is_nondom: bool = True
+    prefer_eu: bool = False
+
+
+@app.post("/api/company")
+async def company_optimizer(req: CompanyReq):
+    """Compare company structures across jurisdictions."""
+    profit = req.annual_profit_usd
+    results = []
+    for j in COMPANY_JURISDICTIONS:
+        rate = j["effective_nondom"] if req.owner_is_nondom else j["effective_standard"]
+        # Estonia: 0% until distribution — show deferred vs distributed
+        if j["code"] == "ESTONIA":
+            net_retained = profit  # tax deferred
+            net_distributed = profit * (1 - j["dividend_nondom"])
+            results.append({
+                **j,
+                "effective_rate": j["dividend_nondom"],
+                "net_profit_usd": round(net_distributed),
+                "net_retained_usd": round(net_retained),
+                "tax_paid_usd": round(profit - net_distributed),
+                "tax_if_retained": 0,
+                "score": 100 - (j["dividend_nondom"] * 100) + (10 if req.prefer_eu and j["eu"] else 0),
+            })
+        else:
+            net = profit * (1 - rate)
+            results.append({
+                **j,
+                "effective_rate": rate,
+                "net_profit_usd": round(net),
+                "net_retained_usd": round(net),
+                "tax_paid_usd": round(profit - net),
+                "score": 100 - (rate * 100) + (10 if req.prefer_eu and j["eu"] else 0)
+                         - (5 if j["substance_required"] else 0)
+                         + (3 if j["treaty_israel"] else 0),
+            })
+    results.sort(key=lambda x: -x["score"])
+    return {"results": results, "annual_profit": profit}
+
+
+@app.get("/api/tax-updates")
+async def tax_updates():
+    return {"updates": TAX_UPDATES_FEED}
 
 
 class IsraelReq(BaseModel):
@@ -817,12 +1181,20 @@ async def israel_analysis(request: IsraelReq):
     israel_annual_tax = estimate_tax("ISRAEL", israel_data, income, p) if israel_data else total_income * 0.35
 
     # ── Country recommendations ────────────────────────────────────────────────
-    # Adjust scores based on profile
+    has_romanian_citizenship = any(c.lower() in ("romania", "romanian", "ro", "רומניה") for c in citizenships)
+    has_brazilian_citizenship = any(c.lower() in ("brazil", "brazilian", "br", "ברזיל") for c in citizenships)
+    has_eu_citizenship = has_romanian_citizenship or any(
+        c.lower() in ("eu", "europe", "european", "malta", "cyprus", "portugal", "germany", "france", "greece", "spain", "austria", "hungary", "bulgaria", "ireland", "italy", "netherlands")
+        for c in citizenships
+    )
+
+    EU_COUNTRIES = {"CYPRUS", "MALTA", "PORTUGAL", "IRELAND", "SPAIN", "AUSTRIA", "BULGARIA", "ROMANIA", "HUNGARY", "GREECE", "GERMANY", "FRANCE", "NETHERLANDS", "ITALY", "ESTONIA"}
+
     scored_countries = []
     for c in ISRAEL_COUNTRY_RANKING:
         score = c["score"]
         # Prefer EU for family/kids
-        if family_in_israel and c["code"] in ("CYPRUS", "MALTA", "GREECE", "PORTUGAL"):
+        if family_in_israel and c["code"] in ("CYPRUS", "MALTA", "GREECE", "PORTUGAL", "SPAIN", "AUSTRIA", "HUNGARY", "BULGARIA", "ROMANIA"):
             score += 5
         # Boost treaty countries
         if c["treaty_with_israel"]:
@@ -833,6 +1205,16 @@ async def israel_analysis(request: IsraelReq):
         # Boost if Israeli community
         if "גדולה" in c.get("israeli_community", "") or "Very large" in c.get("israeli_community_en", ""):
             score += 4
+        # Romanian citizenship bonus: EU countries become much more accessible
+        if has_romanian_citizenship and c["code"] in EU_COUNTRIES:
+            score += 10  # EU passport = free residency in any EU country
+        # Brazilian citizenship bonus: South America countries easier
+        if has_brazilian_citizenship and c["code"] in ("URUGUAY", "MEXICO", "COSTA_RICA", "PANAMA"):
+            score += 8  # Mercosur + no-visa access
+        # EU passport holder: non-EU countries matter less for freedom of movement
+        if has_eu_citizenship and c["code"] in EU_COUNTRIES:
+            score += 5
+
         # Estimate annual tax in this country
         cdata = tax_country_data.get(c["code"], {})
         annual_tax = estimate_tax(c["code"], cdata, income, p) if cdata else None
@@ -847,8 +1229,23 @@ async def israel_analysis(request: IsraelReq):
 
     scored_countries.sort(key=lambda x: x["adjusted_score"], reverse=True)
 
+    # ── Citizenship-specific notes ─────────────────────────────────────────────
+    citizenship_notes = []
+    if has_romanian_citizenship:
+        citizenship_notes.append({
+            "priority": "high",
+            "text_he": "🇷🇴 יש לך (או יכול להיות לך) דרכון רומני = דרכון EU מלא. אתה יכול לגור ולעבוד בכל מדינת EU ללא ויזה נפרדת. הדירוג מעלה מדינות EU כמו בולגריה (10%), הונגריה (15%), קפריסין, ספרד.",
+            "text_en": "🇷🇴 Romanian passport = full EU passport. You can live/work in any EU country without separate visa. Rankings boosted for EU countries like Bulgaria (10%), Hungary (15%), Cyprus, Spain.",
+        })
+    if has_brazilian_citizenship:
+        citizenship_notes.append({
+            "priority": "high",
+            "text_he": "🇧🇷 דרכון ברזילאי: ברזיל אינה מטילה מס על פי אזרחות (בניגוד לארה\"ב). אזרח ברזילאי שאינו תושב ברזיל — אינו חייב במס ברזילאי על הכנסות זרות. אורוגוואי נגישה בקלות דרך MERCOSUR.",
+            "text_en": "🇧🇷 Brazilian passport: Brazil does NOT tax by citizenship (unlike USA). Brazilian citizen who is not Brazilian tax resident pays zero Brazilian tax on foreign income. Uruguay easily accessible via MERCOSUR.",
+        })
+
     # ── Optimal timing message ─────────────────────────────────────────────────
-    timing_messages = []
+    timing_messages = citizenship_notes.copy()
     if kh_years < 6 and kh_value > 0:
         timing_messages.append({"priority": "high", "text_he": f"חכה {6-kh_years:.1f} שנים נוספות לפדיון קרן השתלמות פטור ממס (חיסכון: ₪{kh_value*0.25:,.0f}).", "text_en": f"Wait {6-kh_years:.1f} more years for tax-free Keren Hishtalmut (saves ₪{kh_value*0.25:,.0f})."})
     if days_in_israel >= 120:
@@ -856,12 +1253,60 @@ async def israel_analysis(request: IsraelReq):
     if exit_tax_due > 100000:
         timing_messages.append({"priority": "medium", "text_he": f"מס יציאה משמעותי: ${exit_tax_due:,.0f}. שקול בחירת דחייה (סעיף 100א) לפי יחס ימי תושבות.", "text_en": f"Significant exit tax: ${exit_tax_due:,.0f}. Consider deferral election proportional to residency days."})
 
+    # ── Bituach Leumi (National Insurance) analysis ───────────────────────────
+    years_as_resident = int(ip.get("years_as_israeli_resident", 0) or 0)
+    OLD_AGE_PENSION_MONTHLY_ILS = 5500  # approx 2026 basic pension
+    # Qualification: 10+ years Israeli residency + age 67 (women 65)
+    bl_years_for_pension = max(0, 10 - years_as_resident)
+    bl_qualifies_old_age = years_as_resident >= 10
+    bl_pension_monthly = OLD_AGE_PENSION_MONTHLY_ILS if bl_qualifies_old_age else 0
+    # Partial pension: 1/40 for each qualifying year above minimum
+    if bl_qualifies_old_age and years_as_resident < 40:
+        bl_pension_monthly = round(OLD_AGE_PENSION_MONTHLY_ILS * (years_as_resident / 40))
+
+    bituach_leumi_analysis = {
+        "years_as_resident": years_as_resident,
+        "old_age_pension": {
+            "qualifies": bl_qualifies_old_age,
+            "monthly_ils": bl_pension_monthly,
+            "years_to_qualify": bl_years_for_pension,
+            "note_he": (
+                f"✅ זכאי לקצבת זקנה משוערת ₪{bl_pension_monthly:,.0f}/חודש (בגיל 67) — {years_as_resident} שנות תושבות."
+                if bl_qualifies_old_age else
+                f"⚠️ נדרשות עוד {bl_years_for_pension} שנות תושבות לזכאות קצבת זקנה (מינ' 10 שנים)."
+            ),
+            "note_en": (
+                f"✅ Eligible for estimated ₪{bl_pension_monthly:,.0f}/month old-age pension (at age 67) — {years_as_resident} residency years."
+                if bl_qualifies_old_age else
+                f"⚠️ Need {bl_years_for_pension} more residency years to qualify for old-age pension (min 10 years)."
+            ),
+        },
+        "healthcare": {
+            "warning_he": "עזיבת ישראל מסיימת חברות בקופת חולים. בחזרה לישראל — תקופת המתנה של 6 חודשים (ניתן לקצר ע\"י תשלום).",
+            "warning_en": "Leaving Israel terminates Kupat Holim membership. On return — 6-month waiting period (can be shortened by payment).",
+            "action_he": "הגש בקשה לסיום חברות לפני עזיבה. שמור אישור לצרכי חזרה עתידית.",
+            "action_en": "Submit termination request before departure. Keep confirmation for future return.",
+        },
+        "unemployment": {
+            "note_he": "דמי אבטלה: זכות שנצברה — פוקעת עם עזיבת ישראל. אין זכאות לקצבת אבטלה לתושב חוץ.",
+            "note_en": "Unemployment benefits: accrued right — lapses on departure. No unemployment eligibility for non-residents.",
+        },
+        "contributions_ongoing": {
+            "note_he": "כתושב חוץ: אין חובת תשלום דמי ביטוח לאומי על הכנסות זרות. הכנסות ממקורות ישראלים — ייתכן ניכוי.",
+            "note_en": "As non-resident: no National Insurance contributions on foreign income. Israeli-source income — possible withholding.",
+        },
+    }
+
+    # Add cost of living index to each country recommendation
+    for c in scored_countries:
+        c["cost_of_living_index"] = COST_OF_LIVING_INDEX.get(c["code"], None)
+
     return {
         "kh_analysis": kh_analysis,
         "pension_analysis": pension_analysis,
         "exit_tax_analysis": exit_tax_analysis,
         "residency_risks": residency_risks,
-        "country_recommendations": scored_countries[:5],
+        "country_recommendations": scored_countries[:8],
         "exit_process": ISRAEL_EXIT_PROCESS,
         "timing_messages": timing_messages,
         "pension_rules": ISRAEL_PENSION_RULES,
@@ -869,6 +1314,7 @@ async def israel_analysis(request: IsraelReq):
         "section_100a": ISRAEL_SECTION_100A,
         "israel_annual_tax": round(israel_annual_tax),
         "total_income_usd": round(total_income),
+        "bituach_leumi": bituach_leumi_analysis,
     }
 
 

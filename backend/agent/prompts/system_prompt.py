@@ -94,12 +94,40 @@ Remember: You are here to help the user legally minimize their tax burden while 
 
 ### Best Countries for Israelis (with context):
 1. **Cyprus** — 60-day rule, 0% on capital gains/dividends/crypto (non-dom), large Israeli community, 1.5h flight, Israel tax treaty. BEST overall for most Israelis.
-2. **UAE** — 0% on everything, growing Israeli community after Abraham Accords, Israel-UAE treaty (2022), Golden Visa requires ~$550K investment
-3. **Portugal** — IFICI regime (NHR successor): 20% flat on professional income, foreign income partially exempt, EU passport path, 5.5h flight
-4. **Georgia** — Territorial system: 0% on foreign income, VHB/HNWI status, cheap, easy access for Israelis, but NO Israel treaty (important!)
-5. **Malta** — Non-dom regime: foreign income not remitted = exempt, EU, English, Israel treaty, €5K annual minimum tax
-6. **Greece** — €100K flat annual tax on all foreign income (only for very wealthy)
-7. **Panama** — Territorial system, no Israel treaty, very far
+2. **UAE** — 0% on everything, growing Israeli community after Abraham Accords, Israel-UAE treaty (2022), Golden Visa requires ~$550K investment.
+3. **Bulgaria** — 10% flat income tax (EU lowest), 5% dividends, EU, Israel treaty, growing Sofia Israeli community. Ideal with EU/Romanian passport.
+4. **Spain (Beckham Law)** — 24% flat for 6 years, huge Israeli community Barcelona/Madrid, EU, Israel treaty. Plan post-6yr exit.
+5. **Bahrain** — 0% tax, Abraham Accords 2020, direct flights Tel Aviv, Gulf lifestyle.
+6. **Andorra** — 0-10% max, 0% CGT/dividends/inheritance, 3h from Barcelona. Excellent banking privacy.
+7. **Portugal** — IFICI (NHR successor): 20% flat on professional income, EU passport, 5.5h flight.
+8. **Georgia** — 0% on foreign income (territorial), cheap, easy. NO Israel treaty — important caveat.
+9. **Malta** — Non-dom: foreign income not remitted = exempt, EU, English, Israel treaty, €5K annual minimum.
+10. **Hungary** — 15% flat, 9% corporate (EU lowest), Budapest Israeli community, EU, Israel treaty.
+11. **Uruguay** — 0% on foreign income for 10 years, large Israeli community, stable democracy, 5-year passport.
+12. **Mexico** — Territorial in practice (0% on foreign income), large Israeli community in Mexico City (Polanco), Israel treaty.
+13. **Greece** — €100K flat annual on all foreign income (only for very wealthy).
+14. **New Zealand** — 4-year foreign income exemption, 0% CGT, rule of law. Far but excellent quality.
+15. **Panama** — Territorial, no Israel treaty, very far.
+
+### CRITICAL: Citizenship-Based vs Residency-Based Taxation
+Most countries tax by RESIDENCY, not citizenship:
+- **Brazil**: Does NOT tax by citizenship (unlike USA). Brazilian citizen living in Cyprus/UAE/Bulgaria pays ZERO Brazilian tax. Mercosur freedom of movement (Argentina, Uruguay, Paraguay, Bolivia, Chile, Colombia, Ecuador, Peru) + 170+ visa-free countries. No US-style worldwide tax burden.
+- **Romania**: Does NOT tax by citizenship. Romanian citizen elsewhere pays ZERO Romanian tax. KEY: Romanian passport = EU passport = free residency in ALL 27 EU countries without separate visa.
+- **Israel**: Taxes by residency — breaking Israeli tax residency is the whole point.
+- **USA**: Exception — taxes worldwide by citizenship. US-Israel duals face double obligation.
+
+### Romanian Passport — EU Strategy:
+- Available by descent (parent/grandparent Romanian citizen before 1940 or 1918-1989)
+- No renunciation required; Romania allows dual/triple citizenship
+- With Romanian passport + Bulgarian residency: 10% income, 5% dividends, EU protection
+- With Romanian passport + Cyprus residency: 0% capital gains/dividends (non-dom)
+- With Romanian passport + Spain residency: Beckham Law 24% flat, EU lifestyle
+
+### Brazilian Passport — Mercosur Strategy:
+- NOT citizenship-based taxation (key distinction from USA)
+- Brazilian citizens tax-resident elsewhere = ZERO Brazilian tax
+- Mercosur: Free residency in Uruguay (easy path to 3rd passport + 10-year 0% foreign income tax)
+- Uruguay is the top recommendation for Brazilian passport holders seeking tax optimization
 
 ### Treaty Network:
 Israel has tax treaties with: USA, UK, Germany, France, Netherlands, Switzerland, Austria, Italy, Spain, Portugal, Belgium, Cyprus, Malta, Greece, Hungary, Czech Republic, Poland, Romania, Sweden, Norway, Denmark, Finland, Luxembourg, Canada, Australia, Japan, South Korea, India, China, Mexico, Argentina, Brazil, Thailand, Philippines, Vietnam, Uzbekistan, Ukraine, Moldova, Belarus, Russia, Armenia, Georgia (no), UAE (yes, 2022), Bahrain (partial)

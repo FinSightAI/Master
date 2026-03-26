@@ -116,6 +116,70 @@ export const DEFAULT_ISRAEL_PROFILE: IsraelProfile = {
   family_in_israel: false,
 };
 
+export interface BituachLeumiAnalysis {
+  years_as_resident: number;
+  old_age_pension: {
+    qualifies: boolean;
+    monthly_ils: number;
+    years_to_qualify: number;
+    note_he: string;
+    note_en: string;
+  };
+  healthcare: {
+    warning_he: string;
+    warning_en: string;
+    action_he: string;
+    action_en: string;
+  };
+  unemployment: {
+    note_he: string;
+    note_en: string;
+  };
+  contributions_ongoing: {
+    note_he: string;
+    note_en: string;
+  };
+}
+
+export interface TaxUpdate {
+  date: string;
+  country: string;
+  country_code: string;
+  type: 'alert' | 'change' | 'positive';
+  he: string;
+  en: string;
+}
+
+export interface CompanyJurisdiction {
+  code: string;
+  name: string;
+  corp_tax: number;
+  dividend_tax: number;
+  effective_rate: number;
+  setup_cost: number;
+  annual_cost: number;
+  eu: boolean;
+  israel_treaty: boolean;
+  residency_required: boolean;
+  substance_required: boolean;
+  score: number;
+  net_profit_after_tax: number;
+}
+
+export interface CompanyAnalysis {
+  profit: number;
+  results: CompanyJurisdiction[];
+}
+
+export interface Scenario {
+  id: string;
+  name: string;
+  savedAt: string;
+  israelProfile: IsraelProfile;
+  userProfile: UserProfile | null;
+  analysis: IsraelAnalysis;
+}
+
 export interface IsraelAnalysis {
   kh_analysis: {
     status: string;
@@ -166,6 +230,7 @@ export interface IsraelAnalysis {
     cons: string[];
     annual_tax_estimate: number | null;
     annual_savings_vs_israel: number | null;
+    cost_of_living_index?: number | null;
   }>;
   israel_annual_tax: number;
   total_income_usd: number;
@@ -182,6 +247,7 @@ export interface IsraelAnalysis {
     text_he: string;
     text_en: string;
   }>;
+  bituach_leumi?: BituachLeumiAnalysis;
 }
 
 export interface SavedSession {

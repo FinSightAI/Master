@@ -1,4 +1,4 @@
-import { UserProfile, StreamEvent, SavingsAnalysis, IsraelProfile, IsraelAnalysis } from './types';
+import { UserProfile, StreamEvent, SavingsAnalysis, IsraelProfile, IsraelAnalysis, CompanyAnalysis, TaxUpdate } from './types';
 
 const API_BASE = '/api';
 
@@ -35,6 +35,22 @@ export async function fetchIsraelAnalysis(profile: UserProfile | null, israelPro
     body: JSON.stringify({ profile: profile || {}, israel_profile: israelProfile }),
   });
   if (!res.ok) throw new Error('Failed to fetch Israel analysis');
+  return res.json();
+}
+
+export async function fetchCompanyAnalysis(profit: number, isNondom: boolean, preferEu: boolean): Promise<CompanyAnalysis> {
+  const res = await fetch(`${API_BASE}/company`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ profit, is_nondom: isNondom, prefer_eu: preferEu }),
+  });
+  if (!res.ok) throw new Error('Failed to fetch company analysis');
+  return res.json();
+}
+
+export async function fetchTaxUpdates(): Promise<TaxUpdate[]> {
+  const res = await fetch(`${API_BASE}/tax-updates`);
+  if (!res.ok) throw new Error('Failed to fetch tax updates');
   return res.json();
 }
 
