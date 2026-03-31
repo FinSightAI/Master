@@ -5046,7 +5046,7 @@ export default function AdvisorPage() {
       </div>
 
       {/* ── Main ── */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-h-0">
         {/* Panels */}
         {showProfile && (
           <ProfilePanel lang={lang} profile={profile} setProfile={setProfile}
@@ -5158,7 +5158,7 @@ export default function AdvisorPage() {
         )}
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-4 min-h-0">
           <div className="max-w-3xl mx-auto space-y-6">
             {messages.length === 0 && (
               <div className="slide-in">
