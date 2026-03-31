@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -6,10 +6,15 @@ export const metadata: Metadata = {
   description: 'AI-powered international tax advisor for optimal tax planning across all jurisdictions',
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="auto">
-      <body>{children}</body>
+    <html lang="he" dir="rtl">
+      <body style={{ margin: 0, padding: 0, overflow: 'hidden' }}>{children}</body>
     </html>
   );
 }

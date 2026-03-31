@@ -4607,6 +4607,7 @@ function MultiYearPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: str
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function AdvisorPage() {
+  const [mounted, setMounted] = useState(false);
   const [lang, setLang] = useState<Lang>('he');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -4658,6 +4659,7 @@ export default function AdvisorPage() {
     if (saved) { try { setProfile(JSON.parse(saved)); setProfileSaved(true); } catch {} }
     if (savedLang) setLang(savedLang);
     if (savedHistory) { try { setSavedSessions(JSON.parse(savedHistory)); } catch {} }
+    setMounted(true);
   }, []);
 
   const persistSessions = (sessions: SavedSession[]) => {
