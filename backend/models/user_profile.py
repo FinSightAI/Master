@@ -42,3 +42,4 @@ class ChatRequest(BaseModel):
     message: str
     profile: Optional[UserProfile] = None
     conversation_history: List[Dict] = []
+    provider: Optional[str] = None  # "gemini" | "claude" | None (uses AI_PROVIDER env var)

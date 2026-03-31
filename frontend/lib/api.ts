@@ -57,7 +57,8 @@ export async function fetchTaxUpdates(): Promise<TaxUpdate[]> {
 export async function* streamChat(
   message: string,
   profile: UserProfile | null,
-  conversationHistory: Array<{ role: string; content: string }>
+  conversationHistory: Array<{ role: string; content: string }>,
+  provider?: string
 ): AsyncGenerator<StreamEvent> {
   const response = await fetch(`${API_BASE}/chat`, {
     method: 'POST',
@@ -66,6 +67,7 @@ export async function* streamChat(
       message,
       profile,
       conversation_history: conversationHistory,
+      provider: provider ?? null,
     }),
   });
 

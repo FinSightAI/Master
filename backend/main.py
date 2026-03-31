@@ -38,7 +38,8 @@ async def chat(request: ChatRequest):
         async for event in run_agent(
             user_message=request.message,
             profile=profile_dict,
-            conversation_history=request.conversation_history
+            conversation_history=request.conversation_history,
+            provider=request.provider,
         ):
             yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
 

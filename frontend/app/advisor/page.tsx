@@ -7,7 +7,7 @@ import {
   Send, Settings, ChevronDown, ChevronUp, Zap,
   RotateCcw, Globe, BarChart3, X, Plus, TrendingDown, History, Clock,
   FileText, Download, Calculator, ClipboardCheck, Building2, Bell, Bookmark, Calendar,
-  Swords, Mail, GitCompare, TrendingUp, Shuffle
+  Swords, Mail, GitCompare, TrendingUp, Shuffle, Home, PiggyBank
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { streamChat, fetchSavings, fetchCountry, analyzeDocument, fetchIsraelAnalysis, fetchCompanyAnalysis, fetchTaxUpdates } from '../../lib/api';
@@ -3163,6 +3163,1448 @@ function TreatyLookupPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: 
   );
 }
 
+// ─── Country Tax Profiles ────────────────────────────────────────────────────
+
+interface CountryTaxData {
+  code: string; flag: string; name_he: string; name_en: string;
+  incomeTax: string; capitalGains: string; dividendTax: string;
+  corporateTax: string; vat: string; socialSecurity: string;
+  taxSystem: 'territorial' | 'worldwide' | 'remittance';
+  specialRegime_he: string; specialRegime_en: string;
+  residencyDays: number; costIndex: number;
+  notes_he: string; notes_en: string;
+}
+
+const COUNTRY_TAX_DATA: CountryTaxData[] = [
+  { code:'UAE', flag:'🇦🇪', name_he:'איחוד האמירויות', name_en:'UAE', incomeTax:'0%', capitalGains:'0%', dividendTax:'0%', corporateTax:'9%', vat:'5%', socialSecurity:'0%', taxSystem:'territorial', specialRegime_he:'אין מס הכנסה אישי — חופשי לחלוטין', specialRegime_en:'Zero personal income tax on all individuals', residencyDays:183, costIndex:118, notes_he:'אין מס הכנסה אישי, אין מס רווחי הון, אין מס דיבידנד. מס חברות 9% הוכנס ב-2023 (ראשון 375K AED פטור). אמנת מס ישראל-UAE נחתמה 2022. מרכזי מסחר חינמיים (Free Zones) עם 0% מס חברות.', notes_en:'No personal income tax, no capital gains, no dividend tax. 9% corporate tax since 2023 (first 375K AED exempt). Israel–UAE tax treaty 2022. Free Zones offer 0% corporate tax.' },
+  { code:'CY', flag:'🇨🇾', name_he:'קפריסין', name_en:'Cyprus', incomeTax:'0–35%', capitalGains:'0% (ני"ע)', dividendTax:'0% (non-dom)', corporateTax:'12.5%', vat:'19%', socialSecurity:'8.3%', taxSystem:'worldwide', specialRegime_he:'Non-Dom — פטור ממס SDC (17%) על דיבידנד וריבית מחו"ל ל-17 שנה', specialRegime_en:'Non-Dom — exempt from 17% SDC on foreign dividends/interest for 17 years', residencyDays:60, costIndex:84, notes_he:'כלל 60 הימים — תושבות מס קפריסאית ב-60 ימי שהייה אם אינך תושב מדינה אחרת. Non-Dom: 0% SDC על דיבידנד וריבית זרים לתקופה של 17 שנה. IP Box: 2.5% על הכנסות קניין רוחני. חבר האיחוד האירופי.', notes_en:'60-day rule — tax residency in 60 days if not resident elsewhere. Non-Dom: 0% SDC on foreign dividends & interest for 17 years. IP Box: 2.5% on qualifying IP. EU member.' },
+  { code:'PT', flag:'🇵🇹', name_he:'פורטוגל', name_en:'Portugal', incomeTax:'13–48%', capitalGains:'28%', dividendTax:'28%', corporateTax:'21%', vat:'23%', socialSecurity:'11%', taxSystem:'worldwide', specialRegime_he:'IFICI — שיעור 20% שטוח ל-10 שנים לתושבים חדשים (יורש NHR)', specialRegime_en:'IFICI regime — 20% flat rate for 10 years for new residents (NHR successor)', residencyDays:183, costIndex:77, notes_he:'משטר IFICI (יורש NHR) — שיעור 20% שטוח על הכנסות מזכות ל-10 שנים. קריפטו פטור אם לא נסחר באופן תכוף. איכות חיים גבוהה, עלות מחיה נמוכה יחסית, חבר האיחוד האירופי. גולדן ויזה זמינה.', notes_en:'IFICI (NHR successor) — 20% flat rate on qualifying income for 10 years. Crypto exempt if not actively traded. High quality of life, low cost of living, EU member. Golden Visa available.' },
+  { code:'MT', flag:'🇲🇹', name_he:'מלטה', name_en:'Malta', incomeTax:'0–35%', capitalGains:'0% (non-dom, חו"ל)', dividendTax:'0% (non-dom)', corporateTax:'5% (אפקטיבי)', vat:'18%', socialSecurity:'10%', taxSystem:'remittance', specialRegime_he:'Non-Dom — מס רק על הכנסות ממלטה + הכנסות שמועברות לחשבון מלטי', specialRegime_en:'Non-Dom — tax only on Malta-source income + remitted foreign income', residencyDays:183, costIndex:80, notes_he:'Non-Dom: תשלום מס רק על הכנסות ממלטה והכנסות שמועברות לחשבון בנק מלטי. מס חברות אפקטיבי 5% דרך מנגנון החזר לבעלי מניות. חבר האיחוד האירופי. תוכנית אזרחות בהשקעה.', notes_en:'Non-Dom: pay tax only on Malta income and remitted foreign income. Effective 5% corporate tax via shareholder refund. EU member. Citizenship by investment programme.' },
+  { code:'GE', flag:'🇬🇪', name_he:'גיאורגיה', name_en:'Georgia', incomeTax:'20%', capitalGains:'0–20%', dividendTax:'5%', corporateTax:'15% (רווח מחולק)', vat:'18%', socialSecurity:'2%', taxSystem:'territorial', specialRegime_he:'Virtual Zone (0%) ל-IT, עסק קטן (1–3%) עד 500K GEL', specialRegime_en:'Virtual Zone (0%) for exported IT services, Small Business (1–3%)', residencyDays:183, costIndex:44, notes_he:'עלות מחיה נמוכה מאוד. Virtual Zone — 0% על הכנסות IT המיוצאות. עסק קטן — 1% על מחזור עד 500K GEL. מס חברות "אסטוני" — 0% על רווח שמורכב, 15% על חלוקה. אין מס על דיבידנד מחברות זרות.', notes_en:'Very low cost of living. Virtual Zone — 0% on exported IT revenue. Small Business — 1% on turnover up to 500K GEL. Estonian-model corp tax: 0% retained, 15% distributed. No tax on foreign dividends.' },
+  { code:'SG', flag:'🇸🇬', name_he:'סינגפור', name_en:'Singapore', incomeTax:'0–24%', capitalGains:'0%', dividendTax:'0%', corporateTax:'17%', vat:'9% (GST)', socialSecurity:'20% (אזרחים/PR)', taxSystem:'territorial', specialRegime_he:'מיסוי טריטוריאלי — הכנסות מחו"ל פטורות בדרך כלל', specialRegime_en:'Territorial system — foreign-source income generally exempt', residencyDays:183, costIndex:135, notes_he:'0% רווחי הון, 0% דיבידנד (מיסוי חד-שכבתי). הכנסות ממקורות זרים פטורות בדרך כלל. מרכז פיננסי של אסיה. עלות מחיה גבוהה. CPF (ביטוח לאומי) רק לאזרחים ו-PR.', notes_en:'0% capital gains, 0% dividend (one-tier system). Foreign-source income generally exempt. Asia\'s financial hub. High cost of living. CPF only for citizens/PR.' },
+  { code:'CH', flag:'🇨🇭', name_he:'שווייץ', name_en:'Switzerland', incomeTax:'8.5–45%', capitalGains:'0% (פרטי)', dividendTax:'35% (בר-השבה)', corporateTax:'12–21%', vat:'8.1%', socialSecurity:'5.3%', taxSystem:'worldwide', specialRegime_he:'Forfait (לומפ-סום) — מיסוי לפי הוצאות מחיה, לא לפי הכנסה', specialRegime_en:'Lump-sum (forfait) — taxed on living expenses, not actual income', residencyDays:90, costIndex:178, notes_he:'מיסוי לומפ-סום — אידאלי לעשירים עם הוצאות מחיה נמוכות בשווייץ. 0% רווחי הון מניות בידי משקיע פרטי. ניכוי מס 35% על דיבידנד — ניתן להחזר. יציבות פוליטית ומטבע.', notes_en:'Lump-sum taxation (forfait) — ideal for wealthy with low Swiss expenses. 0% capital gains on private holdings. 35% withholding on dividends — refundable. Political/currency stability.' },
+  { code:'HU', flag:'🇭🇺', name_he:'הונגריה', name_en:'Hungary', incomeTax:'15% (שטוח)', capitalGains:'15%', dividendTax:'15% + 13% ביטוח', corporateTax:'9%', vat:'27%', socialSecurity:'18.5%', taxSystem:'worldwide', specialRegime_he:'מס חברות 9% — הנמוך ביותר באיחוד האירופי', specialRegime_en:'9% corporate tax — lowest in the EU', residencyDays:183, costIndex:63, notes_he:'מס הכנסה שטוח 15%, מס חברות 9% (הנמוך באיחוד האירופי). מע"מ 27% — הגבוה ביותר ב-EU. חבר האיחוד האירופי. עלות מחיה נמוכה יחסית לאירופה.', notes_en:'15% flat income tax, 9% corporate (lowest in EU). 27% VAT — highest in EU. EU member. Relatively low cost of living for Europe.' },
+  { code:'EE', flag:'🇪🇪', name_he:'אסטוניה', name_en:'Estonia', incomeTax:'20%', capitalGains:'20% (בחלוקה)', dividendTax:'0% (רווח שמור)', corporateTax:'0%/20%', vat:'22%', socialSecurity:'33% (מעסיק)', taxSystem:'worldwide', specialRegime_he:'מס חברות 0% על רווח שמור — "המודל האסטוני"', specialRegime_en:'0% corporate tax on retained profits — the "Estonian Model"', residencyDays:183, costIndex:74, notes_he:'מס חברות ייחודי — 0% כל עוד לא מחלקים רווחים, 20% על חלוקה. e-Residency לניהול חברה אירופית מרחוק. חברה דיגיטלית מפותחת. חבר האיחוד האירופי.', notes_en:'Unique corporate tax — 0% on retained profits, 20% on distributed. e-Residency for remote EU business. Highly digital society. EU member.' },
+  { code:'PA', flag:'🇵🇦', name_he:'פנמה', name_en:'Panama', incomeTax:'0–25%', capitalGains:'10% (נדל"ן)', dividendTax:'10%', corporateTax:'25%', vat:'7%', socialSecurity:'9%', taxSystem:'territorial', specialRegime_he:'טריטוריאלי מוחלט — הכנסות ממקור זר פטורות לחלוטין', specialRegime_en:'Pure territorial — all foreign-source income fully exempt', residencyDays:183, costIndex:70, notes_he:'מיסוי טריטוריאלי מוחלט — שום מס על הכנסות מחו"ל. ויזת Friendly Nations לתושבות מהירה. תוכנית פנסיונדו עם הנחות משמעותיות. מערכת בנקאות חזקה.', notes_en:'Pure territorial — zero tax on all foreign income. Friendly Nations Visa for fast residency. Pensionado programme with major discounts. Strong banking system.' },
+  { code:'IL', flag:'🇮🇱', name_he:'ישראל', name_en:'Israel', incomeTax:'10–50%', capitalGains:'25–30%', dividendTax:'25–30%', corporateTax:'23%', vat:'17%', socialSecurity:'12%', taxSystem:'worldwide', specialRegime_he:'עולה חדש / תושב חוזר — פטור 10 שנה על הכנסות מחו"ל', specialRegime_en:'New Immigrant / Returning Resident — 10-year exemption on foreign income', residencyDays:0, costIndex:100, notes_he:'מיסוי כלל-עולמי. שיעורי מס גבוהים יחסית. פטור 10 שנה על הכנסות זרות לעולים ותושבים חוזרים. ביטוח לאומי 12% עד תקרה. מס שבח 25% על נדל"ן.', notes_en:'Worldwide taxation. Relatively high rates. 10-year foreign income exemption for new immigrants/returning residents. Social security 12% up to ceiling. 25% land appreciation tax.' },
+];
+
+function CountryProfilesPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: string) => void; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const [selected, setSelected] = useState<string | null>(null);
+  const country = selected ? COUNTRY_TAX_DATA.find(c => c.code === selected) ?? null : null;
+
+  const sysColor = (s: string) => s === 'territorial' ? '#10b981' : s === 'remittance' ? '#f59e0b' : '#ef4444';
+  const sysLabel = (s: string) => {
+    if (s === 'territorial') return lang === 'he' ? '🌍 טריטוריאלי' : '🌍 Territorial';
+    if (s === 'remittance') return lang === 'he' ? '💸 העברה' : '💸 Remittance';
+    return lang === 'he' ? '🌐 עולמי' : '🌐 Worldwide';
+  };
+
+  return (
+    <div className="border-b" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            {country && (
+              <button onClick={() => setSelected(null)} className="flex items-center gap-1 text-xs mb-1 hover:opacity-70" style={{ color: 'var(--accent)' }}>
+                ← {lang === 'he' ? 'חזרה לרשימה' : 'Back to list'}
+              </button>
+            )}
+            <h2 className="font-bold flex items-center gap-2">
+              🗺️ {country ? (lang === 'he' ? country.name_he : country.name_en) : tr.countryProfiles}
+            </h2>
+            {!country && <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.countryProfilesSubtitle}</p>}
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        {!country ? (
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+            {COUNTRY_TAX_DATA.map(c => (
+              <button key={c.code} onClick={() => setSelected(c.code)}
+                className="p-3 rounded-xl text-left transition-all hover:opacity-80"
+                style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                <div className="text-2xl mb-1">{c.flag}</div>
+                <div className="text-xs font-semibold" style={{ color: 'var(--text)' }}>{lang === 'he' ? c.name_he : c.name_en}</div>
+                <div className="text-xs font-mono mt-1" style={{ color: sysColor(c.taxSystem) }}>{c.incomeTax}</div>
+                <div className="mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>{sysLabel(c.taxSystem)}</div>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { l: lang === 'he' ? 'מס הכנסה' : 'Income Tax', v: country.incomeTax },
+                { l: lang === 'he' ? 'רווחי הון' : 'Capital Gains', v: country.capitalGains },
+                { l: lang === 'he' ? 'דיבידנד' : 'Dividend', v: country.dividendTax },
+                { l: lang === 'he' ? 'מס חברות' : 'Corporate', v: country.corporateTax },
+                { l: lang === 'he' ? 'מע"מ' : 'VAT/GST', v: country.vat },
+                { l: lang === 'he' ? 'ביטוח לאומי' : 'Social Sec.', v: country.socialSecurity },
+              ].map(row => (
+                <div key={row.l} className="rounded-xl p-2.5 text-center" style={{ background: 'var(--surface-2)' }}>
+                  <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{row.l}</div>
+                  <div className="font-bold text-sm mt-0.5" style={{ color: 'var(--text)' }}>{row.v}</div>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <div className="flex-1 rounded-xl p-2.5" style={{ background: 'var(--surface-2)' }}>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'שיטת מיסוי' : 'Tax System'}</div>
+                <div className="font-semibold text-sm mt-0.5" style={{ color: sysColor(country.taxSystem) }}>{sysLabel(country.taxSystem)}</div>
+              </div>
+              <div className="flex-1 rounded-xl p-2.5" style={{ background: 'var(--surface-2)' }}>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'ימי תושבות' : 'Residency Days'}</div>
+                <div className="font-bold text-sm mt-0.5" style={{ color: 'var(--text)' }}>
+                  {country.residencyDays === 0 ? (lang === 'he' ? 'מבחן מרכז חיים' : 'Center of life') : `${country.residencyDays}`}
+                </div>
+              </div>
+              <div className="flex-1 rounded-xl p-2.5" style={{ background: 'var(--surface-2)' }}>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'יוקר מחיה' : 'Cost (IL=100)'}</div>
+                <div className="font-bold text-sm mt-0.5" style={{ color: country.costIndex > 100 ? '#ef4444' : '#10b981' }}>{country.costIndex}</div>
+              </div>
+            </div>
+            <div className="rounded-xl p-3" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.2)' }}>
+              <div className="text-xs font-semibold mb-1" style={{ color: 'var(--accent)' }}>✨ {lang === 'he' ? 'משטר מיוחד' : 'Special Regime'}</div>
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--text)' }}>{lang === 'he' ? country.specialRegime_he : country.specialRegime_en}</p>
+            </div>
+            <div className="rounded-xl p-3" style={{ background: 'var(--surface-2)' }}>
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? country.notes_he : country.notes_en}</p>
+            </div>
+            <button
+              onClick={() => {
+                onAsk(lang === 'he'
+                  ? `ספר לי בפירוט על מיסוי ב${country.name_he} — דרישות לתושבות מס, אילו הכנסות חייבות, ומה המשמעות לישראלי שעובר לגור שם?`
+                  : `Tell me in detail about taxation in ${country.name_en} — tax residency requirements, taxable income types, and what it means for an Israeli moving there.`);
+                onClose();
+              }}
+              className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
+              style={{ background: 'var(--accent)', color: 'white' }}>
+              🤖 {lang === 'he' ? 'שאל AI על מדינה זו' : 'Ask AI about this country'}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Real Estate Tax Calculator (מחשבון מס שבח) ────────────────────────────────
+
+const REFORM_DATE = new Date('2014-01-01').getTime();
+const PRIMARY_CEILING = 4846000;
+
+function RealEstateCalcPanel({ lang, onClose }: { lang: Lang; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const today = new Date().toISOString().slice(0, 10);
+  const [purchaseDate, setPurchaseDate] = useState('2010-06-01');
+  const [purchasePrice, setPurchasePrice] = useState('1200000');
+  const [saleDate, setSaleDate] = useState(today);
+  const [salePrice, setSalePrice] = useState('3000000');
+  const [improvements, setImprovements] = useState('0');
+  const [bettermentLevy, setBettermentLevy] = useState('0');
+  const [isPrimary, setIsPrimary] = useState(false);
+
+  const result = useMemo(() => {
+    const pMs = new Date(purchaseDate).getTime();
+    const sMs = new Date(saleDate).getTime();
+    const pp = parseFloat(purchasePrice) || 0;
+    const sp = parseFloat(salePrice) || 0;
+    const imp = parseFloat(improvements) || 0;
+    const levy = parseFloat(bettermentLevy) || 0;
+    if (!pMs || !sMs || sMs <= pMs || pp <= 0 || sp <= 0) return null;
+
+    const gain = sp - pp - imp;
+
+    // Linear exemption — pre-2014 holding is exempt
+    let linearExempt = 0;
+    if (pMs < REFORM_DATE && gain > 0) {
+      const totalMs = sMs - pMs;
+      const pre2014Ms = REFORM_DATE - pMs;
+      linearExempt = gain * (pre2014Ms / totalMs);
+    }
+
+    const taxableGain = Math.max(0, gain - linearExempt);
+
+    // Primary residence exemption
+    let taxDue = 0;
+    if (isPrimary && sp <= PRIMARY_CEILING) {
+      taxDue = 0;
+    } else if (isPrimary && sp > PRIMARY_CEILING) {
+      const excessRatio = (sp - PRIMARY_CEILING) / sp;
+      taxDue = taxableGain * excessRatio * 0.25;
+    } else {
+      taxDue = taxableGain * 0.25;
+    }
+    taxDue = Math.max(0, taxDue - levy);
+    const effectiveRate = gain > 0 ? (taxDue / gain) * 100 : 0;
+    return { gain, linearExempt, taxableGain, taxDue, effectiveRate, isLoss: gain <= 0 };
+  }, [purchaseDate, purchasePrice, saleDate, salePrice, improvements, bettermentLevy, isPrimary]);
+
+  const fmt = (n: number) => Math.round(n).toLocaleString('he-IL');
+  const fmtInput = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => setter(e.target.value);
+  const inputStyle = { background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text)' };
+
+  return (
+    <div className="border-b" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="font-bold flex items-center gap-2">🏠 {tr.realEstateTitle}</h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.realEstateSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          {([
+            [tr.rePurchaseDate, purchaseDate, setPurchaseDate, 'date'],
+            [tr.rePurchasePrice, purchasePrice, setPurchasePrice, 'number'],
+            [tr.reSaleDate, saleDate, setSaleDate, 'date'],
+            [tr.reSalePrice, salePrice, setSalePrice, 'number'],
+            [tr.reImprovements, improvements, setImprovements, 'number'],
+            [tr.reBettermentLevy, bettermentLevy, setBettermentLevy, 'number'],
+          ] as [string, string, (v: string) => void, string][]).map(([label, val, setter, type]) => (
+            <div key={label}>
+              <label className="text-xs font-medium block mb-1" style={{ color: 'var(--text-muted)' }}>{label}</label>
+              <input type={type} value={val} onChange={fmtInput(setter)}
+                className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                style={inputStyle} />
+            </div>
+          ))}
+        </div>
+
+        <label className="flex items-center gap-2 cursor-pointer mb-4">
+          <input type="checkbox" checked={isPrimary} onChange={e => setIsPrimary(e.target.checked)}
+            className="w-4 h-4" style={{ accentColor: 'var(--accent)' }} />
+          <span className="text-sm" style={{ color: 'var(--text)' }}>{tr.reIsPrimary}</span>
+        </label>
+
+        {result && !result.isLoss && (
+          <div className="space-y-2">
+            <div className="text-xs font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>{tr.reBreakdown}</div>
+            {[
+              { label: tr.reGain, value: `₪${fmt(result.gain)}`, color: 'var(--text)' },
+              ...(result.linearExempt > 0 ? [{ label: tr.reLinearExempt, value: `-₪${fmt(result.linearExempt)}`, color: '#10b981' }] : []),
+              { label: tr.reTaxableGain, value: `₪${fmt(result.taxableGain)}`, color: 'var(--text)' },
+              ...(isPrimary ? [{ label: tr.rePrimaryExempt, value: lang === 'he' ? 'חל (עד ₪4,846,000)' : 'Applies (up to ₪4,846,000)', color: '#10b981' }] : []),
+            ].map(row => (
+              <div key={row.label} className="flex justify-between items-center px-3 py-2 rounded-lg" style={{ background: 'var(--surface-2)' }}>
+                <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{row.label}</span>
+                <span className="text-sm font-semibold" style={{ color: row.color }}>{row.value}</span>
+              </div>
+            ))}
+            <div className="flex justify-between items-center px-4 py-3 rounded-xl"
+              style={{ background: result.taxDue === 0 ? 'rgba(16,185,129,0.1)' : 'rgba(99,102,241,0.1)', border: `1px solid ${result.taxDue === 0 ? '#10b981' : 'var(--accent)'}` }}>
+              <span className="font-bold" style={{ color: 'var(--text)' }}>{tr.reTaxDue}</span>
+              <div className="text-right">
+                <div className="font-bold text-xl" style={{ color: result.taxDue === 0 ? '#10b981' : 'var(--accent)' }}>
+                  {result.taxDue === 0 ? (lang === 'he' ? 'פטור מלא! 🎉' : 'Fully Exempt! 🎉') : `₪${fmt(result.taxDue)}`}
+                </div>
+                {result.taxDue > 0 && (
+                  <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{result.effectiveRate.toFixed(1)}% {lang === 'he' ? 'מהרווח' : 'of gain'}</div>
+                )}
+              </div>
+            </div>
+            {new Date(purchaseDate) < new Date('2014-01-01') && (
+              <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>ℹ️ {tr.reLinearNote}</p>
+            )}
+          </div>
+        )}
+        {result?.isLoss && (
+          <div className="rounded-xl p-3 text-center" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid #10b981' }}>
+            <p className="text-sm font-semibold" style={{ color: '#10b981' }}>
+              {lang === 'he' ? '🎉 אין רווח — אין מס שבח' : '🎉 No gain — no tax due'}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Pension & Funds Calculator ──────────────────────────────────────────────
+
+function PensionCalcPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: string) => void; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const [tab, setTab] = useState<'kh' | 'pension' | 'gemel'>('kh');
+  const [khBalance, setKhBalance] = useState('200000');
+  const [khYears, setKhYears] = useState('4.5');
+  const [khMonthly, setKhMonthly] = useState('1500');
+  const [pensionBalance, setPensionBalance] = useState('600000');
+  const [pensionAge, setPensionAge] = useState('42');
+  const [pensionMonthly, setPensionMonthly] = useState('3500');
+  const [gemelBalance, setGemelBalance] = useState('200000');
+  const [gemelCost, setGemelCost] = useState('130000');
+  const [gemelPre2008, setGemelPre2008] = useState(false);
+
+  const khResult = useMemo(() => {
+    const bal = parseFloat(khBalance) || 0;
+    const yrs = parseFloat(khYears) || 0;
+    const monthly = parseFloat(khMonthly) || 0;
+    const yearsLeft = Math.max(0, 6 - yrs);
+    const isVested = yrs >= 6;
+    const futureIfWait = yearsLeft > 0
+      ? bal * Math.pow(1.05, yearsLeft) + monthly * 12 * ((Math.pow(1.05, yearsLeft) - 1) / 0.05)
+      : bal;
+    const taxEarly = bal * 0.42;
+    const netEarly = bal - taxEarly;
+    return { bal, yearsLeft, isVested, futureIfWait, taxEarly, netEarly };
+  }, [khBalance, khYears, khMonthly]);
+
+  const pensionResult = useMemo(() => {
+    const bal = parseFloat(pensionBalance) || 0;
+    const age = parseFloat(pensionAge) || 0;
+    const monthly = parseFloat(pensionMonthly) || 0;
+    const yrs = Math.max(0, 67 - age);
+    const r = 0.055;
+    const fv = bal * Math.pow(1 + r, yrs) + (yrs > 0 ? monthly * 12 * ((Math.pow(1 + r, yrs) - 1) / r) : 0);
+    const monthlyPension = fv / 240;
+    return { bal, yrs, fv, monthlyPension };
+  }, [pensionBalance, pensionAge, pensionMonthly]);
+
+  const gemelResult = useMemo(() => {
+    const bal = parseFloat(gemelBalance) || 0;
+    const cost = parseFloat(gemelCost) || 0;
+    const nomGain = Math.max(0, bal - cost);
+    const realGain = nomGain * 0.8;
+    const taxRate = gemelPre2008 ? 0.15 : 0.25;
+    const taxDue = realGain * taxRate;
+    const net = bal - taxDue;
+    const effectiveRate = bal > 0 ? (taxDue / bal) * 100 : 0;
+    return { bal, nomGain, realGain, taxDue, net, effectiveRate };
+  }, [gemelBalance, gemelCost, gemelPre2008]);
+
+  const fmt = (n: number) => Math.round(n).toLocaleString('he-IL');
+  const inp = (s: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => s(e.target.value);
+  const iStyle = { background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text)' };
+  const tabDefs = [
+    { id: 'kh' as const, label: lang === 'he' ? 'קרן השתלמות' : 'Training Fund' },
+    { id: 'pension' as const, label: lang === 'he' ? 'קרן פנסיה' : 'Pension Fund' },
+    { id: 'gemel' as const, label: lang === 'he' ? 'קופת גמל' : 'Provident Fund' },
+  ];
+
+  const Row = ({ l, v, c }: { l: string; v: string; c: string }) => (
+    <div className="flex justify-between items-center px-3 py-2 rounded-lg" style={{ background: 'var(--surface-2)' }}>
+      <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{l}</span>
+      <span className="text-sm font-semibold" style={{ color: c }}>{v}</span>
+    </div>
+  );
+
+  const Note = ({ text }: { text: string }) => (
+    <div className="rounded-xl p-3" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.2)' }}>
+      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{text}</p>
+    </div>
+  );
+
+  return (
+    <div className="border-b" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="font-bold flex items-center gap-2"><PiggyBank size={16} style={{ color: 'var(--accent)' }} /> {tr.pensionCalcTitle}</h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.pensionCalcSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-1 mb-4 p-1 rounded-xl" style={{ background: 'var(--surface-2)' }}>
+          {tabDefs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
+              style={{ background: tab === t.id ? 'var(--accent)' : 'transparent', color: tab === t.id ? 'white' : 'var(--text-muted)' }}>
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── KH ── */}
+        {tab === 'kh' && (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'יתרת הקרן (₪)' : 'Fund Balance (₪)'}</label>
+                <input type="number" value={khBalance} onChange={inp(setKhBalance)} className="w-full px-3 py-2 rounded-lg text-sm outline-none" style={iStyle} />
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'שנות ותק' : 'Years of Tenure'}</label>
+                <input type="number" step="0.5" value={khYears} onChange={inp(setKhYears)} className="w-full px-3 py-2 rounded-lg text-sm outline-none" style={iStyle} />
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'הפקדה חודשית (₪)' : 'Monthly Deposit (₪)'}</label>
+                <input type="number" value={khMonthly} onChange={inp(setKhMonthly)} className="w-full px-3 py-2 rounded-lg text-sm outline-none" style={iStyle} />
+              </div>
+              <div className="flex items-end pb-0.5">
+                <div className="w-full rounded-xl p-2.5 text-center" style={{ background: khResult.isVested ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.08)', border: `1px solid ${khResult.isVested ? '#10b981' : '#ef4444'}` }}>
+                  <div className="text-xs font-semibold" style={{ color: khResult.isVested ? '#10b981' : '#ef4444' }}>
+                    {khResult.isVested
+                      ? (lang === 'he' ? '✅ הקרן בשלה!' : '✅ Fully Vested!')
+                      : `⏳ ${lang === 'he' ? 'עוד' : ''} ${khResult.yearsLeft.toFixed(1)} ${lang === 'he' ? 'שנים' : 'yrs left'}`}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {khResult.isVested ? (
+                <>
+                  <Row l={lang === 'he' ? '✅ זמינה ללא מס' : '✅ Available tax-free'} v={`₪${fmt(khResult.bal)}`} c="#10b981" />
+                  <Row l={lang === 'he' ? '💡 המלצה' : '💡 Recommendation'} v={lang === 'he' ? 'משוך לפני ניתוק תושבות!' : 'Withdraw before breaking residency!'} c="var(--accent)" />
+                </>
+              ) : (
+                <>
+                  <Row l={lang === 'he' ? '⚠️ מס על משיכה מוקדמת (~42%)' : '⚠️ Early withdrawal tax (~42%)'} v={`₪${fmt(khResult.taxEarly)}`} c="#ef4444" />
+                  <Row l={lang === 'he' ? 'נטו עכשיו (לא מומלץ)' : 'Net now (not recommended)'} v={`₪${fmt(khResult.netEarly)}`} c="var(--text)" />
+                  <Row l={lang === 'he' ? '✅ צפי לאחר הבשלה (5%/שנה)' : '✅ Projected when vested (5%/yr)'} v={`₪${fmt(khResult.futureIfWait)}`} c="#10b981" />
+                </>
+              )}
+            </div>
+
+            <Note text={lang === 'he'
+              ? 'קרן שהגיעה לבשלות (6 שנות ותק) — עדיף למשוך לפני ניתוק תושבות ישראלית. משיכה לאחר ניתוק עלולה לחייב ניכוי מס 25% במקור. קרן שלא הגיעה לבשלות — שקול להשאיר עד לבשלות.'
+              : 'Vested KH fund (6+ years) — best to withdraw before breaking Israeli residency. Post-residency withdrawals may face 25% withholding. Unvested fund — consider leaving until maturity.'} />
+
+            <button onClick={() => { onAsk(lang === 'he' ? `מה קורה לקרן השתלמות שלי (יתרה ₪${fmt(khResult.bal)}, ותק ${khYears} שנים) כשאני מנתק תושבות ישראלית? מתי עדיף למשוך?` : `What happens to my Training Fund (₪${fmt(khResult.bal)}, ${khYears} yrs) when I break Israeli residency? When to withdraw?`); onClose(); }}
+              className="w-full py-2.5 rounded-xl text-sm font-semibold hover:opacity-80" style={{ background: 'var(--accent)', color: 'white' }}>
+              🤖 {lang === 'he' ? 'שאל AI על קרן השתלמות' : 'Ask AI about Training Fund'}
+            </button>
+          </div>
+        )}
+
+        {/* ── Pension ── */}
+        {tab === 'pension' && (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              {([
+                [lang === 'he' ? 'יתרה נצברת (₪)' : 'Accumulated (₪)', pensionBalance, setPensionBalance],
+                [lang === 'he' ? 'גיל נוכחי' : 'Current Age', pensionAge, setPensionAge],
+                [lang === 'he' ? 'הפקדה חודשית (₪)' : 'Monthly Deposit (₪)', pensionMonthly, setPensionMonthly],
+              ] as [string, string, (v: string) => void][]).map(([label, val, setter]) => (
+                <div key={label}>
+                  <label className="text-xs font-medium block mb-1" style={{ color: 'var(--text-muted)' }}>{label}</label>
+                  <input type="number" value={val} onChange={inp(setter)} className="w-full px-3 py-2 rounded-lg text-sm outline-none" style={iStyle} />
+                </div>
+              ))}
+              <div className="rounded-xl p-2.5 text-center flex flex-col justify-center" style={{ background: 'var(--surface-2)' }}>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'שנים עד פרישה (67)' : 'Years to retirement (67)'}</div>
+                <div className="font-bold text-2xl" style={{ color: 'var(--accent)' }}>{pensionResult.yrs}</div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Row l={lang === 'he' ? 'יתרה צפויה בגיל 67 (5.5%/שנה)' : 'Projected balance at 67 (5.5%/yr)'} v={`₪${fmt(pensionResult.fv)}`} c="#10b981" />
+              <Row l={lang === 'he' ? 'פנסיה חודשית צפויה' : 'Est. monthly pension'} v={`₪${fmt(pensionResult.monthlyPension)}/חודש`} c="var(--accent)" />
+            </div>
+
+            <Note text={lang === 'he'
+              ? 'קרן פנסיה אינה ניתנת למשיכה לפני גיל 67 ללא קנס כבד. ביציאה מישראל — עדיף להשאיר את הקרן ולקבל פנסיה בגיל פרישה. תשלומי פנסיה ממוסים לפי אמנת המס בין ישראל למדינת התושבות החדשה.'
+              : 'Pension funds cannot be withdrawn before age 67 without heavy penalties. On leaving Israel — best to leave the fund and receive pension at retirement. Pension payments are taxed per the Israel–residency country tax treaty.'} />
+
+            <button onClick={() => { onAsk(lang === 'he' ? `מה קורה לקרן פנסיה ישראלית כשמנתקים תושבות? האם ניתן לקבל פנסיה ישראלית כשגר בחו"ל ואיך ממוסה?` : `What happens to an Israeli pension fund when breaking residency? Can I receive Israeli pension abroad and how is it taxed?`); onClose(); }}
+              className="w-full py-2.5 rounded-xl text-sm font-semibold hover:opacity-80" style={{ background: 'var(--accent)', color: 'white' }}>
+              🤖 {lang === 'he' ? 'שאל AI על קרן פנסיה' : 'Ask AI about Pension Fund'}
+            </button>
+          </div>
+        )}
+
+        {/* ── Gemel ── */}
+        {tab === 'gemel' && (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'יתרת הקופה (₪)' : 'Fund Balance (₪)'}</label>
+                <input type="number" value={gemelBalance} onChange={inp(setGemelBalance)} className="w-full px-3 py-2 rounded-lg text-sm outline-none" style={iStyle} />
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'עלות — הפקדות שלך (₪)' : 'Cost Basis — your deposits (₪)'}</label>
+                <input type="number" value={gemelCost} onChange={inp(setGemelCost)} className="w-full px-3 py-2 rounded-lg text-sm outline-none" style={iStyle} />
+              </div>
+            </div>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={gemelPre2008} onChange={e => setGemelPre2008(e.target.checked)} className="w-4 h-4" style={{ accentColor: 'var(--accent)' }} />
+              <span className="text-sm" style={{ color: 'var(--text)' }}>{lang === 'he' ? 'קופה ישנה (נפתחה לפני 2008) — מס 15%' : 'Old fund (opened pre-2008) — 15% tax rate'}</span>
+            </label>
+
+            <div className="space-y-2">
+              <Row l={lang === 'he' ? 'רווח נומינלי' : 'Nominal Gain'} v={`₪${fmt(gemelResult.nomGain)}`} c="var(--text)" />
+              <Row l={lang === 'he' ? `מס ${gemelPre2008 ? '15' : '25'}% על הרווח הריאלי` : `${gemelPre2008 ? '15' : '25'}% tax on real gain`} v={`₪${fmt(gemelResult.taxDue)}`} c="#ef4444" />
+              <Row l={lang === 'he' ? 'שיעור מס אפקטיבי' : 'Effective tax rate'} v={`${gemelResult.effectiveRate.toFixed(1)}%`} c="var(--text-muted)" />
+              <div className="flex justify-between items-center px-4 py-3 rounded-xl"
+                style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid var(--accent)' }}>
+                <span className="font-bold" style={{ color: 'var(--text)' }}>{lang === 'he' ? 'נטו לאחר מס' : 'Net After Tax'}</span>
+                <span className="font-bold text-xl" style={{ color: 'var(--accent)' }}>₪{fmt(gemelResult.net)}</span>
+              </div>
+            </div>
+
+            <Note text={lang === 'he'
+              ? 'קופת גמל חדשה (מ-2008) — כלל ניתנת למשיכה כקצבה בלבד בגיל פרישה. בעזיבת ישראל: ניתן לפדות בנסיבות מיוחדות בהגשת בקשה לפקיד שומה. מוטל מס 25% (15% לקופה ישנה) על הרווח הריאלי. קופה ישנה (לפני 2008) — ניתנת לפדיון בתנאים מסוימים.'
+              : 'Post-2008 provident fund — generally can only be withdrawn as annuity at retirement. On leaving Israel: can redeem under special circumstances by applying to the tax authority. 25% tax (15% for old funds) on real gain. Old funds (pre-2008) — can be redeemed under certain conditions.'} />
+
+            <button onClick={() => { onAsk(lang === 'he' ? `איך פודים קופת גמל ישראלית בעת עזיבת ישראל? מה התהליך, אילו טפסים צריך, ומה המיסוי?` : `How do I redeem an Israeli provident fund (kupat gemel) when leaving Israel? What's the process and tax?`); onClose(); }}
+              className="w-full py-2.5 rounded-xl text-sm font-semibold hover:opacity-80" style={{ background: 'var(--accent)', color: 'white' }}>
+              🤖 {lang === 'he' ? 'שאל AI על קופת גמל' : 'Ask AI about Provident Fund'}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Section 100A Exit Tax Calculator ─────────────────────────────────────────
+interface S100Asset { id: number; name: string; purchaseDate: string; costBasis: number; fmv: number; }
+
+function Section100APanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: string) => void; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const [exitDate, setExitDate] = useState(new Date().toISOString().slice(0, 10));
+  const [assets, setAssets] = useState<S100Asset[]>([
+    { id: 1, name: lang === 'he' ? 'מניות ניירות ערך' : 'Stock Portfolio', purchaseDate: '2015-01-01', costBasis: 500000, fmv: 1200000 },
+  ]);
+  const nextId = useRef(2);
+
+  const addAsset = () => {
+    setAssets(a => [...a, { id: nextId.current++, name: '', purchaseDate: '2018-01-01', costBasis: 0, fmv: 0 }]);
+  };
+  const removeAsset = (id: number) => setAssets(a => a.filter(x => x.id !== id));
+  const updateAsset = (id: number, field: keyof S100Asset, value: string | number) =>
+    setAssets(a => a.map(x => x.id === id ? { ...x, [field]: value } : x));
+
+  const PRE_2003 = new Date('2003-01-01').getTime();
+
+  const results = useMemo(() => assets.map(a => {
+    const purchaseMs = new Date(a.purchaseDate).getTime();
+    const exitMs = new Date(exitDate).getTime();
+    const rawGain = Math.max(0, a.fmv - a.costBasis);
+
+    let taxableGain = rawGain;
+    if (purchaseMs < PRE_2003) {
+      const totalDays = (exitMs - purchaseMs) / 86400000;
+      const pre2003Days = (PRE_2003 - purchaseMs) / 86400000;
+      const exemptRatio = totalDays > 0 ? Math.min(pre2003Days / totalDays, 1) : 0;
+      taxableGain = rawGain * (1 - exemptRatio);
+    }
+    return { ...a, rawGain, taxableGain, tax: Math.round(taxableGain * 0.25) };
+  }), [assets, exitDate]);
+
+  const totalTax = results.reduce((s, r) => s + r.tax, 0);
+  const fmt = (n: number) => '₪' + n.toLocaleString('he-IL');
+
+  const Row = ({ label, value, color }: { label: string; value: string; color?: string }) => (
+    <div className="flex justify-between items-center py-1 text-sm border-b" style={{ borderColor: 'var(--border)' }}>
+      <span style={{ color: 'var(--text-muted)' }}>{label}</span>
+      <span className="font-semibold" style={{ color: color || 'var(--text)' }}>{value}</span>
+    </div>
+  );
+
+  return (
+    <div className="border-b overflow-y-auto" style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '65vh' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <Calculator size={18} style={{ color: 'var(--accent)' }} />
+              {tr.section100aTitle}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.section100aSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        {/* Exit date */}
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <label className="text-xs font-semibold block mb-1.5" style={{ color: 'var(--text-muted)' }}>{tr.s100ExitDate}</label>
+          <input type="date" value={exitDate} onChange={e => setExitDate(e.target.value)}
+            className="px-3 py-1.5 rounded-lg text-sm outline-none"
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+        </div>
+
+        {/* Asset list */}
+        <div className="space-y-3 mb-4">
+          {assets.map(a => (
+            <div key={a.id} className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <input value={a.name} onChange={e => updateAsset(a.id, 'name', e.target.value)}
+                  placeholder={tr.s100AssetName}
+                  className="font-semibold text-sm bg-transparent outline-none flex-1"
+                  style={{ color: 'var(--text)' }} />
+                {assets.length > 1 && (
+                  <button onClick={() => removeAsset(a.id)} className="text-xs hover:opacity-70 ml-2" style={{ color: '#ef4444' }}>{tr.s100Remove}</button>
+                )}
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: tr.s100PurchaseDate, field: 'purchaseDate' as const, type: 'date', val: a.purchaseDate },
+                  { label: tr.s100CostBasis, field: 'costBasis' as const, type: 'number', val: a.costBasis },
+                  { label: tr.s100CurrentFMV, field: 'fmv' as const, type: 'number', val: a.fmv },
+                ].map(({ label, field, type, val }) => (
+                  <div key={field}>
+                    <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{label}</div>
+                    <input type={type} value={val}
+                      onChange={e => updateAsset(a.id, field, type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value)}
+                      className="w-full px-2 py-1.5 rounded-lg text-sm outline-none"
+                      style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button onClick={addAsset} className="w-full py-2 rounded-xl text-sm font-semibold mb-4 hover:opacity-80 transition-opacity"
+          style={{ background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px dashed var(--accent)' }}>
+          + {tr.s100AddAsset}
+        </button>
+
+        {/* Results table */}
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <h3 className="font-semibold text-sm mb-3">{lang === 'he' ? 'תוצאות' : 'Results'}</h3>
+          {results.map(r => (
+            <div key={r.id} className="mb-3 pb-3 border-b last:border-0" style={{ borderColor: 'var(--border)' }}>
+              <div className="font-medium text-sm mb-1">{r.name || `Asset ${r.id}`}</div>
+              <Row label={tr.s100TotalGain} value={fmt(r.rawGain)} />
+              {new Date(r.purchaseDate).getTime() < PRE_2003 && (
+                <Row label={lang === 'he' ? 'ניכוי פטור (לפני 2003)' : 'Exempt portion (pre-2003)'} value={fmt(r.rawGain - r.taxableGain)} color="#10b981" />
+              )}
+              <Row label={lang === 'he' ? 'שבח חייב' : 'Taxable gain'} value={fmt(r.taxableGain)} />
+              <Row label={tr.s100TaxDue} value={fmt(r.tax)} color="#ef4444" />
+            </div>
+          ))}
+          <div className="flex justify-between items-center pt-2">
+            <span className="font-bold">{tr.s100TotalTax}</span>
+            <span className="font-bold text-xl" style={{ color: '#ef4444' }}>{fmt(totalTax)}</span>
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div className="rounded-xl p-3 mb-3 text-xs" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)', color: 'var(--text-muted)' }}>
+          ⚠️ {tr.s100DeferNote}
+        </div>
+        <div className="rounded-xl p-3 mb-4 text-xs" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid var(--accent)', color: 'var(--text-muted)' }}>
+          📅 {tr.s100Pre2003Note}
+        </div>
+        <button onClick={() => onAsk(lang === 'he' ? `סעיף 100א — מס יציאה: נכסים בשווי ${fmt(assets.reduce((s,a)=>s+a.fmv,0))}, מס יציאה משוער ${fmt(totalTax)}. האם כדאי לדחות? מה האפשרויות?` : `Section 100A exit tax: assets worth ${fmt(assets.reduce((s,a)=>s+a.fmv,0))}, estimated exit tax ${fmt(totalTax)}. Should I defer? What are my options?`)}
+          className="w-full py-2 rounded-xl text-sm font-bold hover:opacity-80 transition-opacity"
+          style={{ background: 'var(--accent)', color: 'white' }}>
+          🤖 {lang === 'he' ? 'שאל AI על אפשרויות דחיית מס' : 'Ask AI about deferral options'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── DTAA Benefit Calculator ───────────────────────────────────────────────────
+const DTAA_RATES: Record<string, Record<string, { d: number; i: number; r: number }>> = {
+  'ISRAEL-GERMANY':    { treaty: { d: 10, i: 5, r: 0  }, domestic: { d: 25, i: 25, r: 25 } } as never,
+  'ISRAEL-USA':        { treaty: { d: 12.5, i: 17.5, r: 15 }, domestic: { d: 25, i: 25, r: 25 } } as never,
+  'ISRAEL-UK':         { treaty: { d: 15, i: 15, r: 12.5 }, domestic: { d: 25, i: 25, r: 25 } } as never,
+  'ISRAEL-NETHERLANDS':{ treaty: { d: 5, i: 10, r: 5  }, domestic: { d: 25, i: 25, r: 25 } } as never,
+  'ISRAEL-CANADA':     { treaty: { d: 15, i: 15, r: 15 }, domestic: { d: 25, i: 25, r: 25 } } as never,
+  'ISRAEL-FRANCE':     { treaty: { d: 5,  i: 5,  r: 0  }, domestic: { d: 25, i: 25, r: 25 } } as never,
+  'ISRAEL-SWITZERLAND':{ treaty: { d: 5,  i: 5,  r: 5  }, domestic: { d: 25, i: 25, r: 25 } } as never,
+  'ISRAEL-SINGAPORE':  { treaty: { d: 0,  i: 5,  r: 0  }, domestic: { d: 25, i: 25, r: 25 } } as never,
+  'ISRAEL-UAE':        { treaty: { d: 0,  i: 0,  r: 0  }, domestic: { d: 25, i: 25, r: 25 } } as never,
+  'ISRAEL-PORTUGAL':   { treaty: { d: 10, i: 10, r: 10 }, domestic: { d: 25, i: 25, r: 25 } } as never,
+};
+const COUNTRIES_DTAA = ['Israel', 'Germany', 'USA', 'UK', 'Netherlands', 'Canada', 'France', 'Switzerland', 'Singapore', 'UAE', 'Portugal'];
+
+function DtaaCalcPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: string) => void; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const [source, setSource] = useState('Israel');
+  const [residence, setResidence] = useState('Germany');
+  const [incomeType, setIncomeType] = useState<'d'|'i'|'r'>('d');
+  const [amount, setAmount] = useState(50000);
+
+  const key1 = `${source.toUpperCase()}-${residence.toUpperCase()}`;
+  const key2 = `${residence.toUpperCase()}-${source.toUpperCase()}`;
+  const rates = (DTAA_RATES[key1] || DTAA_RATES[key2]) as { treaty: { d:number;i:number;r:number }; domestic: { d:number;i:number;r:number } } | undefined;
+
+  const domRate = rates ? rates.domestic[incomeType] : 25;
+  const treatyRate = rates ? rates.treaty[incomeType] : domRate;
+  const taxWithout = Math.round(amount * domRate / 100);
+  const taxWith = Math.round(amount * treatyRate / 100);
+  const saving = taxWithout - taxWith;
+  const netWithout = amount - taxWithout;
+  const netWith = amount - taxWith;
+
+  const fmtUsd = (n: number) => '$' + n.toLocaleString('en-US');
+
+  const incomeTypes = [
+    { key: 'd' as const, label: tr.dtaaIncomeDividend },
+    { key: 'i' as const, label: tr.dtaaIncomeInterest },
+    { key: 'r' as const, label: tr.dtaaIncomeRoyalties },
+  ];
+
+  return (
+    <div className="border-b overflow-y-auto" style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '65vh' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <Globe size={18} style={{ color: 'var(--accent)' }} />
+              {tr.dtaaCalcTitle}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.dtaaCalcSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        {/* Inputs */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {[
+            { label: tr.dtaaSourceCountry, val: source, setter: setSource },
+            { label: tr.dtaaResidenceCountry, val: residence, setter: setResidence },
+          ].map(({ label, val, setter }) => (
+            <div key={label}>
+              <div className="text-xs mb-1 font-semibold" style={{ color: 'var(--text-muted)' }}>{label}</div>
+              <select value={val} onChange={e => setter(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text)' }}>
+                {COUNTRIES_DTAA.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-2 mb-4">
+          {incomeTypes.map(({ key, label }) => (
+            <button key={key} onClick={() => setIncomeType(key)}
+              className="flex-1 py-2 rounded-xl text-xs font-semibold transition-all hover:opacity-80"
+              style={{ background: incomeType === key ? 'var(--accent)' : 'var(--surface-2)', color: incomeType === key ? 'white' : 'var(--text-muted)', border: incomeType === key ? 'none' : '1px solid var(--border)' }}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mb-4">
+          <div className="text-xs mb-1 font-semibold" style={{ color: 'var(--text-muted)' }}>{tr.dtaaAmount}</div>
+          <input type="number" value={amount} onChange={e => setAmount(parseFloat(e.target.value) || 0)}
+            className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+            style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+        </div>
+
+        {/* Comparison cards */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}>
+            <div className="text-xs mb-2 font-semibold" style={{ color: '#ef4444' }}>{tr.dtaaWithoutTreaty}</div>
+            <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'שיעור' : 'Rate'}: {domRate}%</div>
+            <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'מס' : 'Tax'}: <span style={{ color: '#ef4444' }}>{fmtUsd(taxWithout)}</span></div>
+            <div className="font-bold">{tr.dtaaNetInHand}: {fmtUsd(netWithout)}</div>
+          </div>
+          <div className="rounded-xl p-4" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}>
+            <div className="text-xs mb-2 font-semibold" style={{ color: '#10b981' }}>{tr.dtaaWithTreaty}</div>
+            <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'שיעור' : 'Rate'}: {treatyRate}%</div>
+            <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'מס' : 'Tax'}: <span style={{ color: '#10b981' }}>{fmtUsd(taxWith)}</span></div>
+            <div className="font-bold">{tr.dtaaNetInHand}: {fmtUsd(netWith)}</div>
+          </div>
+        </div>
+
+        {saving > 0 ? (
+          <div className="rounded-xl p-4 mb-4 text-center" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid var(--accent)' }}>
+            <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{tr.dtaaSaving}</div>
+            <div className="text-2xl font-bold" style={{ color: 'var(--accent)' }}>{fmtUsd(saving)}</div>
+          </div>
+        ) : !rates ? (
+          <div className="rounded-xl p-3 mb-4 text-sm text-center" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)', color: '#f59e0b' }}>
+            {lang === 'he' ? '⚠️ אין נתוני אמנה לצמד מדינות זה — ניתן לשאול AI לפרטים' : '⚠️ No treaty data for this country pair — ask AI for details'}
+          </div>
+        ) : null}
+
+        <button onClick={() => onAsk(lang === 'he'
+          ? `DTAA ${source}–${residence}: ${incomeTypes.find(x=>x.key===incomeType)?.label} ${fmtUsd(amount)} — שיעור מקומי ${domRate}%, שיעור אמנה ${treatyRate}%. מה הדרך הנכונה לדווח ולנצל את האמנה?`
+          : `DTAA ${source}–${residence}: ${incomeTypes.find(x=>x.key===incomeType)?.label} ${fmtUsd(amount)} — domestic rate ${domRate}%, treaty rate ${treatyRate}%. How do I correctly report and benefit from the treaty?`)}
+          className="w-full py-2 rounded-xl text-sm font-bold hover:opacity-80 transition-opacity"
+          style={{ background: 'var(--accent)', color: 'white' }}>
+          🤖 {tr.dtaaAskAi}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Annual Income Tax Calculator (Israel 2024) ────────────────────────────────
+const IL_BRACKETS = [
+  { upto: 81480,  rate: 0.10 },
+  { upto: 116760, rate: 0.14 },
+  { upto: 187440, rate: 0.20 },
+  { upto: 260520, rate: 0.31 },
+  { upto: 542160, rate: 0.35 },
+  { upto: Infinity, rate: 0.47 },
+];
+const CREDIT_POINT_VALUE = 2904; // ₪ per point per year (2024)
+const NI_CEILING = 588360;       // annual ceiling
+const NI_LOW_THRESH = 90264;     // 60% of average wage threshold
+
+function calcIncomeTax(income: number, creditPoints: number, pensionDeduction: number): number {
+  const deductible = Math.min(pensionDeduction, income * 0.07, 35000);
+  const taxable = Math.max(0, income - deductible);
+  let tax = 0;
+  let prev = 0;
+  for (const b of IL_BRACKETS) {
+    if (taxable <= prev) break;
+    const slice = Math.min(taxable, b.upto) - prev;
+    tax += slice * b.rate;
+    prev = b.upto;
+  }
+  const credit = creditPoints * CREDIT_POINT_VALUE;
+  return Math.max(0, Math.round(tax - credit));
+}
+
+function calcNI(income: number): { ni: number; health: number } {
+  const capped = Math.min(income, NI_CEILING);
+  const low = Math.min(capped, NI_LOW_THRESH);
+  const high = capped - low;
+  const ni = Math.round(low * 0.004 + high * 0.07);
+  const health = Math.round(low * 0.031 + high * 0.05);
+  return { ni, health };
+}
+
+function AnnualTaxPanel({ lang, onClose }: { lang: Lang; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const [salary, setSalary] = useState(240000);
+  const [capGains, setCapGains] = useState(0);
+  const [rental, setRental] = useState(0);
+  const [freelance, setFreelance] = useState(0);
+  const [creditPoints, setCreditPoints] = useState(2.25);
+  const [pension, setPension] = useState(16800);
+
+  const results = useMemo(() => {
+    const totalIncome = salary + freelance;
+    const incomeTax = calcIncomeTax(totalIncome, creditPoints, pension);
+    const { ni, health } = calcNI(totalIncome);
+    const capGainsTax = Math.round(capGains * 0.25);
+    const rentalTax = Math.max(0, Math.round((rental - 5471 * 12) * 0.1));
+    const totalTax = incomeTax + ni + health + capGainsTax + rentalTax;
+    const netIncome = salary + freelance + capGains + rental - totalTax;
+    const effectiveRate = totalIncome > 0 ? (totalTax / (totalIncome + capGains + rental)) * 100 : 0;
+
+    const brackets: { range: string; rate: string; tax: number }[] = [];
+    const deductible = Math.min(pension, totalIncome * 0.07, 35000);
+    const taxable = Math.max(0, totalIncome - deductible);
+    let prev = 0;
+    for (const b of IL_BRACKETS) {
+      if (taxable <= prev) break;
+      const slice = Math.min(taxable, b.upto) - prev;
+      if (slice > 0) {
+        brackets.push({
+          range: `₪${prev.toLocaleString('he-IL')} – ${b.upto === Infinity ? '∞' : '₪' + b.upto.toLocaleString('he-IL')}`,
+          rate: `${b.rate * 100}%`,
+          tax: Math.round(slice * b.rate),
+        });
+      }
+      prev = b.upto;
+    }
+
+    return { incomeTax, ni, health, capGainsTax, rentalTax, totalTax, netIncome, effectiveRate, brackets };
+  }, [salary, capGains, rental, freelance, creditPoints, pension]);
+
+  const fmt = (n: number) => '₪' + Math.round(n).toLocaleString('he-IL');
+
+  const Field = ({ label, val, setter, step = 1000 }: { label: string; val: number; setter: (v: number) => void; step?: number }) => (
+    <div>
+      <div className="text-xs mb-1 font-semibold" style={{ color: 'var(--text-muted)' }}>{label}</div>
+      <input type="number" value={val} step={step}
+        onChange={e => setter(parseFloat(e.target.value) || 0)}
+        className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+        style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+    </div>
+  );
+
+  const Row = ({ label, value, color, bold }: { label: string; value: string; color?: string; bold?: boolean }) => (
+    <div className="flex justify-between items-center py-1.5 text-sm border-b" style={{ borderColor: 'var(--border)' }}>
+      <span style={{ color: 'var(--text-muted)' }}>{label}</span>
+      <span className={bold ? 'font-bold text-base' : 'font-semibold'} style={{ color: color || 'var(--text)' }}>{value}</span>
+    </div>
+  );
+
+  return (
+    <div className="border-b overflow-y-auto" style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '70vh' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <TrendingUp size={18} style={{ color: 'var(--accent)' }} />
+              {tr.annualTaxTitle}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.annualTaxSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        {/* Inputs */}
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={tr.atSalary} val={salary} setter={setSalary} />
+            <Field label={tr.atFreelance} val={freelance} setter={setFreelance} />
+            <Field label={tr.atCapGains} val={capGains} setter={setCapGains} />
+            <Field label={tr.atRental} val={rental} setter={setRental} />
+            <Field label={tr.atPensionContrib} val={pension} setter={setPension} />
+            <div>
+              <div className="text-xs mb-1 font-semibold" style={{ color: 'var(--text-muted)' }}>{tr.atCreditPoints}</div>
+              <input type="number" value={creditPoints} step={0.25} min={0} max={10}
+                onChange={e => setCreditPoints(parseFloat(e.target.value) || 0)}
+                className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+            </div>
+          </div>
+          <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>ℹ️ {tr.atCreditNote}</p>
+        </div>
+
+        {/* Summary */}
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <h3 className="font-semibold text-sm mb-3">{lang === 'he' ? 'סיכום' : 'Summary'}</h3>
+          <Row label={tr.atIncomeTax} value={fmt(results.incomeTax)} color="#ef4444" />
+          <Row label={tr.atNationalIns} value={fmt(results.ni)} color="#f59e0b" />
+          <Row label={tr.atHealthTax} value={fmt(results.health)} color="#f59e0b" />
+          {results.capGainsTax > 0 && <Row label={lang === 'he' ? 'מס רווחי הון (25%)' : 'Capital gains tax (25%)'} value={fmt(results.capGainsTax)} color="#ef4444" />}
+          {results.rentalTax > 0 && <Row label={lang === 'he' ? 'מס שכירות' : 'Rental tax'} value={fmt(results.rentalTax)} color="#ef4444" />}
+          <div className="border-t mt-2 pt-2" style={{ borderColor: 'var(--border)' }}>
+            <Row label={tr.atTotalTax} value={fmt(results.totalTax)} color="#ef4444" bold />
+            <Row label={tr.atNetIncome} value={fmt(results.netIncome)} color="#10b981" bold />
+            <Row label={tr.atEffectiveRate} value={results.effectiveRate.toFixed(1) + '%'} />
+          </div>
+        </div>
+
+        {/* Bracket breakdown */}
+        <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <h3 className="font-semibold text-sm mb-3">{tr.atBrackets}</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr style={{ color: 'var(--text-muted)' }}>
+                  <th className="text-start py-1">{lang === 'he' ? 'טווח' : 'Range'}</th>
+                  <th className="text-center py-1">{lang === 'he' ? 'שיעור' : 'Rate'}</th>
+                  <th className="text-end py-1">{lang === 'he' ? 'מס' : 'Tax'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.brackets.map((b, i) => (
+                  <tr key={i} className="border-t" style={{ borderColor: 'var(--border)' }}>
+                    <td className="py-1.5" style={{ color: 'var(--text-muted)' }}>{b.range}</td>
+                    <td className="text-center py-1.5 font-semibold">{b.rate}</td>
+                    <td className="text-end py-1.5 font-semibold" style={{ color: '#ef4444' }}>{fmt(b.tax)}</td>
+                  </tr>
+                ))}
+                <tr className="border-t font-bold" style={{ borderColor: 'var(--border)' }}>
+                  <td className="py-1.5" colSpan={2}>{lang === 'he' ? 'ניכוי נקודות זיכוי' : 'Credit points deduction'}</td>
+                  <td className="text-end py-1.5" style={{ color: '#10b981' }}>−{fmt(creditPoints * CREDIT_POINT_VALUE)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Days Tracker ─────────────────────────────────────────────────────────────
+interface DtTrip { id: number; country: string; from: string; to: string; }
+const DT_THRESHOLD = 183;
+const DT_WARN = 150;
+const ALL_COUNTRIES_DT = ['Israel','Germany','USA','UK','Netherlands','Canada','France','Switzerland','Singapore','UAE','Portugal','Austria','Italy','Spain','Cyprus','Malta','Greece','Poland','Hungary','Estonia','Thailand','Mexico','Georgia','Serbia','Dubai'];
+
+function DaysTrackerPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: string) => void; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const STORAGE_KEY = 'taxmaster_days_tracker';
+  const [trips, setTrips] = useState<DtTrip[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+  });
+  const nextId = useRef(Date.now());
+  const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') localStorage.setItem(STORAGE_KEY, JSON.stringify(trips));
+  }, [trips]);
+
+  const addTrip = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    setTrips(t => [...t, { id: nextId.current++, country: 'Germany', from: today, to: today }]);
+  };
+  const removeTrip = (id: number) => setTrips(t => t.filter(x => x.id !== id));
+  const updateTrip = (id: number, field: keyof DtTrip, value: string) =>
+    setTrips(t => t.map(x => x.id === id ? { ...x, [field]: value } : x));
+
+  const daysBetween = (from: string, to: string) => {
+    const d = (new Date(to).getTime() - new Date(from).getTime()) / 86400000;
+    return Math.max(0, Math.round(d) + 1);
+  };
+
+  const thisYearStart = `${currentYear}-01-01`;
+  const thisYearEnd = `${currentYear}-12-31`;
+
+  const summary = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const t of trips) {
+      const from = t.from > thisYearStart ? t.from : thisYearStart;
+      const to = t.to < thisYearEnd ? t.to : thisYearEnd;
+      if (from > to) continue;
+      map[t.country] = (map[t.country] || 0) + daysBetween(from, to);
+    }
+    return Object.entries(map).sort((a, b) => b[1] - a[1]);
+  }, [trips]);
+
+  const getStatus = (days: number) => {
+    if (days >= DT_THRESHOLD) return 'resident';
+    if (days >= DT_WARN) return 'warning';
+    return 'safe';
+  };
+
+  const statusColor = { resident: '#ef4444', warning: '#f59e0b', safe: '#10b981' };
+  const statusLabel = (days: number) => {
+    const s = getStatus(days);
+    if (s === 'resident') return tr.dtResident;
+    if (s === 'warning') return `${DT_THRESHOLD - days} ${tr.dtRemaining}`;
+    return tr.dtSafe + ` (${DT_THRESHOLD - days} ${lang === 'he' ? 'יום עד הסף' : 'days to threshold'})`;
+  };
+
+  return (
+    <div className="border-b overflow-y-auto" style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '70vh' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <Calendar size={18} style={{ color: 'var(--accent)' }} />
+              {tr.daysTrackerTitle}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.daysTrackerSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        {/* Summary cards */}
+        {summary.length > 0 && (
+          <div className="mb-4">
+            <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>{tr.dtSummary} — {currentYear}</div>
+            <div className="space-y-2">
+              {summary.map(([country, days]) => {
+                const pct = Math.min(100, (days / DT_THRESHOLD) * 100);
+                const st = getStatus(days);
+                return (
+                  <div key={country} className="rounded-xl p-3" style={{ background: 'var(--surface-2)', border: `1px solid ${st === 'resident' ? 'rgba(239,68,68,0.4)' : st === 'warning' ? 'rgba(245,158,11,0.4)' : 'var(--border)'}` }}>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="font-semibold text-sm">{country}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm">{days} {lang === 'he' ? 'ימים' : 'days'}</span>
+                        <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: `${statusColor[st]}22`, color: statusColor[st] }}>
+                          {statusLabel(days)}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border)' }}>
+                      <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: statusColor[st] }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Trip list */}
+        <div className="space-y-2 mb-4">
+          {trips.map(t => (
+            <div key={t.id} className="rounded-xl p-3" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              <div className="grid grid-cols-4 gap-2 items-end">
+                <div>
+                  <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{tr.dtCountry}</div>
+                  <select value={t.country} onChange={e => updateTrip(t.id, 'country', e.target.value)}
+                    className="w-full px-2 py-1.5 rounded-lg text-xs outline-none"
+                    style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }}>
+                    {ALL_COUNTRIES_DT.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{tr.dtFrom}</div>
+                  <input type="date" value={t.from} onChange={e => updateTrip(t.id, 'from', e.target.value)}
+                    className="w-full px-2 py-1.5 rounded-lg text-xs outline-none"
+                    style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+                </div>
+                <div>
+                  <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{tr.dtTo}</div>
+                  <input type="date" value={t.to} onChange={e => updateTrip(t.id, 'to', e.target.value)}
+                    className="w-full px-2 py-1.5 rounded-lg text-xs outline-none"
+                    style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold" style={{ color: 'var(--accent)' }}>{daysBetween(t.from, t.to)}d</span>
+                  <button onClick={() => removeTrip(t.id)} className="text-xs hover:opacity-70" style={{ color: '#ef4444' }}>{tr.dtRemove}</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button onClick={addTrip} className="w-full py-2 rounded-xl text-sm font-semibold mb-4 hover:opacity-80 transition-opacity"
+          style={{ background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px dashed var(--accent)' }}>
+          + {tr.dtAddTrip}
+        </button>
+
+        <div className="rounded-xl p-3 mb-4 text-xs" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)', color: 'var(--text-muted)' }}>
+          ⚠️ {tr.dtNote}
+        </div>
+
+        <button onClick={() => onAsk(lang === 'he'
+          ? `מונה ימי שהייה: ${summary.map(([c,d]) => `${c}: ${d} ימים`).join(', ')}. מה הסיכון לתושבות מס כפולה? מה לעשות?`
+          : `Days tracker: ${summary.map(([c,d]) => `${c}: ${d} days`).join(', ')}. What is my dual-residency tax risk?`)}
+          className="w-full py-2 rounded-xl text-sm font-bold hover:opacity-80 transition-opacity"
+          style={{ background: 'var(--accent)', color: 'white' }}>
+          🤖 {lang === 'he' ? 'שאל AI על סיכון תושבות כפולה' : 'Ask AI about dual-residency risk'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Emigration ROI ────────────────────────────────────────────────────────────
+const ROI_COUNTRIES: Record<string, { name: string; taxRate: number; exitTaxRate: number; color: string }> = {
+  GERMANY:     { name: 'Germany',     taxRate: 0.42, exitTaxRate: 0.25, color: '#6366f1' },
+  PORTUGAL:    { name: 'Portugal',    taxRate: 0.20, exitTaxRate: 0.28, color: '#10b981' },
+  UAE:         { name: 'UAE / Dubai', taxRate: 0.00, exitTaxRate: 0.00, color: '#f59e0b' },
+  CYPRUS:      { name: 'Cyprus',      taxRate: 0.125, exitTaxRate: 0.00, color: '#06b6d4' },
+  MALTA:       { name: 'Malta',       taxRate: 0.15, exitTaxRate: 0.00, color: '#8b5cf6' },
+  GEORGIA:     { name: 'Georgia',     taxRate: 0.05, exitTaxRate: 0.00, color: '#ec4899' },
+  SINGAPORE:   { name: 'Singapore',   taxRate: 0.17, exitTaxRate: 0.00, color: '#14b8a6' },
+  THAILAND:    { name: 'Thailand',    taxRate: 0.17, exitTaxRate: 0.00, color: '#f97316' },
+};
+const IL_EFFECTIVE_RATE = 0.33; // approximate effective rate on 240K+ ₪ income
+
+function EmigROIPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: string) => void; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const [securities, setSecurities] = useState(1000000);
+  const [realEstate, setRealEstate] = useState(500000);
+  const [business, setBusiness] = useState(0);
+  const [annualIncome, setAnnualIncome] = useState(400000);
+  const [selected, setSelected] = useState<string[]>(['UAE', 'PORTUGAL', 'GEORGIA']);
+
+  const toggleCountry = (code: string) => {
+    setSelected(s => s.includes(code) ? s.filter(x => x !== code) : s.length < 4 ? [...s, code] : s);
+  };
+
+  const results = useMemo(() => {
+    const taxableAssets = securities * 0.5 + realEstate * 0.4 + business * 0.5;
+    const israelExitTax = Math.round(taxableAssets * 0.25);
+    const israelAnnualTax = Math.round(annualIncome * IL_EFFECTIVE_RATE);
+
+    return selected.map(code => {
+      const c = ROI_COUNTRIES[code];
+      const destExitTax = Math.round(taxableAssets * c.exitTaxRate);
+      const totalExitCost = israelExitTax + destExitTax;
+      const destAnnualTax = Math.round(annualIncome * c.taxRate);
+      const annualSaving = israelAnnualTax - destAnnualTax;
+      const breakEven = annualSaving > 0 ? totalExitCost / annualSaving : Infinity;
+      const netAfter10 = annualSaving * 10 - totalExitCost;
+      const chartData = Array.from({ length: 11 }, (_, yr) => ({
+        yr, cumSaving: Math.round(annualSaving * yr - totalExitCost),
+      }));
+      return { code, ...c, totalExitCost, annualSaving, breakEven, netAfter10, chartData };
+    });
+  }, [securities, realEstate, business, annualIncome, selected]);
+
+  const fmtIL = (n: number) => (n < 0 ? '−' : '') + '₪' + Math.abs(Math.round(n)).toLocaleString('he-IL');
+
+  return (
+    <div className="border-b overflow-y-auto" style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '75vh' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <TrendingUp size={18} style={{ color: 'var(--accent)' }} />
+              {tr.emigROITitle}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.emigROISubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        {/* Inputs */}
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: tr.emigSecurities, val: securities, setter: setSecurities },
+              { label: tr.emigRealEstate, val: realEstate, setter: setRealEstate },
+              { label: tr.emigBusiness, val: business, setter: setBusiness },
+              { label: tr.emigAnnualIncome, val: annualIncome, setter: setAnnualIncome },
+            ].map(({ label, val, setter }) => (
+              <div key={label}>
+                <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{label}</div>
+                <input type="number" value={val} onChange={e => setter(parseFloat(e.target.value) || 0)}
+                  className="w-full px-3 py-1.5 rounded-lg text-sm outline-none"
+                  style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Country selector */}
+        <div className="mb-4">
+          <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>{tr.emigSelectDest}</div>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(ROI_COUNTRIES).map(([code, c]) => (
+              <button key={code} onClick={() => toggleCountry(code)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
+                style={{ background: selected.includes(code) ? c.color : 'var(--surface-2)', color: selected.includes(code) ? 'white' : 'var(--text-muted)', border: `1px solid ${selected.includes(code) ? c.color : 'var(--border)'}` }}>
+                {c.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Result cards */}
+        <div className="space-y-3 mb-4">
+          {results.map(r => (
+            <div key={r.code} className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: `1px solid ${r.color}44` }}>
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-bold" style={{ color: r.color }}>{r.name}</span>
+                <span className="text-xs px-2 py-1 rounded-full font-semibold"
+                  style={{ background: `${r.color}22`, color: r.color }}>
+                  {r.taxRate * 100}% {lang === 'he' ? 'מס' : 'tax'}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="rounded-lg p-2" style={{ background: 'var(--surface)' }}>
+                  <div className="text-xs mb-0.5" style={{ color: 'var(--text-muted)' }}>{tr.emigExitTax}</div>
+                  <div className="font-bold text-sm" style={{ color: '#ef4444' }}>{fmtIL(r.totalExitCost)}</div>
+                </div>
+                <div className="rounded-lg p-2" style={{ background: 'var(--surface)' }}>
+                  <div className="text-xs mb-0.5" style={{ color: 'var(--text-muted)' }}>{tr.emigAnnualSaving}</div>
+                  <div className="font-bold text-sm" style={{ color: r.annualSaving > 0 ? '#10b981' : '#ef4444' }}>{fmtIL(r.annualSaving)}</div>
+                </div>
+                <div className="rounded-lg p-2" style={{ background: 'var(--surface)' }}>
+                  <div className="text-xs mb-0.5" style={{ color: 'var(--text-muted)' }}>{tr.emigBreakEven}</div>
+                  <div className="font-bold text-sm" style={{ color: r.color }}>
+                    {r.annualSaving <= 0 ? '∞' : r.breakEven < 100 ? r.breakEven.toFixed(1) : '∞'}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-2 text-center">
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.emigNetAfter10}: </span>
+                <span className="text-sm font-bold" style={{ color: r.netAfter10 > 0 ? '#10b981' : '#ef4444' }}>{fmtIL(r.netAfter10)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Cumulative savings chart */}
+        {results.length > 0 && (
+          <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+            <div className="text-xs font-semibold mb-3" style={{ color: 'var(--text-muted)' }}>{tr.emigChart}</div>
+            <ResponsiveContainer width="100%" height={180}>
+              <AreaChart data={Array.from({ length: 11 }, (_, yr) => {
+                const point: Record<string, number> = { yr };
+                results.forEach(r => { point[r.name] = r.annualSaving * yr - r.totalExitCost; });
+                return point;
+              })}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                <XAxis dataKey="yr" tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                  tickFormatter={v => `${lang === 'he' ? 'שנה' : 'Yr'} ${v}`} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                  tickFormatter={v => v >= 0 ? `₪${(v/1000).toFixed(0)}K` : `-₪${Math.abs(v/1000).toFixed(0)}K`} />
+                <Tooltip formatter={(v) => fmtIL(Number(v))} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                {results.map(r => (
+                  <Area key={r.code} type="monotone" dataKey={r.name}
+                    stroke={r.color} fill={`${r.color}22`} strokeWidth={2} dot={false} />
+                ))}
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        <button onClick={() => onAsk(lang === 'he'
+          ? `ROI יציאה: נכסים ${fmtIL(securities + realEstate + business)}, הכנסה שנתית ${fmtIL(annualIncome)}. המדינות הטובות ביותר: ${results.map(r => `${r.name} (${r.breakEven < 100 ? r.breakEven.toFixed(1) + ' שנות החזר' : 'לא כדאי'}`).join(', ')}. מה מומלץ?`
+          : `Emigration ROI: assets ${fmtIL(securities + realEstate + business)}, annual income ${fmtIL(annualIncome)}. Top countries: ${results.map(r => `${r.name} (${r.breakEven < 100 ? r.breakEven.toFixed(1) + ' yr payback' : 'no saving'}`).join(', ')}. What do you recommend?`)}
+          className="w-full py-2 rounded-xl text-sm font-bold hover:opacity-80 transition-opacity"
+          style={{ background: 'var(--accent)', color: 'white' }}>
+          🤖 {lang === 'he' ? 'שאל AI איזו מדינה הכי כדאית' : 'Ask AI which country is best'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Multi-Year Tax Projection ──────────────────────────────────────────────────
+const MY_COUNTRIES: Record<string, { nameEn: string; nameHe: string; effectiveRate: number; color: string }> = {
+  ISRAEL:    { nameEn: 'Israel',    nameHe: 'ישראל',    effectiveRate: 0.33,  color: '#6366f1' },
+  GERMANY:   { nameEn: 'Germany',   nameHe: 'גרמניה',   effectiveRate: 0.40,  color: '#ef4444' },
+  PORTUGAL:  { nameEn: 'Portugal',  nameHe: 'פורטוגל',  effectiveRate: 0.20,  color: '#10b981' },
+  UAE:       { nameEn: 'UAE',       nameHe: 'דובאי/UAE', effectiveRate: 0.00, color: '#f59e0b' },
+  CYPRUS:    { nameEn: 'Cyprus',    nameHe: 'קפריסין',  effectiveRate: 0.125, color: '#06b6d4' },
+  GEORGIA:   { nameEn: 'Georgia',   nameHe: 'גאורגיה',  effectiveRate: 0.05,  color: '#ec4899' },
+  SINGAPORE: { nameEn: 'Singapore', nameHe: 'סינגפור',  effectiveRate: 0.17,  color: '#14b8a6' },
+};
+const myCountryName = (code: string, lang: Lang) => MY_COUNTRIES[code]?.[lang === 'he' ? 'nameHe' : 'nameEn'] ?? code;
+
+function MultiYearPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: string) => void; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const [annualIncome, setAnnualIncome] = useState(400000);
+  const [growthPct, setGrowthPct] = useState(3);
+  const [selected, setSelected] = useState(['ISRAEL', 'UAE', 'PORTUGAL']);
+  const YEARS = 10;
+
+  const toggleCountry = (code: string) => {
+    if (code === 'ISRAEL') return;
+    setSelected(s => s.includes(code) ? s.filter(x => x !== code) : s.length < 4 ? [...s, code] : s);
+  };
+
+  const projData = useMemo(() => {
+    return Array.from({ length: YEARS + 1 }, (_, yr) => {
+      const income = annualIncome * Math.pow(1 + growthPct / 100, yr);
+      const point: Record<string, number | string> = { yr };
+      selected.forEach(code => {
+        const c = MY_COUNTRIES[code];
+        if (!c) return;
+        point[code] = Math.round(income * (1 - c.effectiveRate));
+      });
+      return point;
+    });
+  }, [annualIncome, growthPct, selected]);
+
+  const cumData = useMemo(() => {
+    const accum: Record<string, number> = {};
+    return projData.map(row => {
+      const point: Record<string, number | string> = { yr: row.yr };
+      selected.forEach(code => {
+        accum[code] = (accum[code] || 0) + ((row[code] as number) || 0);
+        point[code] = accum[code];
+      });
+      return point;
+    });
+  }, [projData, selected]);
+
+  const tableRows = projData.slice(1);
+  const israelCum = (cumData[YEARS]?.['ISRAEL'] as number) || 1;
+  const fmtIL = (n: number) => '₪' + Math.round(n).toLocaleString('he-IL');
+
+  return (
+    <div className="border-b overflow-y-auto" style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '75vh' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <BarChart3 size={18} style={{ color: 'var(--accent)' }} />
+              {tr.multiYearTitle}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.multiYearSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <div className="text-xs mb-1 font-semibold" style={{ color: 'var(--text-muted)' }}>{tr.myAnnualIncome}</div>
+            <input type="number" value={annualIncome} onChange={e => setAnnualIncome(parseFloat(e.target.value) || 0)}
+              className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+              style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+          </div>
+          <div>
+            <div className="text-xs mb-1 font-semibold" style={{ color: 'var(--text-muted)' }}>{tr.myAnnualGrowth}</div>
+            <input type="number" value={growthPct} step={0.5} onChange={e => setGrowthPct(parseFloat(e.target.value) || 0)}
+              className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+              style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>{tr.mySelectCountries}</div>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(MY_COUNTRIES).map(([code, c]) => (
+              <button key={code} onClick={() => toggleCountry(code)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
+                style={{ background: selected.includes(code) ? c.color : 'var(--surface-2)', color: selected.includes(code) ? 'white' : 'var(--text-muted)', border: `1px solid ${selected.includes(code) ? c.color : 'var(--border)'}`, cursor: code === 'ISRAEL' ? 'default' : 'pointer' }}>
+                {myCountryName(code, lang)} {code === 'ISRAEL' ? '🔒' : ''}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <div className="text-xs font-semibold mb-3" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? 'נטו מצטבר לאורך 10 שנים (₪)' : 'Cumulative net income over 10 years (₪)'}</div>
+          <ResponsiveContainer width="100%" height={200}>
+            <AreaChart data={cumData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <XAxis dataKey="yr" tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                tickFormatter={v => `${lang === 'he' ? 'שנה' : 'Yr'} ${v}`} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                tickFormatter={v => `₪${(Number(v) / 1000000).toFixed(1)}M`} />
+              <Tooltip formatter={(v) => fmtIL(Number(v))} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              {selected.map(code => {
+                const c = MY_COUNTRIES[code];
+                return c ? (
+                  <Area key={code} type="monotone" dataKey={code} name={myCountryName(code, lang)}
+                    stroke={c.color} fill={`${c.color}22`} strokeWidth={2} dot={false} />
+                ) : null;
+              })}
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="rounded-xl p-4 mb-4 overflow-x-auto" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <table className="w-full text-xs">
+            <thead>
+              <tr style={{ color: 'var(--text-muted)' }}>
+                <th className="text-start py-1.5 font-semibold">{tr.myYear}</th>
+                {selected.map(code => {
+                  const c = MY_COUNTRIES[code];
+                  return c ? <th key={code} className="text-end py-1.5 font-semibold" style={{ color: c.color }}>{myCountryName(code, lang)}</th> : null;
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {tableRows.map(row => (
+                <tr key={row.yr as number} className="border-t" style={{ borderColor: 'var(--border)' }}>
+                  <td className="py-1.5" style={{ color: 'var(--text-muted)' }}>{lang === 'he' ? `שנה ${row.yr}` : `Year ${row.yr}`}</td>
+                  {selected.map(code => {
+                    const c = MY_COUNTRIES[code];
+                    if (!c) return null;
+                    const net = (row[code] as number) || 0;
+                    const ilNet = (row['ISRAEL'] as number) || 0;
+                    return (
+                      <td key={code} className="text-end py-1.5 font-semibold" style={{ color: code !== 'ISRAEL' && net > ilNet ? '#10b981' : 'var(--text)' }}>
+                        {fmtIL(net)}
+                        {code !== 'ISRAEL' && <span className="ml-1 text-xs" style={{ color: net - ilNet > 0 ? '#10b981' : '#ef4444' }}>({net - ilNet > 0 ? '+' : ''}{fmtIL(net - ilNet)})</span>}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="border-t-2 font-bold" style={{ borderColor: 'var(--border)' }}>
+                <td className="py-2">{lang === 'he' ? 'סה"כ 10 שנים' : 'Total 10 yrs'}</td>
+                {selected.map(code => {
+                  const c = MY_COUNTRIES[code];
+                  if (!c) return null;
+                  const cum = (cumData[YEARS]?.[code] as number) || 0;
+                  const diff = cum - israelCum;
+                  return (
+                    <td key={code} className="text-end py-2" style={{ color: c.color }}>
+                      {fmtIL(cum)}
+                      {code !== 'ISRAEL' && <div className="text-xs font-normal" style={{ color: diff > 0 ? '#10b981' : '#ef4444' }}>({diff > 0 ? '+' : ''}{fmtIL(diff)})</div>}
+                    </td>
+                  );
+                })}
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <button onClick={() => onAsk(lang === 'he'
+          ? `תחזית 10 שנים: הכנסה שנתית ₪${annualIncome.toLocaleString('he-IL')}, צמיחה ${growthPct}%. מדינות: ${selected.map(c => myCountryName(c, lang)).join(', ')}. מה הכי כדאי לטווח הארוך?`
+          : `10-year projection: annual income ₪${annualIncome.toLocaleString()}, growth ${growthPct}%. Countries: ${selected.map(c => myCountryName(c, lang)).join(', ')}. What is best long-term?`)}
+          className="w-full py-2 rounded-xl text-sm font-bold hover:opacity-80 transition-opacity"
+          style={{ background: 'var(--accent)', color: 'white' }}>
+          🤖 {lang === 'he' ? 'שאל AI על האסטרטגיה הטובה ביותר' : 'Ask AI about the best long-term strategy'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function AdvisorPage() {
   const [lang, setLang] = useState<Lang>('he');
@@ -3184,9 +4626,19 @@ export default function AdvisorPage() {
   const [showDocChecklist, setShowDocChecklist] = useState(false);
   const [showTimingCalc, setShowTimingCalc] = useState(false);
   const [showTreatyLookup, setShowTreatyLookup] = useState(false);
+  const [showCountryProfiles, setShowCountryProfiles] = useState(false);
+  const [showRealEstateCalc, setShowRealEstateCalc] = useState(false);
+  const [showPensionCalc, setShowPensionCalc] = useState(false);
+  const [showSection100A, setShowSection100A] = useState(false);
+  const [showDtaaCalc, setShowDtaaCalc] = useState(false);
+  const [showAnnualTax, setShowAnnualTax] = useState(false);
+  const [showDaysTracker, setShowDaysTracker] = useState(false);
+  const [showEmigROI, setShowEmigROI] = useState(false);
+  const [showMultiYear, setShowMultiYear] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [devilMode, setDevilMode] = useState(false);
   const [planMode, setPlanMode] = useState(false);
+  const [aiProvider, setAiProvider] = useState<'gemini' | 'claude'>('gemini');
   const [savingsData, setSavingsData] = useState<SavingsAnalysis | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<{ code: string; row: Parameters<typeof CountryDetailModal>[0]['savingsRow'] } | null>(null);
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
@@ -3297,7 +4749,7 @@ export default function AdvisorPage() {
     setMessages(prev => [...prev, userMsg, assistantMsg]);
 
     try {
-      for await (const event of streamChat(messageText, profileSaved ? profile : null, conversationHistoryRef.current)) {
+      for await (const event of streamChat(messageText, profileSaved ? profile : null, conversationHistoryRef.current, aiProvider)) {
         if (event.type === 'text_delta') {
           setMessages(prev => {
             const upd = [...prev];
@@ -3458,10 +4910,64 @@ export default function AdvisorPage() {
             <Clock size={14} />
             {tr.timingCalc}
           </button>
-          <button onClick={() => { setShowTreatyLookup(!showTreatyLookup); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { setShowTreatyLookup(!showTreatyLookup); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowCountryProfiles(false); setShowRealEstateCalc(false); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTreatyLookup ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTreatyLookup ? 'var(--accent)' : 'var(--text-muted)', border: showTreatyLookup ? '1px solid var(--accent)' : '1px solid transparent' }}>
             🤝 {tr.treatyLookup}
+          </button>
+          <button onClick={() => { setShowCountryProfiles(!showCountryProfiles); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowRealEstateCalc(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showCountryProfiles ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCountryProfiles ? 'var(--accent)' : 'var(--text-muted)', border: showCountryProfiles ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Globe size={14} />
+            {tr.countryProfiles}
+          </button>
+          <button onClick={() => { setShowRealEstateCalc(!showRealEstateCalc); setShowCountryProfiles(false); setShowPensionCalc(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showRealEstateCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRealEstateCalc ? 'var(--accent)' : 'var(--text-muted)', border: showRealEstateCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Home size={14} />
+            {tr.realEstate}
+          </button>
+          <button onClick={() => { setShowPensionCalc(!showPensionCalc); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showPensionCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPensionCalc ? 'var(--accent)' : 'var(--text-muted)', border: showPensionCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <PiggyBank size={14} />
+            {tr.pensionCalc}
+          </button>
+          <button onClick={() => { setShowSection100A(!showSection100A); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowDtaaCalc(false); setShowAnnualTax(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showSection100A ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSection100A ? 'var(--accent)' : 'var(--text-muted)', border: showSection100A ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Calculator size={14} />
+            {tr.section100a}
+          </button>
+          <button onClick={() => { setShowDtaaCalc(!showDtaaCalc); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowAnnualTax(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showDtaaCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDtaaCalc ? 'var(--accent)' : 'var(--text-muted)', border: showDtaaCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Globe size={14} />
+            {tr.dtaaCalc}
+          </button>
+          <button onClick={() => { setShowAnnualTax(!showAnnualTax); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showAnnualTax ? 'var(--accent-glow)' : 'var(--surface-2)', color: showAnnualTax ? 'var(--accent)' : 'var(--text-muted)', border: showAnnualTax ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <TrendingUp size={14} />
+            {tr.annualTax}
+          </button>
+          <button onClick={() => { setShowDaysTracker(!showDaysTracker); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowEmigROI(false); setShowMultiYear(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showDaysTracker ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDaysTracker ? 'var(--accent)' : 'var(--text-muted)', border: showDaysTracker ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Calendar size={14} />
+            {tr.daysTracker}
+          </button>
+          <button onClick={() => { setShowEmigROI(!showEmigROI); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowMultiYear(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showEmigROI ? 'var(--accent-glow)' : 'var(--surface-2)', color: showEmigROI ? 'var(--accent)' : 'var(--text-muted)', border: showEmigROI ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <TrendingDown size={14} />
+            {tr.emigROI}
+          </button>
+          <button onClick={() => { setShowMultiYear(!showMultiYear); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showMultiYear ? 'var(--accent-glow)' : 'var(--surface-2)', color: showMultiYear ? 'var(--accent)' : 'var(--text-muted)', border: showMultiYear ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <BarChart3 size={14} />
+            {tr.multiYear}
           </button>
           <button onClick={() => setDevilMode(d => !d)}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
@@ -3596,6 +5102,47 @@ export default function AdvisorPage() {
           <TreatyLookupPanel lang={lang}
             onAsk={msg => { sendMessage(msg); setShowTreatyLookup(false); }}
             onClose={() => setShowTreatyLookup(false)} />
+        )}
+        {showCountryProfiles && (
+          <CountryProfilesPanel lang={lang}
+            onAsk={msg => { sendMessage(msg); setShowCountryProfiles(false); }}
+            onClose={() => setShowCountryProfiles(false)} />
+        )}
+        {showRealEstateCalc && (
+          <RealEstateCalcPanel lang={lang} onClose={() => setShowRealEstateCalc(false)} />
+        )}
+        {showPensionCalc && (
+          <PensionCalcPanel lang={lang}
+            onAsk={msg => { sendMessage(msg); setShowPensionCalc(false); }}
+            onClose={() => setShowPensionCalc(false)} />
+        )}
+        {showSection100A && (
+          <Section100APanel lang={lang}
+            onAsk={msg => { sendMessage(msg); setShowSection100A(false); }}
+            onClose={() => setShowSection100A(false)} />
+        )}
+        {showDtaaCalc && (
+          <DtaaCalcPanel lang={lang}
+            onAsk={msg => { sendMessage(msg); setShowDtaaCalc(false); }}
+            onClose={() => setShowDtaaCalc(false)} />
+        )}
+        {showAnnualTax && (
+          <AnnualTaxPanel lang={lang} onClose={() => setShowAnnualTax(false)} />
+        )}
+        {showDaysTracker && (
+          <DaysTrackerPanel lang={lang}
+            onAsk={msg => { sendMessage(msg); setShowDaysTracker(false); }}
+            onClose={() => setShowDaysTracker(false)} />
+        )}
+        {showEmigROI && (
+          <EmigROIPanel lang={lang}
+            onAsk={msg => { sendMessage(msg); setShowEmigROI(false); }}
+            onClose={() => setShowEmigROI(false)} />
+        )}
+        {showMultiYear && (
+          <MultiYearPanel lang={lang}
+            onAsk={msg => { sendMessage(msg); setShowMultiYear(false); }}
+            onClose={() => setShowMultiYear(false)} />
         )}
 
         {/* Devil mode indicator */}
@@ -3747,6 +5294,18 @@ export default function AdvisorPage() {
                 className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all hover:opacity-70"
                 style={{ color: planMode ? 'var(--accent)' : 'var(--text-muted)', background: planMode ? 'rgba(99,102,241,0.12)' : 'transparent' }}>
                 <ClipboardCheck size={15} />
+              </button>
+              <button
+                onClick={() => setAiProvider(p => p === 'gemini' ? 'claude' : 'gemini')}
+                disabled={isLoading}
+                title={aiProvider === 'claude' ? 'Claude (Anthropic) — לחץ לעבור ל-Gemini' : 'Gemini (Google) — לחץ לעבור ל-Claude'}
+                className="h-7 px-2 rounded-lg flex items-center gap-1 flex-shrink-0 transition-all hover:opacity-80 text-xs font-bold"
+                style={{
+                  background: aiProvider === 'claude' ? 'rgba(212,160,23,0.15)' : 'rgba(66,133,244,0.12)',
+                  color: aiProvider === 'claude' ? '#d4a017' : '#4285f4',
+                  border: `1px solid ${aiProvider === 'claude' ? 'rgba(212,160,23,0.3)' : 'rgba(66,133,244,0.3)'}`,
+                }}>
+                {aiProvider === 'claude' ? '✦ Claude' : '✦ Gemini'}
               </button>
               <textarea value={input} onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown} disabled={isLoading}
