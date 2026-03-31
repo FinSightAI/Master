@@ -4805,7 +4805,7 @@ export default function AdvisorPage() {
 
   return (
     <>
-    <div className="flex h-screen overflow-hidden" dir={dir} style={{ background: 'var(--background)' }}>
+    <div dir={dir} style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--background)' }}>
       {/* ── Sidebar ── */}
       <div className="w-60 flex-shrink-0 flex flex-col border-r"
         style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
@@ -5046,7 +5046,7 @@ export default function AdvisorPage() {
       </div>
 
       {/* ── Main ── */}
-      <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0 }}>
         {/* Panels */}
         {showProfile && (
           <ProfilePanel lang={lang} profile={profile} setProfile={setProfile}
@@ -5158,7 +5158,7 @@ export default function AdvisorPage() {
         )}
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 min-h-0">
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1rem', minHeight: 0 }}>
           <div className="max-w-3xl mx-auto space-y-6">
             {messages.length === 0 && (
               <div className="slide-in">
@@ -5265,7 +5265,7 @@ export default function AdvisorPage() {
         </div>
 
         {/* Input */}
-        <div className="flex-shrink-0 p-4 border-t" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
+        <div style={{ flexShrink: 0, padding: '1rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
           <div className="max-w-3xl mx-auto">
             {devilMode && (
               <div className="mb-2 px-3 py-1.5 rounded-lg text-xs flex items-center gap-2"
