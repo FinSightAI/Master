@@ -5046,7 +5046,7 @@ export default function AdvisorPage() {
       </div>
 
       {/* ── Main ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
         {/* Panels */}
         {showProfile && (
           <ProfilePanel lang={lang} profile={profile} setProfile={setProfile}
@@ -5146,6 +5146,9 @@ export default function AdvisorPage() {
             onAsk={msg => { sendMessage(msg); setShowMultiYear(false); }}
             onClose={() => setShowMultiYear(false)} />
         )}
+
+        {/* ── Chat section (always flex-col, fills remaining space) ── */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
 
         {/* Devil mode indicator */}
         {devilMode && (
@@ -5331,6 +5334,7 @@ export default function AdvisorPage() {
             </p>
           </div>
         </div>
+        </div>{/* end chat section wrapper */}
       </div>
     </div>
 
