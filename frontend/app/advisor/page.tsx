@@ -5267,7 +5267,7 @@ export default function AdvisorPage() {
         </div>
 
         {/* Input */}
-        <div style={{ flex: '0 0 auto', padding: '1rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
+        <div style={{ marginTop: 'auto', flex: '0 0 auto', padding: '1rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
           <div className="max-w-3xl mx-auto">
             {devilMode && (
               <div className="mb-2 px-3 py-1.5 rounded-lg text-xs flex items-center gap-2"
