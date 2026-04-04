@@ -4805,10 +4805,9 @@ export default function AdvisorPage() {
 
   return (
     <>
-    <div dir={dir} style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--background)' }}>
+    <div dir={dir} style={{ position: 'fixed', inset: 0, display: 'flex', background: 'var(--background)' }}>
       {/* ── Sidebar ── */}
-      <div className="w-60 flex-shrink-0 flex flex-col border-r"
-        style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+      <div style={{ width: '240px', flexShrink: 0, display: 'flex', flexDirection: 'column', background: 'var(--surface)', borderRight: '1px solid var(--border)', overflow: 'hidden' }}>
         {/* Logo + lang toggle */}
         <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
           <div className="flex items-center gap-2">
@@ -5046,7 +5045,7 @@ export default function AdvisorPage() {
       </div>
 
       {/* ── Main ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0, minHeight: 0 }}>
         {/* Panels */}
         {showProfile && (
           <ProfilePanel lang={lang} profile={profile} setProfile={setProfile}
@@ -5147,8 +5146,8 @@ export default function AdvisorPage() {
             onClose={() => setShowMultiYear(false)} />
         )}
 
-        {/* ── Chat section (always flex-col, fills remaining space) ── */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
+        {/* ── Chat section ── */}
+        <div style={{ flex: '1 1 0', display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
 
         {/* Devil mode indicator */}
         {devilMode && (
@@ -5161,7 +5160,7 @@ export default function AdvisorPage() {
         )}
 
         {/* Messages */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1rem', minHeight: 0 }}>
+        <div style={{ flex: '1 1 0', overflowY: 'auto', padding: '1rem' }}>
           <div className="max-w-3xl mx-auto space-y-6">
             {messages.length === 0 && (
               <div className="slide-in">
@@ -5268,7 +5267,7 @@ export default function AdvisorPage() {
         </div>
 
         {/* Input */}
-        <div style={{ flexShrink: 0, padding: '1rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
+        <div style={{ flex: '0 0 auto', padding: '1rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
           <div className="max-w-3xl mx-auto">
             {devilMode && (
               <div className="mb-2 px-3 py-1.5 rounded-lg text-xs flex items-center gap-2"
