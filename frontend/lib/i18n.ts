@@ -416,6 +416,28 @@ export const t = {
     myCumulative: 'מצטבר נטו',
     mySaving: 'חיסכון מצטבר',
     myVsIsrael: 'לעומת ישראל',
+    // Real Estate Abroad
+    realEstateAbroad: 'נדל"ן בחו"ל',
+    realEstateAbroadTitle: 'מחשבון נדל"ן בחו"ל',
+    realEstateAbroadSubtitle: 'חשב מס שבח, מס שכירות ויתרת מס ישראלי עם זיכוי מס זר',
+    reaCountry: 'מדינה',
+    reaPurchasePrice: 'מחיר קנייה (מטבע מקומי)',
+    reaSalePrice: 'מחיר מכירה משוער',
+    reaRentalIncome: 'הכנסת שכירות שנתית',
+    reaHoldingYears: 'שנות החזקה',
+    reaCgtDest: 'מס שבח במדינת יעד',
+    reaRentalTaxDest: 'מס שכירות במדינת יעד',
+    reaIsraelTax: 'מס ישראלי (25%)',
+    reaForeignCredit: 'זיכוי מס זר',
+    reaNetIsraelTax: 'מס ישראלי נטו',
+    reaNetRate: 'שיעור אפקטיבי כולל',
+    reaNote: 'חישוב אינדיקטיבי בלבד. דרוש ייעוץ מומחה לפני כל עסקה.',
+    // Save Calculations
+    saveCalc: 'שמור חישוב',
+    calcSaved: 'נשמר ✓',
+    // 183-day notifications
+    notif183: 'התראות 183 יום',
+    notif183On: 'התראות פעילות ✓',
 },
   en: {
     appName: 'Tax Master AI',
@@ -832,6 +854,28 @@ export const t = {
     myCumulative: 'Cumulative Net',
     mySaving: 'Cumulative Saving',
     myVsIsrael: 'vs Israel',
+    // Real Estate Abroad
+    realEstateAbroad: 'Real Estate Abroad',
+    realEstateAbroadTitle: 'International Real Estate Calculator',
+    realEstateAbroadSubtitle: 'Calculate CGT, rental tax and Israeli net tax with foreign tax credit',
+    reaCountry: 'Country',
+    reaPurchasePrice: 'Purchase Price (local currency)',
+    reaSalePrice: 'Expected Sale Price',
+    reaRentalIncome: 'Annual Rental Income',
+    reaHoldingYears: 'Holding Period (Years)',
+    reaCgtDest: 'CGT in Destination Country',
+    reaRentalTaxDest: 'Rental Tax in Destination',
+    reaIsraelTax: 'Israeli Tax (25%)',
+    reaForeignCredit: 'Foreign Tax Credit',
+    reaNetIsraelTax: 'Net Israeli Tax',
+    reaNetRate: 'Total Effective Rate',
+    reaNote: 'Indicative calculation only. Consult a tax advisor before any transaction.',
+    // Save Calculations
+    saveCalc: 'Save Calculation',
+    calcSaved: 'Saved ✓',
+    // 183-day notifications
+    notif183: '183-Day Alerts',
+    notif183On: 'Alerts Active ✓',
   },
 };
 

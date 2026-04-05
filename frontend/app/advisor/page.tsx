@@ -7,7 +7,7 @@ import {
   Send, Settings, ChevronDown, ChevronUp, Zap,
   RotateCcw, Globe, BarChart3, X, Plus, TrendingDown, History, Clock,
   FileText, Download, Calculator, ClipboardCheck, Building2, Bell, Bookmark, Calendar,
-  Swords, Mail, GitCompare, TrendingUp, Shuffle, Home, PiggyBank
+  Swords, Mail, GitCompare, TrendingUp, Shuffle, Home, PiggyBank, Printer
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { streamChat, fetchSavings, fetchCountry, analyzeDocument, fetchIsraelAnalysis, fetchCompanyAnalysis, fetchTaxUpdates } from '../../lib/api';
@@ -3969,6 +3969,7 @@ function AnnualTaxPanel({ lang, onClose }: { lang: Lang; onClose: () => void }) 
   const [freelance, setFreelance] = useState(0);
   const [creditPoints, setCreditPoints] = useState(2.25);
   const [pension, setPension] = useState(16800);
+  const [savedMsg, setSavedMsg] = useState(false);
 
   const results = useMemo(() => {
     const totalIncome = salary + freelance;
@@ -4067,6 +4068,19 @@ function AnnualTaxPanel({ lang, onClose }: { lang: Lang; onClose: () => void }) 
           </div>
         </div>
 
+        {/* Save button */}
+        <button onClick={() => {
+          const saved = JSON.parse(localStorage.getItem('taxmaster_saved_calcs') || '[]');
+          saved.unshift({ id: Date.now(), type: 'annualTax', salary, capGains, rental, freelance, creditPoints, pension, results, savedAt: new Date().toISOString() });
+          localStorage.setItem('taxmaster_saved_calcs', JSON.stringify(saved.slice(0, 20)));
+          setSavedMsg(true);
+          setTimeout(() => setSavedMsg(false), 2000);
+        }}
+          className="w-full py-2 rounded-xl text-sm font-semibold mb-4 hover:opacity-80 transition-all"
+          style={{ background: savedMsg ? 'rgba(16,185,129,0.15)' : 'var(--surface-2)', color: savedMsg ? '#10b981' : 'var(--text-muted)', border: `1px solid ${savedMsg ? '#10b981' : 'var(--border)'}` }}>
+          {savedMsg ? tr.calcSaved : `💾 ${tr.saveCalc}`}
+        </button>
+
         {/* Bracket breakdown */}
         <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
           <h3 className="font-semibold text-sm mb-3">{tr.atBrackets}</h3>
@@ -4109,9 +4123,14 @@ const ALL_COUNTRIES_DT = ['Israel','Germany','USA','UK','Netherlands','Canada','
 function DaysTrackerPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: string) => void; onClose: () => void }) {
   const tr = useTranslation(lang);
   const STORAGE_KEY = 'taxmaster_days_tracker';
+  const NOTIF_KEY = 'taxmaster_notif_enabled';
   const [trips, setTrips] = useState<DtTrip[]>(() => {
     if (typeof window === 'undefined') return [];
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+  });
+  const [notifEnabled, setNotifEnabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(NOTIF_KEY) === '1';
   });
   const nextId = useRef(Date.now());
   const currentYear = new Date().getFullYear();
@@ -4119,6 +4138,22 @@ function DaysTrackerPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: s
   useEffect(() => {
     if (typeof window !== 'undefined') localStorage.setItem(STORAGE_KEY, JSON.stringify(trips));
   }, [trips]);
+
+  const toggleNotifications = async () => {
+    if (!notifEnabled) {
+      const perm = await Notification.requestPermission();
+      if (perm === 'granted') {
+        setNotifEnabled(true);
+        localStorage.setItem(NOTIF_KEY, '1');
+        new Notification(lang === 'he' ? '🔔 התראות פעילות' : '🔔 Alerts Active', {
+          body: lang === 'he' ? 'תקבל התראה כשמדינה תתקרב ל-183 ימים' : 'You\'ll be alerted when a country approaches 183 days',
+        });
+      }
+    } else {
+      setNotifEnabled(false);
+      localStorage.setItem(NOTIF_KEY, '0');
+    }
+  };
 
   const addTrip = () => {
     const today = new Date().toISOString().slice(0, 10);
@@ -4146,6 +4181,30 @@ function DaysTrackerPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: s
     }
     return Object.entries(map).sort((a, b) => b[1] - a[1]);
   }, [trips]);
+
+  useEffect(() => {
+    if (!notifEnabled || typeof window === 'undefined') return;
+    const warn = summary.filter(([, d]) => d >= DT_WARN && d < DT_THRESHOLD);
+    const over = summary.filter(([, d]) => d >= DT_THRESHOLD);
+    const lastFired = localStorage.getItem('taxmaster_notif_last') || '';
+    const today = new Date().toISOString().slice(0, 10);
+    if (today === lastFired) return;
+    if (over.length > 0) {
+      new Notification(lang === 'he' ? '⚠️ התראת תושבות מס' : '⚠️ Tax Residency Alert', {
+        body: lang === 'he'
+          ? `חצית את 183 הימים ב: ${over.map(([c]) => c).join(', ')}`
+          : `You've crossed 183 days in: ${over.map(([c]) => c).join(', ')}`,
+      });
+      localStorage.setItem('taxmaster_notif_last', today);
+    } else if (warn.length > 0) {
+      new Notification(lang === 'he' ? '🔔 קרב לסף 183 ימים' : '🔔 Approaching 183-Day Threshold', {
+        body: lang === 'he'
+          ? `שים לב: ${warn.map(([c, d]) => `${c}: ${d} ימים`).join(', ')}`
+          : `Watch out: ${warn.map(([c, d]) => `${c}: ${d} days`).join(', ')}`,
+      });
+      localStorage.setItem('taxmaster_notif_last', today);
+    }
+  }, [notifEnabled, summary, lang]);
 
   const getStatus = (days: number) => {
     if (days >= DT_THRESHOLD) return 'resident';
@@ -4247,13 +4306,20 @@ function DaysTrackerPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: s
           ⚠️ {tr.dtNote}
         </div>
 
-        <button onClick={() => onAsk(lang === 'he'
-          ? `מונה ימי שהייה: ${summary.map(([c,d]) => `${c}: ${d} ימים`).join(', ')}. מה הסיכון לתושבות מס כפולה? מה לעשות?`
-          : `Days tracker: ${summary.map(([c,d]) => `${c}: ${d} days`).join(', ')}. What is my dual-residency tax risk?`)}
-          className="w-full py-2 rounded-xl text-sm font-bold hover:opacity-80 transition-opacity"
-          style={{ background: 'var(--accent)', color: 'white' }}>
-          🤖 {lang === 'he' ? 'שאל AI על סיכון תושבות כפולה' : 'Ask AI about dual-residency risk'}
-        </button>
+        <div className="flex gap-2">
+          <button onClick={() => onAsk(lang === 'he'
+            ? `מונה ימי שהייה: ${summary.map(([c,d]) => `${c}: ${d} ימים`).join(', ')}. מה הסיכון לתושבות מס כפולה? מה לעשות?`
+            : `Days tracker: ${summary.map(([c,d]) => `${c}: ${d} days`).join(', ')}. What is my dual-residency tax risk?`)}
+            className="flex-1 py-2 rounded-xl text-sm font-bold hover:opacity-80 transition-opacity"
+            style={{ background: 'var(--accent)', color: 'white' }}>
+            🤖 {lang === 'he' ? 'שאל AI על סיכון תושבות כפולה' : 'Ask AI about dual-residency risk'}
+          </button>
+          <button onClick={toggleNotifications}
+            className="py-2 px-3 rounded-xl text-sm font-semibold hover:opacity-80 transition-all flex-shrink-0"
+            style={{ background: notifEnabled ? 'rgba(16,185,129,0.15)' : 'var(--surface-2)', color: notifEnabled ? '#10b981' : 'var(--text-muted)', border: `1px solid ${notifEnabled ? '#10b981' : 'var(--border)'}` }}>
+            {notifEnabled ? `🔔 ${tr.notif183On}` : `🔔 ${tr.notif183}`}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -4605,6 +4671,153 @@ function MultiYearPanel({ lang, onAsk, onClose }: { lang: Lang; onAsk: (msg: str
   );
 }
 
+// ─── Real Estate Abroad Calculator ────────────────────────────────────────────
+const REA_COUNTRIES: Record<string, { name: string; cgtRate: number; rentalRate: number; cgtExemptYears?: number }> = {
+  UAE:      { name: 'UAE / Dubai',  cgtRate: 0,    rentalRate: 0 },
+  Cyprus:   { name: 'Cyprus',       cgtRate: 0,    rentalRate: 0 },
+  Portugal: { name: 'Portugal',     cgtRate: 0.28, rentalRate: 0.28 },
+  Germany:  { name: 'Germany',      cgtRate: 0,    rentalRate: 0.15, cgtExemptYears: 10 },
+  Greece:   { name: 'Greece',       cgtRate: 0.15, rentalRate: 0.15 },
+  Spain:    { name: 'Spain',        cgtRate: 0.19, rentalRate: 0.24 },
+  USA:      { name: 'USA',          cgtRate: 0.20, rentalRate: 0.30 },
+  Thailand: { name: 'Thailand',     cgtRate: 0,    rentalRate: 0.15 },
+  Georgia:  { name: 'Georgia',      cgtRate: 0.05, rentalRate: 0.20 },
+  Turkey:   { name: 'Turkey',       cgtRate: 0,    rentalRate: 0.15, cgtExemptYears: 5 },
+  Malta:    { name: 'Malta',        cgtRate: 0.08, rentalRate: 0.15 },
+  Italy:    { name: 'Italy',        cgtRate: 0.26, rentalRate: 0.21, cgtExemptYears: 5 },
+};
+
+function RealEstateAbroadPanel({ lang, onClose }: { lang: Lang; onClose: () => void }) {
+  const tr = useTranslation(lang);
+  const [country, setCountry] = useState('UAE');
+  const [purchasePrice, setPurchasePrice] = useState(1000000);
+  const [salePrice, setSalePrice] = useState(1300000);
+  const [rentalIncome, setRentalIncome] = useState(60000);
+  const [holdingYears, setHoldingYears] = useState(5);
+  const [savedMsg, setSavedMsg] = useState(false);
+
+  const results = useMemo(() => {
+    const c = REA_COUNTRIES[country];
+    const gain = Math.max(0, salePrice - purchasePrice);
+    const isCgtExempt = c.cgtExemptYears != null && holdingYears >= c.cgtExemptYears;
+    const effectiveCgt = isCgtExempt ? 0 : c.cgtRate;
+    const cgtDest = Math.round(gain * effectiveCgt);
+    const rentalTaxDest = Math.round(rentalIncome * c.rentalRate);
+    const israelCgt = Math.round(gain * 0.25);
+    const foreignCredit = Math.min(israelCgt, cgtDest);
+    const netIsraelTax = Math.max(0, israelCgt - foreignCredit);
+    const totalCgt = cgtDest + netIsraelTax;
+    const totalTax = totalCgt + rentalTaxDest;
+    const netRate = gain > 0 ? (totalCgt / gain) * 100 : 0;
+    return { gain, cgtDest, rentalTaxDest, israelCgt, foreignCredit, netIsraelTax, totalCgt, totalTax, netRate, effectiveCgt, isCgtExempt };
+  }, [country, purchasePrice, salePrice, rentalIncome, holdingYears]);
+
+  const fmt = (n: number) => Math.round(n).toLocaleString();
+
+  const saveCalc = () => {
+    const saved = JSON.parse(localStorage.getItem('taxmaster_saved_calcs') || '[]');
+    saved.unshift({
+      id: Date.now(),
+      type: 'realEstateAbroad',
+      country,
+      purchasePrice,
+      salePrice,
+      rentalIncome,
+      holdingYears,
+      results,
+      savedAt: new Date().toISOString(),
+    });
+    localStorage.setItem('taxmaster_saved_calcs', JSON.stringify(saved.slice(0, 20)));
+    setSavedMsg(true);
+    setTimeout(() => setSavedMsg(false), 2000);
+  };
+
+  const Field = ({ label, val, setter, step = 10000 }: { label: string; val: number; setter: (v: number) => void; step?: number }) => (
+    <div>
+      <div className="text-xs mb-1 font-semibold" style={{ color: 'var(--text-muted)' }}>{label}</div>
+      <input type="number" value={val} step={step}
+        onChange={e => setter(parseFloat(e.target.value) || 0)}
+        className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+        style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+    </div>
+  );
+
+  const Row = ({ label, value, color, bold }: { label: string; value: string; color?: string; bold?: boolean }) => (
+    <div className="flex justify-between items-center py-1.5 text-sm border-b" style={{ borderColor: 'var(--border)' }}>
+      <span style={{ color: 'var(--text-muted)' }}>{label}</span>
+      <span className={bold ? 'font-bold text-base' : 'font-semibold'} style={{ color: color || 'var(--text)' }}>{value}</span>
+    </div>
+  );
+
+  return (
+    <div className="border-b overflow-y-auto" style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '70vh' }}>
+      <div className="max-w-3xl mx-auto p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <Globe size={18} style={{ color: 'var(--accent)' }} />
+              {tr.realEstateAbroadTitle}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{tr.realEstateAbroadSubtitle}</p>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:opacity-70" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+        </div>
+
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <div className="mb-3">
+            <div className="text-xs mb-1 font-semibold" style={{ color: 'var(--text-muted)' }}>{tr.reaCountry}</div>
+            <select value={country} onChange={e => setCountry(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+              style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }}>
+              {Object.entries(REA_COUNTRIES).map(([k, v]) => <option key={k} value={k}>{v.name}</option>)}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={tr.reaPurchasePrice} val={purchasePrice} setter={setPurchasePrice} />
+            <Field label={tr.reaSalePrice} val={salePrice} setter={setSalePrice} />
+            <Field label={tr.reaRentalIncome} val={rentalIncome} setter={setRentalIncome} step={1000} />
+            <Field label={tr.reaHoldingYears} val={holdingYears} setter={setHoldingYears} step={1} />
+          </div>
+          {REA_COUNTRIES[country].cgtExemptYears != null && (
+            <p className="text-xs mt-2" style={{ color: 'var(--accent)' }}>
+              ℹ️ {country === 'Germany'
+                ? (lang === 'he' ? 'גרמניה: פטור ממס שבח לאחר 10 שנות החזקה' : 'Germany: CGT exempt after 10 years of ownership')
+                : country === 'Turkey'
+                ? (lang === 'he' ? 'טורקיה: פטור ממס שבח לאחר 5 שנות החזקה' : 'Turkey: CGT exempt after 5 years of ownership')
+                : (lang === 'he' ? `פטור ממס שבח לאחר ${REA_COUNTRIES[country].cgtExemptYears} שנים` : `CGT exempt after ${REA_COUNTRIES[country].cgtExemptYears} years`)}
+              {results.isCgtExempt && <span style={{ color: '#10b981' }}>{lang === 'he' ? ' — פטור חל!' : ' — Exemption applies!'}</span>}
+            </p>
+          )}
+        </div>
+
+        <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <h3 className="font-semibold text-sm mb-3">{lang === 'he' ? 'סיכום מס' : 'Tax Summary'}</h3>
+          <Row label={lang === 'he' ? 'רווח הון' : 'Capital Gain'} value={fmt(results.gain)} />
+          <Row label={`${tr.reaCgtDest} (${(results.effectiveCgt * 100).toFixed(0)}%)`} value={fmt(results.cgtDest)} color="#f59e0b" />
+          <Row label={tr.reaIsraelTax} value={fmt(results.israelCgt)} color="#f59e0b" />
+          <Row label={`${tr.reaForeignCredit} (−)`} value={fmt(results.foreignCredit)} color="#10b981" />
+          <div className="border-t mt-2 pt-2" style={{ borderColor: 'var(--border)' }}>
+            <Row label={tr.reaNetIsraelTax} value={fmt(results.netIsraelTax)} color="#ef4444" bold />
+            <Row label={lang === 'he' ? 'סה"כ מס שבח (שתי מדינות)' : 'Total CGT (both countries)'} value={fmt(results.totalCgt)} color="#ef4444" bold />
+            <Row label={tr.reaRentalTaxDest} value={`${fmt(results.rentalTaxDest)}/yr`} color="#f59e0b" />
+            <Row label={tr.reaNetRate} value={results.netRate.toFixed(1) + '%'} />
+          </div>
+        </div>
+
+        <div className="rounded-xl p-3 mb-4 text-xs" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)', color: 'var(--text-muted)' }}>
+          ⚠️ {tr.reaNote}
+        </div>
+
+        <button onClick={saveCalc}
+          className="w-full py-2 rounded-xl text-sm font-semibold hover:opacity-80 transition-all"
+          style={{ background: savedMsg ? 'rgba(16,185,129,0.15)' : 'var(--surface-2)', color: savedMsg ? '#10b981' : 'var(--text-muted)', border: `1px solid ${savedMsg ? '#10b981' : 'var(--border)'}` }}>
+          {savedMsg ? tr.calcSaved : `💾 ${tr.saveCalc}`}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function AdvisorPage() {
   const [mounted, setMounted] = useState(false);
@@ -4636,6 +4849,7 @@ export default function AdvisorPage() {
   const [showDaysTracker, setShowDaysTracker] = useState(false);
   const [showEmigROI, setShowEmigROI] = useState(false);
   const [showMultiYear, setShowMultiYear] = useState(false);
+  const [showRealEstateAbroad, setShowRealEstateAbroad] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [devilMode, setDevilMode] = useState(false);
   const [planMode, setPlanMode] = useState(false);
@@ -4970,6 +5184,12 @@ export default function AdvisorPage() {
             <BarChart3 size={14} />
             {tr.multiYear}
           </button>
+          <button onClick={() => { setShowRealEstateAbroad(!showRealEstateAbroad); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showRealEstateAbroad ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRealEstateAbroad ? 'var(--accent)' : 'var(--text-muted)', border: showRealEstateAbroad ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Globe size={14} />
+            {tr.realEstateAbroad}
+          </button>
           <button onClick={() => setDevilMode(d => !d)}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: devilMode ? 'rgba(239,68,68,0.12)' : 'var(--surface-2)', color: devilMode ? '#ef4444' : 'var(--text-muted)', border: devilMode ? '1px solid rgba(239,68,68,0.4)' : '1px solid transparent' }}>
@@ -5145,6 +5365,9 @@ export default function AdvisorPage() {
             onAsk={msg => { sendMessage(msg); setShowMultiYear(false); }}
             onClose={() => setShowMultiYear(false)} />
         )}
+        {showRealEstateAbroad && (
+          <RealEstateAbroadPanel lang={lang} onClose={() => setShowRealEstateAbroad(false)} />
+        )}
 
         {/* ── Chat section ── */}
         <div style={{ flex: '1 1 0', display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
@@ -5292,6 +5515,12 @@ export default function AdvisorPage() {
                 className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all hover:opacity-70 disabled:opacity-30"
                 style={{ color: 'var(--text-muted)' }}>
                 <FileText size={15} />
+              </button>
+              <button onClick={() => window.print()}
+                title={tr.exportPdf}
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all hover:opacity-70"
+                style={{ color: 'var(--text-muted)' }}>
+                <Printer size={15} />
               </button>
               <button onClick={() => setPlanMode(p => !p)} disabled={isLoading}
                 title={tr.checkPlan}

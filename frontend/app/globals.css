@@ -106,3 +106,12 @@ body {
   background-size: 200% auto;
   animation: shimmer 1.5s linear infinite;
 }
+
+/* Print / PDF export */
+@media print {
+  html, body { overflow: visible !important; height: auto !important; background: white !important; color: black !important; }
+  /* Hide sidebar, input bar, and non-essential UI */
+  [data-print-hide], .no-print { display: none !important; }
+  /* Make panels visible and scrollable */
+  .border-b.overflow-y-auto { max-height: none !important; overflow: visible !important; }
+}
