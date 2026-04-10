@@ -1,18 +1,26 @@
 import os
 import json
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import List, Dict, Optional
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 load_dotenv(override=False)  # Don't override existing env vars
 
 from agent.orchestrator import run_agent
 from models.user_profile import ChatRequest
+from plan_guard import require_quota
+
+limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI(title="Tax Master AI", version="1.0.0")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,8 +38,10 @@ async def health():
 
 
 @app.post("/api/chat")
-async def chat(request: ChatRequest):
+@limiter.limit("20/minute")
+async def chat(request: ChatRequest, req: Request):
     """Streaming chat endpoint - returns SSE stream."""
+    require_quota(req)
     profile_dict = request.profile.model_dump() if request.profile else {}
 
     async def event_stream():
@@ -347,8 +357,10 @@ class AnalyzeReq(BaseModel):
 
 
 @app.post("/api/analyze")
-async def analyze_document(request: AnalyzeReq):
+@limiter.limit("10/minute")
+async def analyze_document(request: AnalyzeReq, req: Request):
     """Analyze an uploaded document and return tax insights."""
+    require_quota(req)
     import anthropic as _anthropic
 
     client = _anthropic.Anthropic()
@@ -384,8 +396,8 @@ async def analyze_document(request: AnalyzeReq):
         )
         text = "".join(b.text for b in resp.content if hasattr(b, "text"))
         return {"analysis": text}
-    except Exception as e:
-        return {"error": str(e)}
+    except Exception:
+        return {"error": "שגיאה בניתוח המסמך. נסה שנית."}
 
 
 class SavingsReq(BaseModel):
