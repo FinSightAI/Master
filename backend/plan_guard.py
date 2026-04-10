@@ -6,15 +6,14 @@ Pro users:  unlimited.
 If Firebase credentials are not configured, falls back to IP-only limits.
 """
 import os
-import time
 from collections import defaultdict
 from fastapi import Request, HTTPException
 
-# ── In-memory daily counter (resets when server restarts) ──────────────────────
-# Format: { ip: { "date": "2026-04-10", "count": 3 } }
-_ip_counters: dict = defaultdict(lambda: {"date": "", "count": 0})
+# ── In-memory lifetime counter per IP ────────────────────────────────────────
+# Format: { ip: count }
+_ip_counters: dict = defaultdict(int)
 
-FREE_DAILY_LIMIT = 10
+FREE_TOTAL_LIMIT = 2  # lifetime free requests per IP
 
 # ── Firebase Admin (optional — only if credentials are configured) ─────────────
 _firebase_ready = False
@@ -66,15 +65,10 @@ def _get_plan_from_token(token: str) -> str:
 
 
 def _check_ip_quota(ip: str) -> bool:
-    """Returns True if the IP is within daily limit."""
-    today = time.strftime("%Y-%m-%d")
-    entry = _ip_counters[ip]
-    if entry["date"] != today:
-        entry["date"]  = today
-        entry["count"] = 0
-    if entry["count"] >= FREE_DAILY_LIMIT:
+    """Returns True if the IP is within lifetime free limit."""
+    if _ip_counters[ip] >= FREE_TOTAL_LIMIT:
         return False
-    entry["count"] += 1
+    _ip_counters[ip] += 1
     return True
 
 
@@ -99,8 +93,8 @@ def require_quota(req: Request):
             status_code=429,
             detail={
                 "error": "daily_limit_reached",
-                "message": "You've reached the free daily limit of 10 AI requests. Upgrade to Pro for unlimited access.",
-                "message_he": "הגעת למגבלת 10 שאלות ביום בחשבון חינמי. שדרג ל-Pro לגישה ללא הגבלה.",
+                "message": "You've used your 2 free trial questions. Upgrade to Pro for unlimited access.",
+                "message_he": "השתמשת ב-2 השאלות החינמיות. שדרג ל-Pro לגישה ללא הגבלה.",
             }
         )
     return "free"
