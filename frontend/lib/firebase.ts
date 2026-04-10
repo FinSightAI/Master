@@ -17,8 +17,23 @@ const firebaseConfig = {
 const app  = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-/** Returns the current user's ID token, or null if not logged in */
+// Token passed via URL from WizeLife dashboard (?wl_token=xxx)
+let _urlToken: string | null = null;
+if (typeof window !== 'undefined') {
+  const params = new URLSearchParams(window.location.search);
+  const t = params.get('wl_token');
+  if (t) {
+    _urlToken = t;
+    // Remove token from URL bar (clean up)
+    params.delete('wl_token');
+    const clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    window.history.replaceState({}, '', clean);
+  }
+}
+
+/** Returns the current user's ID token, or the URL-passed token, or null */
 export async function getIdToken(): Promise<string | null> {
+  if (_urlToken) return _urlToken;
   const user = auth.currentUser;
   if (!user) return null;
   try {
