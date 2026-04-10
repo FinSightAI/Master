@@ -1,6 +1,14 @@
 import { UserProfile, StreamEvent, SavingsAnalysis, IsraelProfile, IsraelAnalysis, CompanyAnalysis, TaxUpdate } from './types';
+import { getIdToken } from './firebase';
 
 const API_BASE = '/api';
+
+async function authHeaders(): Promise<Record<string, string>> {
+  const token = await getIdToken();
+  return token
+    ? { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    : { 'Content-Type': 'application/json' };
+}
 
 export async function fetchCountry(code: string): Promise<{ code: string; data: Record<string, unknown>; exit_tax: Record<string, unknown> }> {
   const res = await fetch(`${API_BASE}/country/${code}`);
@@ -11,10 +19,13 @@ export async function fetchCountry(code: string): Promise<{ code: string; data: 
 export async function analyzeDocument(filename: string, contentBase64: string, mediaType: string, language: string): Promise<{ analysis?: string; error?: string }> {
   const res = await fetch(`${API_BASE}/analyze`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: await authHeaders(),
     body: JSON.stringify({ filename, content_base64: contentBase64, media_type: mediaType, language }),
   });
-  if (!res.ok) throw new Error('Failed to analyze document');
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.detail?.message_he || err?.detail?.message || 'Failed to analyze document');
+  }
   return res.json();
 }
 
@@ -62,7 +73,7 @@ export async function* streamChat(
 ): AsyncGenerator<StreamEvent> {
   const response = await fetch(`${API_BASE}/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: await authHeaders(),
     body: JSON.stringify({
       message,
       profile,
@@ -72,8 +83,9 @@ export async function* streamChat(
   });
 
   if (!response.ok) {
-    const err = await response.text();
-    yield { type: 'error', message: `Server error: ${err}` };
+    const err = await response.json().catch(() => ({}));
+    const msg = err?.detail?.message_he || err?.detail?.message || `Server error: ${response.status}`;
+    yield { type: 'error', message: msg };
     return;
   }
 
