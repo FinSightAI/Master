@@ -162,11 +162,20 @@ function ProfilePanel({
   const tr = useTranslation(lang);
   const dir = lang === 'he' ? 'rtl' : 'ltr';
 
+  const ILS_TO_USD = 0.27; // ~3.7 ₪ per $1
+  const [incomeCurrency, setIncomeCurrency] = useState<'USD' | 'ILS'>('USD');
+
   const update = (field: keyof UserProfile, value: unknown) =>
     setProfile({ ...profile, [field]: value });
 
-  const updateIncome = (field: string, value: string) =>
-    setProfile({ ...profile, income: { ...profile.income, [field]: parseFloat(value) || 0 } });
+  const updateIncome = (field: string, value: string) => {
+    const raw = parseFloat(value) || 0;
+    const usd = incomeCurrency === 'ILS' ? Math.round(raw * ILS_TO_USD) : raw;
+    setProfile({ ...profile, income: { ...profile.income, [field]: usd } });
+  };
+
+  const displayIncome = (usdValue: number) =>
+    incomeCurrency === 'ILS' ? Math.round(usdValue / ILS_TO_USD) : usdValue;
 
   const updateAssets = (field: string, value: string) =>
     setProfile({ ...profile, assets: { ...profile.assets, [field]: parseFloat(value) || 0 } });
@@ -230,20 +239,46 @@ function ProfilePanel({
 
           {/* Income */}
           <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-            <h3 className="font-semibold mb-3 text-sm">{tr.annualIncome}</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-sm">{tr.annualIncome}</h3>
+              <div className="flex rounded-lg overflow-hidden text-xs" style={{ border: '1px solid var(--border)' }}>
+                {(['USD', 'ILS'] as const).map(c => (
+                  <button key={c} onClick={() => setIncomeCurrency(c)}
+                    className="px-2 py-1 transition-all"
+                    style={{
+                      background: incomeCurrency === c ? 'var(--accent)' : 'var(--surface)',
+                      color: incomeCurrency === c ? 'white' : 'var(--text-muted)',
+                      fontWeight: incomeCurrency === c ? 700 : 400,
+                    }}>
+                    {c === 'USD' ? '$ USD' : '₪ ILS'}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="space-y-2">
               {(Object.entries(tr.income) as [string, string][]).map(([field, label]) => (
                 <div key={field} className="flex items-center gap-2">
                   <span className="text-xs flex-shrink-0 w-32" style={{ color: 'var(--text-muted)' }}>{label}</span>
-                  <input type="number"
-                    value={(profile.income as unknown as Record<string, number>)[field] || ''}
-                    onChange={e => updateIncome(field, e.target.value)}
-                    placeholder="0"
-                    className="flex-1 px-2 py-1.5 rounded text-sm outline-none"
-                    style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }} />
+                  <div className="flex-1 flex items-center rounded overflow-hidden"
+                    style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                    <span className="px-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+                      {incomeCurrency === 'ILS' ? '₪' : '$'}
+                    </span>
+                    <input type="number"
+                      value={displayIncome((profile.income as unknown as Record<string, number>)[field] || 0) || ''}
+                      onChange={e => updateIncome(field, e.target.value)}
+                      placeholder="0"
+                      className="flex-1 px-1 py-1.5 text-sm outline-none"
+                      style={{ background: 'transparent', color: 'var(--text)' }} />
+                  </div>
                 </div>
               ))}
             </div>
+            {incomeCurrency === 'ILS' && (
+              <div className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+                {lang === 'he' ? '* ערכים מומרים ל-USD לצורך חישוב (₪1 ≈ $0.27)' : '* Values converted to USD for calculation (₪1 ≈ $0.27)'}
+              </div>
+            )}
           </div>
 
           {/* Assets */}
@@ -10636,30 +10671,32 @@ export default function AdvisorPage() {
                 {tr.checkPlanActive} — {lang === 'he' ? 'תאר את תוכנית המס שלך לניתוח מעמיק' : 'Describe your tax plan for deep analysis'}
               </div>
             )}
-            {/* Smart prompt chips */}
+            {/* Smart prompt chips — single scrollable row */}
             {!devilMode && !planMode && messages.length === 0 && (
-              <div className="mb-2 flex gap-2 flex-wrap">
-                {(lang === 'he' ? [
-                  'כמה מס יציאה אשלם?',
-                  'האם UAE מתאים לי?',
-                  'מה הסיכון ל-PE של החברה שלי?',
-                  'כמה ימים אני יכול לבלות בישראל?',
-                  'מה ההבדל בין ברזיל לקפריסין?',
-                  'תסביר לי על כלל 183 יום',
-                ] : [
-                  'How much exit tax will I pay?',
-                  'Is UAE right for me?',
-                  'What\'s my company\'s PE risk?',
-                  'How many days can I stay in Israel?',
-                  'Brazil vs Cyprus — key differences?',
-                  'Explain the 183-day rule',
-                ]).map(q => (
-                  <button key={q} onClick={() => sendMessage(q)} disabled={isLoading}
-                    className="text-xs px-3 py-1.5 rounded-full transition-all hover:opacity-80"
-                    style={{ background:'var(--surface-2)', color:'var(--text-muted)', border:'1px solid var(--border)', whiteSpace:'nowrap' }}>
-                    {q}
-                  </button>
-                ))}
+              <div className="mb-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+                <div className="flex gap-2" style={{ width: 'max-content' }}>
+                  {(lang === 'he' ? [
+                    'כמה מס יציאה אשלם?',
+                    'האם UAE מתאים לי?',
+                    'מה הסיכון ל-PE של החברה שלי?',
+                    'כמה ימים אני יכול לבלות בישראל?',
+                    'מה ההבדל בין ברזיל לקפריסין?',
+                    'תסביר לי על כלל 183 יום',
+                  ] : [
+                    'How much exit tax will I pay?',
+                    'Is UAE right for me?',
+                    'What\'s my company\'s PE risk?',
+                    'How many days can I stay in Israel?',
+                    'Brazil vs Cyprus — key differences?',
+                    'Explain the 183-day rule',
+                  ]).map(q => (
+                    <button key={q} onClick={() => sendMessage(q)} disabled={isLoading}
+                      className="text-xs px-3 py-1.5 rounded-full transition-all hover:opacity-80 flex-shrink-0"
+                      style={{ background:'var(--surface-2)', color:'var(--text-muted)', border:'1px solid var(--border)', whiteSpace:'nowrap' }}>
+                      {q}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
             <div className="flex gap-2 items-end rounded-2xl p-2"
