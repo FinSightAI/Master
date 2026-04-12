@@ -10750,9 +10750,6 @@ export default function AdvisorPage() {
                 <Send size={16} />
               </button>
             </div>
-            <p className="text-center text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
-              {tr.disclaimer}
-            </p>
           </div>
         </div>
         </div>{/* end chat section wrapper */}
