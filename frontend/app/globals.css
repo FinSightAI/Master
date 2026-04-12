@@ -16,6 +16,20 @@
   --danger: #ef4444;
 }
 
+[data-theme="light"] {
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --accent: #10b981;
+  --accent-glow: rgba(16, 185, 129, 0.12);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
 * { box-sizing: border-box; }
 
 html, body {
@@ -44,7 +58,7 @@ body {
   line-height: 1.7;
 }
 .prose-dark h1, .prose-dark h2, .prose-dark h3 {
-  color: #f1f5f9;
+  color: var(--text);
   margin-top: 1.2em;
   margin-bottom: 0.5em;
 }
