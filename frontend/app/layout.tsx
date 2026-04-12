@@ -17,12 +17,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="he" dir="rtl">
       <body style={{ margin: 0, padding: 0, overflow: 'hidden' }}>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-MPRTN6CJ9K" strategy="afterInteractive" />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-3W9ZZ0008E" strategy="afterInteractive" />
         <Script id="ga-init" strategy="afterInteractive">{`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-MPRTN6CJ9K');
+          gtag('config', 'G-3W9ZZ0008E');
         `}</Script>
         {children}
         <ThemeToggle />
