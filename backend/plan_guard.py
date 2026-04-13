@@ -1,24 +1,20 @@
 """
-Plan Guard — checks Firebase Auth token + user plan.
-Free users: 10 AI requests/day (tracked by IP).
-Pro users:  unlimited.
-
-If Firebase credentials are not configured, falls back to IP-only limits.
+Plan Guard — daily AI quota per plan tier.
+Free:  3/day (IP-based, daily reset)
+Pro:  20/day (UID-based, daily reset)
+YOLO: 40/day (UID-based, daily reset)
 """
 import os
+import time
 from collections import defaultdict
 from fastapi import Request, HTTPException
 
-# ── In-memory counters ───────────────────────────────────────────────────────
-# Free: { ip: count } — lifetime
-# Pro:  { uid: { "date": "2026-04-10", "count": 3 } }
-_ip_counters:  dict = defaultdict(int)
-_pro_counters: dict = defaultdict(lambda: {"date": "", "count": 0})
+DAILY_LIMITS = {"free": 3, "pro": 20, "yolo": 40}
 
-FREE_TOTAL_LIMIT = 2   # lifetime free requests per IP
-PRO_DAILY_LIMIT  = 20  # daily limit for Pro users
+# { key: {"date": "YYYY-MM-DD", "count": int} }
+_counters: dict = defaultdict(lambda: {"date": "", "count": 0})
 
-# ── Firebase Admin (optional — only if credentials are configured) ─────────────
+# ── Firebase Admin ────────────────────────────────────────────────────────────
 _firebase_ready = False
 _db = None
 
@@ -26,33 +22,27 @@ def _init_firebase():
     global _firebase_ready, _db
     try:
         import firebase_admin
-        from firebase_admin import credentials, firestore, auth
-
+        from firebase_admin import credentials, firestore
         if firebase_admin._apps:
             _firebase_ready = True
             _db = firestore.client()
             return
-
         sa_json = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
         if sa_json:
             import json
             cred = credentials.Certificate(json.loads(sa_json))
         else:
-            # Try default credentials (works on Google Cloud)
             cred = credentials.ApplicationDefault()
-
         firebase_admin.initialize_app(cred, {"projectId": "finzilla-7f1f9"})
         _db = firestore.client()
         _firebase_ready = True
     except Exception as e:
         print(f"[plan_guard] Firebase not configured: {e}")
-        _firebase_ready = False
 
 _init_firebase()
 
 
 def _get_plan_from_token(token: str) -> tuple[str, str]:
-    """Verify Firebase token and return (plan, uid)."""
     if not _firebase_ready:
         return "free", ""
     try:
@@ -66,59 +56,41 @@ def _get_plan_from_token(token: str) -> tuple[str, str]:
         return "free", ""
 
 
-def _check_ip_quota(ip: str) -> bool:
-    """Returns True if the IP is within lifetime free limit."""
-    if _ip_counters[ip] >= FREE_TOTAL_LIMIT:
-        return False
-    _ip_counters[ip] += 1
-    return True
-
-
-def _check_pro_quota(uid: str) -> bool:
-    """Returns True if Pro user is within daily limit."""
-    import time
+def _check_quota(key: str, plan: str) -> bool:
     today = time.strftime("%Y-%m-%d")
-    entry = _pro_counters[uid]
+    entry = _counters[key]
     if entry["date"] != today:
         entry["date"]  = today
         entry["count"] = 0
-    if entry["count"] >= PRO_DAILY_LIMIT:
+    limit = DAILY_LIMITS.get(plan, DAILY_LIMITS["free"])
+    if entry["count"] >= limit:
         return False
     entry["count"] += 1
     return True
 
 
-def require_quota(req: Request):
-    """
-    Call this at the start of any AI endpoint.
-    Raises HTTP 429 if quota is exceeded.
-    Returns the user's plan string.
-    """
+def require_quota(req: Request) -> str:
     auth_header = req.headers.get("Authorization", "")
     if auth_header.startswith("Bearer "):
         token = auth_header[7:]
         plan, uid = _get_plan_from_token(token)
-        if plan == "pro":
-            if not _check_pro_quota(uid):
-                raise HTTPException(
-                    status_code=429,
-                    detail={
-                        "error": "pro_daily_limit_reached",
-                        "message": f"You've reached the daily limit of {PRO_DAILY_LIMIT} AI requests. Resets at midnight.",
-                        "message_he": f"הגעת למגבלת {PRO_DAILY_LIMIT} שאלות ליום. מתאפס בחצות.",
-                    }
-                )
-            return "pro"
+        if plan in ("pro", "yolo") and uid:
+            if not _check_quota(f"uid:{uid}", plan):
+                limit = DAILY_LIMITS[plan]
+                upgrade = " Upgrade to YOLO for 40/day." if plan == "pro" else ""
+                raise HTTPException(status_code=429, detail={
+                    "error": "daily_limit_reached",
+                    "message": f"You've reached your {limit} daily AI questions.{upgrade} Resets at midnight.",
+                    "message_he": f"הגעת למגבלת {limit} שאלות ביום.{' שדרג ל-YOLO ל-40 ביום.' if plan == 'pro' else ''} מתאפס בחצות.",
+                })
+            return plan
 
-    # Free user or no token — check lifetime IP quota
+    # Free — IP-based daily limit
     ip = req.client.host if req.client else "unknown"
-    if not _check_ip_quota(ip):
-        raise HTTPException(
-            status_code=429,
-            detail={
-                "error": "free_limit_reached",
-                "message": "You've used your 2 free trial questions. Upgrade to Pro for unlimited access.",
-                "message_he": "השתמשת ב-2 השאלות החינמיות. שדרג ל-Pro לגישה ללא הגבלה.",
-            }
-        )
+    if not _check_quota(f"ip:{ip}", "free"):
+        raise HTTPException(status_code=429, detail={
+            "error": "free_daily_limit_reached",
+            "message": f"You've reached your {DAILY_LIMITS['free']} free daily questions. Upgrade to Pro ($4.90/mo) for 20/day.",
+            "message_he": f"הגעת למגבלת {DAILY_LIMITS['free']} שאלות ביום בחינם. שדרג ל-Pro ($4.90/חודש) ל-20 ביום.",
+        })
     return "free"

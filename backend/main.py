@@ -34,7 +34,7 @@ app.add_middleware(
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "model": "claude-opus-4-6"}
+    return {"status": "ok", "model": os.getenv("AI_PROVIDER", "gemini")}
 
 
 @app.post("/api/chat")
