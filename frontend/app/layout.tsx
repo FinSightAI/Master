@@ -6,6 +6,7 @@ import ThemeToggle from './theme-toggle';
 export const metadata: Metadata = {
   title: 'WizeTax — Global Tax Advisor',
   description: 'AI-powered international tax advisor for optimal tax planning across all jurisdictions. Part of WizeLife.',
+  icons: { icon: '/icon.svg', apple: '/icon.svg' },
 };
 
 export const viewport: Viewport = {
