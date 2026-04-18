@@ -3,6 +3,12 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "installCommand": "npm install",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://REPLACE_WITH_HF_SPACES_URL/api/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

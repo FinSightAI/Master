@@ -4,8 +4,8 @@ import './globals.css';
 import ThemeToggle from './theme-toggle';
 
 export const metadata: Metadata = {
-  title: 'Tax Master AI - Global Tax Advisor',
-  description: 'AI-powered international tax advisor for optimal tax planning across all jurisdictions',
+  title: 'WizeTax — Global Tax Advisor',
+  description: 'AI-powered international tax advisor for optimal tax planning across all jurisdictions. Part of WizeLife.',
 };
 
 export const viewport: Viewport = {
