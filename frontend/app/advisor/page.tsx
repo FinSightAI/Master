@@ -9716,7 +9716,15 @@ export default function AdvisorPage() {
     const savedLang = localStorage.getItem('tax_master_lang') as Lang;
     const savedHistory = localStorage.getItem('tax_master_sessions');
     if (saved) { try { setProfile(JSON.parse(saved)); setProfileSaved(true); } catch {} }
-    if (savedLang) setLang(savedLang);
+    if (savedLang && ['he','en','pt','es'].includes(savedLang)) {
+      setLang(savedLang);
+    } else {
+      const bl = (navigator.language || 'en').toLowerCase();
+      if (bl.startsWith('he')) setLang('he');
+      else if (bl.startsWith('pt')) setLang('pt');
+      else if (bl.startsWith('es')) setLang('es');
+      else setLang('en');
+    }
     if (savedHistory) { try { setSavedSessions(JSON.parse(savedHistory)); } catch {} }
     setMounted(true);
   }, []);
@@ -9782,7 +9790,7 @@ export default function AdvisorPage() {
   };
 
   const toggleLang = () => {
-    const next: Lang = lang === 'he' ? 'en' : lang === 'en' ? 'pt' : 'he';
+    const next: Lang = lang === 'he' ? 'en' : lang === 'en' ? 'pt' : lang === 'pt' ? 'es' : 'he';
     setLang(next);
     localStorage.setItem('tax_master_lang', next);
   };
@@ -9880,9 +9888,9 @@ export default function AdvisorPage() {
           <button onClick={toggleLang}
             className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all hover:opacity-80"
             style={{ background: 'var(--surface-2)', color: 'var(--accent)', border: '1px solid var(--border)' }}
-            title={lang === 'he' ? 'Switch to English' : lang === 'en' ? 'Português' : 'עברית'}>
+            title={lang === 'he' ? 'Switch to English' : lang === 'en' ? 'Português' : lang === 'pt' ? 'Español' : 'עברית'}>
             <Globe size={11} />
-            {lang === 'he' ? 'EN' : lang === 'en' ? 'PT' : 'עב'}
+            {lang === 'he' ? 'EN' : lang === 'en' ? 'PT' : lang === 'pt' ? 'ES' : 'עב'}
           </button>
         </div>
 
