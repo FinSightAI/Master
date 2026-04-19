@@ -9782,7 +9782,7 @@ export default function AdvisorPage() {
   };
 
   const toggleLang = () => {
-    const next: Lang = lang === 'he' ? 'en' : 'he';
+    const next: Lang = lang === 'he' ? 'en' : lang === 'en' ? 'pt' : 'he';
     setLang(next);
     localStorage.setItem('tax_master_lang', next);
   };
@@ -9880,9 +9880,9 @@ export default function AdvisorPage() {
           <button onClick={toggleLang}
             className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all hover:opacity-80"
             style={{ background: 'var(--surface-2)', color: 'var(--accent)', border: '1px solid var(--border)' }}
-            title={lang === 'he' ? 'Switch to English' : 'עברית'}>
+            title={lang === 'he' ? 'Switch to English' : lang === 'en' ? 'Português' : 'עברית'}>
             <Globe size={11} />
-            {lang === 'he' ? 'EN' : 'עב'}
+            {lang === 'he' ? 'EN' : lang === 'en' ? 'PT' : 'עב'}
           </button>
         </div>
 
