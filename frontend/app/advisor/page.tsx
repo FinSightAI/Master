@@ -9720,8 +9720,8 @@ export default function AdvisorPage() {
       setLang(savedLang);
     } else {
       const bl = (navigator.language || 'en').toLowerCase();
-      if (bl.startsWith('he')) setLang('he');
-      else if (bl.startsWith('pt')) setLang('pt');
+      // Hebrew not auto-detected — user selects manually
+      if (bl.startsWith('pt')) setLang('pt');
       else if (bl.startsWith('es')) setLang('es');
       else setLang('en');
     }
