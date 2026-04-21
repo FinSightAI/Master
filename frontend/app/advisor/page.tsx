@@ -9700,6 +9700,7 @@ export default function AdvisorPage() {
   const [planMode, setPlanMode] = useState(false);
   const [aiProvider, setAiProvider] = useState<'gemini' | 'claude'>('gemini');
   const [savingsData, setSavingsData] = useState<SavingsAnalysis | null>(null);
+  const [copiedSummary, setCopiedSummary] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<{ code: string; row: Parameters<typeof CountryDetailModal>[0]['savingsRow'] } | null>(null);
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
   const [profileSaved, setProfileSaved] = useState(false);
@@ -9868,6 +9869,83 @@ export default function AdvisorPage() {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  };
+
+  const buildTaxSummary = (): string => {
+    const totalIncome = Object.values(profile.income).reduce((a, b) => a + b, 0);
+    const fmt = (n: number) => `$${n.toLocaleString()}`;
+    const lines: string[] = ['=== WizeTax Summary ==='];
+
+    const residency = profile.current_residency || 'Unknown';
+    lines.push(`Current country: ${residency}`);
+    lines.push(`Annual income: ${fmt(totalIncome)}`);
+
+    const incomeBreakdown = Object.entries(profile.income)
+      .filter(([, v]) => v > 0)
+      .map(([k, v]) => `  ${k.replace(/_/g, ' ')}: ${fmt(v)}`)
+      .join('\n');
+    if (incomeBreakdown) lines.push(`Income breakdown:\n${incomeBreakdown}`);
+
+    if (savingsData && !savingsData.error) {
+      const rate = savingsData.current_effective_rate;
+      const tax = savingsData.current_tax;
+      lines.push(`Current effective tax: ${rate}% (${fmt(tax)}/yr)`);
+
+      const topDests = savingsData.results
+        .filter(r => r.annual_savings > 0)
+        .slice(0, 5);
+
+      if (topDests.length > 0) {
+        lines.push('');
+        lines.push('Top destinations by tax savings:');
+        topDests.forEach(r => {
+          const regimes = r.special_regimes.length > 0 ? ` [${r.special_regimes.join(', ')}]` : '';
+          lines.push(`• ${r.name}: ${r.effective_rate}% effective rate, saving ${fmt(r.annual_savings)}/yr${regimes}`);
+        });
+      }
+
+      if (savingsData.exit_tax_info?.note) {
+        lines.push('');
+        lines.push(`Exit tax note: ${savingsData.exit_tax_info.note}`);
+      }
+    } else {
+      lines.push('(Run the Savings Analysis panel to include destination comparisons)');
+    }
+
+    const assets = Object.entries(profile.assets).filter(([, v]) => v > 0);
+    if (assets.length > 0) {
+      lines.push('');
+      lines.push('Assets:');
+      assets.forEach(([k, v]) => lines.push(`  ${k.replace(/_/g, ' ')}: ${fmt(v)}`));
+    }
+
+    if (profile.goals.length > 0) lines.push(`Goals: ${profile.goals.join(', ')}`);
+    if (profile.constraints.length > 0) lines.push(`Constraints: ${profile.constraints.join(', ')}`);
+    if (profile.timeline) lines.push(`Timeline: ${profile.timeline}`);
+    if (profile.notes) lines.push(`Notes: ${profile.notes}`);
+
+    return lines.join('\n');
+  };
+
+  const handleCopySummary = async () => {
+    const summary = buildTaxSummary();
+    try {
+      await navigator.clipboard.writeText(summary);
+      setCopiedSummary(true);
+      setTimeout(() => setCopiedSummary(false), 2000);
+    } catch {
+      // fallback for browsers without clipboard API
+      const el = document.createElement('textarea');
+      el.value = summary;
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setCopiedSummary(true);
+      setTimeout(() => setCopiedSummary(false), 2000);
+    }
   };
 
   return (
@@ -10722,6 +10800,18 @@ export default function AdvisorPage() {
                 className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all hover:opacity-70"
                 style={{ color: 'var(--text-muted)' }}>
                 <Printer size={15} />
+              </button>
+              <button
+                onClick={handleCopySummary}
+                title="Copy tax summary to clipboard for WizeLife AI"
+                className="flex items-center gap-1 px-2 h-8 rounded-lg flex-shrink-0 transition-all hover:opacity-80 text-xs font-medium"
+                style={{
+                  background: copiedSummary ? 'rgba(16,185,129,0.12)' : 'transparent',
+                  color: copiedSummary ? '#10b981' : 'var(--text-muted)',
+                  border: `1px solid ${copiedSummary ? 'rgba(16,185,129,0.3)' : 'transparent'}`,
+                  whiteSpace: 'nowrap',
+                }}>
+                {copiedSummary ? '✓ Copied!' : '📋 Export to WizeLife AI'}
               </button>
               <button onClick={() => setPlanMode(p => !p)} disabled={isLoading}
                 title={tr.checkPlan}
