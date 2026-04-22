@@ -9714,18 +9714,25 @@ export default function AdvisorPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem('tax_master_profile');
-    const savedLang = localStorage.getItem('tax_master_lang') as Lang;
     const savedHistory = localStorage.getItem('tax_master_sessions');
     if (saved) { try { setProfile(JSON.parse(saved)); setProfileSaved(true); } catch {} }
-    if (savedLang && ['he','en','pt','es'].includes(savedLang)) {
-      setLang(savedLang);
+
+    // Language priority: URL ?lang param → shared wl_lang key → app-specific key → browser
+    const urlLang = new URLSearchParams(window.location.search).get('lang') as Lang;
+    const wlLang  = localStorage.getItem('wl_lang') as Lang;
+    const savedLang = localStorage.getItem('tax_master_lang') as Lang;
+    const resolved = [urlLang, wlLang, savedLang].find(l => l && ['he','en','pt','es'].includes(l));
+    if (resolved) {
+      setLang(resolved);
+      localStorage.setItem('wl_lang', resolved);
+      localStorage.setItem('tax_master_lang', resolved);
     } else {
       const bl = (navigator.language || 'en').toLowerCase();
-      // Hebrew not auto-detected — user selects manually
       if (bl.startsWith('pt')) setLang('pt');
       else if (bl.startsWith('es')) setLang('es');
       else setLang('en');
     }
+
     if (savedHistory) { try { setSavedSessions(JSON.parse(savedHistory)); } catch {} }
     setMounted(true);
   }, []);
@@ -9794,6 +9801,7 @@ export default function AdvisorPage() {
     const next: Lang = lang === 'he' ? 'en' : lang === 'en' ? 'pt' : lang === 'pt' ? 'es' : 'he';
     setLang(next);
     localStorage.setItem('tax_master_lang', next);
+    localStorage.setItem('wl_lang', next);  // shared cross-app key
   };
 
   const sendMessage = useCallback(async (text?: string) => {
