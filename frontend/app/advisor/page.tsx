@@ -4797,7 +4797,7 @@ function PensionGuidePanel({ lang, onClose }: { lang: Lang; onClose: () => void 
   const [showAgreements, setShowAgreements] = useState(false);
   const pt = PENSION_TYPES.find(p => p.id === selected)!;
   const riskColor = { low:'#10b981', medium:'#f59e0b', high:'#ef4444' };
-  const riskLabel = { he: { low:'עדיף', medium:'זהירות', high:'סיכון' }, en: { low:'Preferred', medium:'Caution', high:'Risk' } };
+  const riskLabel = { he: { low:'עדיף', medium:'זהירות', high:'סיכון' }, en: { low:'Preferred', medium:'Caution', high:'Risk' }, pt: { low:'Preferido', medium:'Cautela', high:'Risco' }, es: { low:'Preferido', medium:'Precaución', high:'Riesgo' } };
 
   return (
     <div className="flex-shrink-0 overflow-y-auto" style={{ maxHeight:'75vh', background:'var(--surface)', borderBottom:'1px solid var(--border)', padding:'1.5rem' }}>
@@ -8766,7 +8766,7 @@ function RemoteWorkerPanel({ lang, onClose }: { lang: Lang; onClose: () => void 
   const estimatedTax = isStillIsraeli ? israelTax : Math.max(israelTax * 0.3, destTax);
 
   const riskColor = { low:'#10b981', medium:'#f59e0b', high:'#ef4444' };
-  const riskLabel = { he: { low:'סיכון נמוך', medium:'סיכון בינוני', high:'סיכון גבוה' }, en: { low:'Low Risk', medium:'Medium Risk', high:'High Risk' } };
+  const riskLabel = { he: { low:'סיכון נמוך', medium:'סיכון בינוני', high:'סיכון גבוה' }, en: { low:'Low Risk', medium:'Medium Risk', high:'High Risk' }, pt: { low:'Risco Baixo', medium:'Risco Médio', high:'Risco Alto' }, es: { low:'Riesgo Bajo', medium:'Riesgo Medio', high:'Riesgo Alto' } };
 
   return (
     <div className="flex-shrink-0 overflow-y-auto" style={{ maxHeight:'75vh', background:'var(--surface)', borderBottom:'1px solid var(--border)', padding:'1.5rem' }}>
@@ -8896,7 +8896,7 @@ function buildRedFlags(profile: UserProfile): RedFlag[] {
 function RedFlagsPanel({ lang, profile, onClose }: { lang: Lang; profile: UserProfile; onClose: () => void }) {
   const flags = buildRedFlags(profile);
   const sevColor = { high: '#ef4444', medium: '#f59e0b', low: '#10b981' };
-  const sevLabel = { he: { high:'גבוה', medium:'בינוני', low:'נמוך' }, en: { high:'High', medium:'Medium', low:'Low' } };
+  const sevLabel = { he: { high:'גבוה', medium:'בינוני', low:'נמוך' }, en: { high:'High', medium:'Medium', low:'Low' }, pt: { high:'Alto', medium:'Médio', low:'Baixo' }, es: { high:'Alto', medium:'Medio', low:'Bajo' } };
   return (
     <div className="flex-shrink-0 overflow-y-auto" style={{ maxHeight:'72vh', background:'var(--surface)', borderBottom:'1px solid var(--border)', padding:'1.5rem' }}>
       <div className="flex justify-between items-center mb-4">
