@@ -863,7 +863,7 @@ function CompanyOptimizer({ lang, onClose }: { lang: Lang; onClose: () => void }
               <button onClick={analyze} disabled={loading}
                 className="w-full py-2 rounded-lg font-semibold text-sm transition-all hover:opacity-90 disabled:opacity-50"
                 style={{ background: 'var(--accent)', color: 'white' }}>
-                {loading ? (isHe ? 'מנתח...' : 'Analyzing...') : tr.analyzeStructure}
+                {loading ? tr.analyzing : tr.analyzeStructure}
               </button>
             </div>
           </div>
@@ -872,7 +872,7 @@ function CompanyOptimizer({ lang, onClose }: { lang: Lang; onClose: () => void }
         {data && (
           <div className="space-y-2">
             <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
-              {isHe ? 'תוצאות — ממוינות לפי שיעור מס אפקטיבי' : 'Results — sorted by effective tax rate'}
+              {tr.resultsTableTitle}
             </div>
             {data.results.map((j, i) => (
               <div key={j.code} className="rounded-xl p-3" style={{ background: 'var(--surface-2)', border: `1px solid ${i === 0 ? 'var(--accent)' : 'var(--border)'}` }}>
@@ -884,7 +884,7 @@ function CompanyOptimizer({ lang, onClose }: { lang: Lang; onClose: () => void }
                     </span>
                     <span className="font-semibold text-sm">{j.name}</span>
                     {j.eu && <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>EU</span>}
-                    {j.israel_treaty && <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>🇮🇱 {isHe ? 'אמנה' : 'Treaty'}</span>}
+                    {j.israel_treaty && <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>🇮🇱 {tr.treaty}</span>}
                   </div>
                   <div className="text-right">
                     <div className="font-bold text-lg" style={{ color: i === 0 ? 'var(--accent)' : 'var(--text)' }}>{j.effective_rate.toFixed(1)}%</div>
@@ -957,7 +957,7 @@ function TaxUpdatesFeed({ lang, onClose }: { lang: Lang; onClose: () => void }) 
         </div>
 
         {loading ? (
-          <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>{isHe ? 'טוען...' : 'Loading...'}</div>
+          <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>{tr.loading}</div>
         ) : (
           <div className="space-y-2">
             {updates.map((u, i) => {
@@ -1121,21 +1121,21 @@ function SideBySideComparison({
   const selectedData = selected.map(code => allCountries.find(c => c.code === code)).filter(Boolean) as typeof allCountries;
 
   const ROWS: Array<{ key: keyof typeof allCountries[0] | 'annual_savings' | 'ten_year_savings'; label: string; format: (v: unknown) => string; highlight?: 'low' | 'high' }> = [
-    { key: 'effective_rate', label: isHe ? 'שיעור מס אפקטיבי' : 'Effective Tax Rate', format: v => `${(v as number).toFixed(1)}%`, highlight: 'low' },
-    { key: 'estimated_tax', label: isHe ? 'מס שנתי' : 'Annual Tax', format: v => `$${((v as number)/1000).toFixed(0)}K`, highlight: 'low' },
-    { key: 'annual_savings', label: isHe ? 'חיסכון שנתי' : 'Annual Savings', format: v => `$${((v as number)/1000).toFixed(0)}K`, highlight: 'high' },
-    { key: 'ten_year_savings', label: isHe ? 'חיסכון 10 שנה' : '10-Year Savings', format: v => `$${((v as number)/1000).toFixed(0)}K`, highlight: 'high' },
-    { key: 'territorial', label: isHe ? 'מס טריטוריאלי' : 'Territorial', format: v => v ? '✅' : '—' },
-    { key: 'region', label: isHe ? 'אזור' : 'Region', format: v => v as string },
-    { key: 'special_regimes', label: isHe ? 'משטרים מיוחדים' : 'Special Regimes', format: v => (v as string[]).join(', ') || '—' },
+    { key: 'effective_rate', label: tr.colEffectiveRate, format: v => `${(v as number).toFixed(1)}%`, highlight: 'low' },
+    { key: 'estimated_tax', label: tr.colAnnualTax, format: v => `$${((v as number)/1000).toFixed(0)}K`, highlight: 'low' },
+    { key: 'annual_savings', label: tr.colAnnualSavings, format: v => `$${((v as number)/1000).toFixed(0)}K`, highlight: 'high' },
+    { key: 'ten_year_savings', label: tr.colTenYearSavings, format: v => `$${((v as number)/1000).toFixed(0)}K`, highlight: 'high' },
+    { key: 'territorial', label: tr.colTerritorial, format: v => v ? '✅' : '—' },
+    { key: 'region', label: tr.colRegion, format: v => v as string },
+    { key: 'special_regimes', label: tr.colSpecialRegimes, format: v => (v as string[]).join(', ') || '—' },
   ];
 
   if (!data) return (
     <div className="border-b p-4" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
       <div className="max-w-3xl mx-auto text-center py-8">
-        <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{isHe ? 'נדרשים נתוני חיסכון — פתח תחילה את מחשבון החיסכון' : 'Savings data required — open the Tax Savings calculator first'}</p>
+        <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{tr.savingsRequired}</p>
         <button onClick={onFetchSavings} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: 'var(--accent)', color: 'white' }}>
-          {isHe ? 'חשב חיסכון' : 'Calculate Savings'}
+          {tr.calcSavingsBtn}
         </button>
         <button onClick={onClose} className="ml-2 px-4 py-2 rounded-lg text-sm" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
           {tr.cancel}
@@ -1183,7 +1183,7 @@ function SideBySideComparison({
               <thead>
                 <tr style={{ background: 'var(--surface-2)', borderBottom: '2px solid var(--accent)' }}>
                   <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-muted)', minWidth: '140px' }}>
-                    {isHe ? 'מדד' : 'Metric'}
+                    {tr.metricLabel}
                   </th>
                   {selectedData.map(c => (
                     <th key={c.code} className="px-3 py-2 text-center text-sm font-bold">
@@ -1226,7 +1226,7 @@ function SideBySideComparison({
 
         {selectedData.length === 0 && (
           <div className="text-center py-8 text-sm" style={{ color: 'var(--text-muted)' }}>
-            {isHe ? 'בחר עד 3 מדינות להשוואה' : 'Select up to 3 countries to compare'}
+            {tr.selectUpTo3}
           </div>
         )}
       </div>
@@ -1250,7 +1250,7 @@ function WealthProjectionChart({
       : 0;
 
     return [0, 1, 2, 3, 4, 5, 7, 10].map(year => {
-      const point: Record<string, number | string> = { year: `${isHe ? 'שנה' : 'Yr'} ${year}` };
+      const point: Record<string, number | string> = { year: `${tr.yearShort} ${year}` };
       analysis.country_recommendations.slice(0, 4).forEach(c => {
         if (c.annual_savings_vs_israel == null) return;
         const label = isHe ? c.name : c.name_en;
@@ -1310,13 +1310,13 @@ function WealthProjectionChart({
         {/* Tax breakdown bars */}
         <div className="mt-4">
           <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
-            {isHe ? 'השוואת מס שנתי' : 'Annual Tax Comparison'}
+            {tr.annualTaxComparison}
           </div>
           <div style={{ height: 180 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={[
                 {
-                  name: isHe ? 'ישראל' : 'Israel',
+                  name: tr.israelLabel,
                   tax: analysis.israel_annual_tax,
                   ...Object.fromEntries(countries.map(c => [isHe ? c.name : c.name_en, c.annual_tax_estimate || 0]))
                 }
@@ -1329,7 +1329,7 @@ function WealthProjectionChart({
                 <YAxis tickFormatter={v => fmt(v as number)} tick={{ fill: 'var(--text-muted)', fontSize: 10 }} />
                 <Tooltip
                   contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }}
-                  formatter={(v: unknown) => [fmt(v as number), isHe ? 'מס שנתי' : 'Annual Tax']}
+                  formatter={(v: unknown) => [fmt(v as number), tr.annualTaxLabel]}
                 />
                 <Bar dataKey="tax" fill="var(--accent)" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -1347,7 +1347,7 @@ function WealthProjectionChart({
               <div key={c.code} className="rounded-xl p-3 text-center" style={{ background: 'var(--surface-2)', border: `1px solid ${CHART_COLORS[i]}33` }}>
                 <div className="text-xs font-bold mb-1" style={{ color: CHART_COLORS[i] }}>{isHe ? c.name : c.name_en}</div>
                 <div className="text-lg font-bold">{breakeven > 0 ? `${breakeven}y` : '0y'}</div>
-                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? 'שנות החזר' : 'break-even'}</div>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.breakEvenLabel}</div>
               </div>
             );
           })}
@@ -1449,24 +1449,24 @@ function IsraelExitWizard({
     </head><body>
       <h1>🇮🇱 Israel Tax Exit Report</h1>
       <p style="color:#6b7280">Generated ${new Date().toLocaleDateString()}</p>
-      <h2>${isHe ? 'סיכום כספי' : 'Financial Summary'}</h2>
-      <table><tr><th>${isHe ? 'פריט' : 'Item'}</th><th>${isHe ? 'סכום' : 'Amount'}</th></tr>
-        <tr><td>${isHe ? 'מס שנתי ישראל' : 'Israel Annual Tax'}</td><td class="alert">$${fmt(analysis.israel_annual_tax)}</td></tr>
-        <tr><td>${isHe ? 'מס יציאה (100א)' : 'Exit Tax (Sec. 100A)'}</td><td class="alert">$${fmt(analysis.exit_tax_analysis.exit_tax_estimate)}</td></tr>
-        <tr><td>${isHe ? 'מדינה מומלצת' : 'Top Country'}</td><td>${topCountry ? (isHe ? topCountry.name : topCountry.name_en) : 'N/A'}</td></tr>
-        <tr><td>${isHe ? 'חיסכון נטו ל-5 שנה' : '5-Year Net Savings'}</td><td class="good">$${fmt(savings5y)}</td></tr>
+      <h2>${tr.financialSummary}</h2>
+      <table><tr><th>${tr.itemLabel}</th><th>${tr.amountLabel}</th></tr>
+        <tr><td>${tr.israelAnnualTax}</td><td class="alert">$${fmt(analysis.israel_annual_tax)}</td></tr>
+        <tr><td>${tr.exitTaxSec100}</td><td class="alert">$${fmt(analysis.exit_tax_analysis.exit_tax_estimate)}</td></tr>
+        <tr><td>${isHe ? 'מדינה מומלצת' : 'Top Country'}</td><td>${topCountry ? (isHe ? topCountry.name : topCountry.name_en) : tr.notApplicable}</td></tr>
+        <tr><td>${tr.netSavings5y}</td><td class="good">$${fmt(savings5y)}</td></tr>
       </table>
-      <h2>${isHe ? 'קרן השתלמות' : 'Keren Hishtalmut'}</h2>
+      <h2>${tr.kerenHishtalmut}</h2>
       <p>${isHe ? analysis.kh_analysis.advice_he : analysis.kh_analysis.advice_en}</p>
-      <h2>${isHe ? 'מדינות מומלצות' : 'Recommended Countries'}</h2>
-      <table><tr><th>${isHe ? 'מדינה' : 'Country'}</th><th>${isHe ? 'ציון' : 'Score'}</th><th>${isHe ? 'יתרון מס' : 'Tax Benefit'}</th><th>${isHe ? 'חיסכון שנתי' : 'Annual Savings'}</th></tr>
+      <h2>${tr.recommendedCountries}</h2>
+      <table><tr><th>${tr.countryLabel}</th><th>${tr.scoreLabel}</th><th>${tr.taxBenefitLabel}</th><th>${tr.colAnnualSavings}</th></tr>
         ${analysis.country_recommendations.slice(0, 5).map(c => `
-          <tr><td>${isHe ? c.name : c.name_en}</td><td>${c.adjusted_score}</td><td>${isHe ? c.tax_benefit : c.tax_benefit_en}</td><td class="good">$${c.annual_savings_vs_israel ? fmt(c.annual_savings_vs_israel) : 'N/A'}</td></tr>
+          <tr><td>${isHe ? c.name : c.name_en}</td><td>${c.adjusted_score}</td><td>${isHe ? c.tax_benefit : c.tax_benefit_en}</td><td class="good">$${c.annual_savings_vs_israel ? fmt(c.annual_savings_vs_israel) : tr.notApplicable}</td></tr>
         `).join('')}
       </table>
-      <h2>${isHe ? 'תהליך יציאה' : 'Exit Process'}</h2>
+      <h2>${tr.exitProcess}</h2>
       <ol>${analysis.exit_process.map(s => `<li><strong>${isHe ? s.title_he : s.title_en}</strong> — ${isHe ? s.detail_he : s.detail_en}</li>`).join('')}</ol>
-      <p style="color:#6b7280;font-size:12px;margin-top:40px">⚠️ ${isHe ? 'לצורך מידע בלבד. התייעץ עם יועץ מס מוסמך לפני פעולה.' : 'For informational purposes only. Consult a licensed tax professional before acting.'}</p>
+      <p style="color:#6b7280;font-size:12px;margin-top:40px">⚠️ ${tr.infoOnly}</p>
       <script>window.onload=()=>window.print()</script>
     </body></html>`);
     w.document.close();
@@ -1515,7 +1515,7 @@ function IsraelExitWizard({
                 <button onClick={saveScenario} disabled={!scenarioName.trim()}
                   className="flex-1 py-2 rounded-lg text-sm font-semibold disabled:opacity-40"
                   style={{ background: 'var(--accent)', color: 'white' }}>
-                  {isHe ? 'שמור' : 'Save'}
+                  {tr.saveBtn}
                 </button>
                 <button onClick={() => setShowSaveModal(false)}
                   className="flex-1 py-2 rounded-lg text-sm"
@@ -1573,7 +1573,7 @@ function IsraelExitWizard({
           <div className="space-y-4">
             <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
               <h3 className="font-semibold text-sm mb-3">
-                {isHe ? 'מוצרים פיננסיים ישראלים' : 'Israeli Financial Products'}
+                {tr.israelFinancialProducts}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {([
@@ -1596,7 +1596,7 @@ function IsraelExitWizard({
 
             <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
               <h3 className="font-semibold text-sm mb-3">
-                {isHe ? 'סטטוס תושבות' : 'Residency Status'}
+                {tr.residencyStatus}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
@@ -1638,7 +1638,7 @@ function IsraelExitWizard({
               {profile.citizenships.length > 0 ? (
                 <div className="text-sm">
                   <span className="font-semibold">
-                    {isHe ? '🌍 אזרחויות בפרופיל: ' : '🌍 Citizenships in profile: '}
+                    {tr.citizenshipsInProfile}
                   </span>
                   {profile.citizenships.join(', ')}
                   <span className="block text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
@@ -1650,7 +1650,7 @@ function IsraelExitWizard({
               ) : (
                 <div className="text-sm">
                   <span className="font-semibold">
-                    {isHe ? '⚠️ לא הוגדרו אזרחויות בפרופיל' : '⚠️ No citizenships set in profile'}
+                    {tr.noCitizenships}
                   </span>
                   <span className="block text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                     {isHe
@@ -1696,11 +1696,11 @@ function IsraelExitWizard({
                 {analysis.kh_analysis.tax_if_withdraw_now !== undefined && (
                   <div className="mt-3 grid grid-cols-2 gap-2">
                     <div className="text-center rounded-lg p-2" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? 'תשלום מס עכשיו' : 'Tax if leave now'}</div>
+                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.taxIfLeaveNow}</div>
                       <div className="font-bold text-sm" style={{ color: '#ef4444' }}>₪{fmt(analysis.kh_analysis.tax_if_withdraw_now)}</div>
                     </div>
                     <div className="text-center rounded-lg p-2" style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? 'פדיון אחרי 6 שנה' : 'Withdrawal after 6y'}</div>
+                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.withdrawalAfter6y}</div>
                       <div className="font-bold text-sm" style={{ color: '#10b981' }}>₪{fmt(analysis.kh_analysis.withdrawal_net_if_wait || 0)}</div>
                     </div>
                   </div>
@@ -1711,7 +1711,7 @@ function IsraelExitWizard({
             {/* Pension products */}
             {analysis.pension_analysis.length > 0 && (
               <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-                <h3 className="font-semibold text-sm mb-3">🏛️ {isHe ? 'מוצרי פנסיה' : 'Pension Products'}</h3>
+                <h3 className="font-semibold text-sm mb-3">🏛️ {tr.pensionProducts}</h3>
                 <div className="space-y-3">
                   {analysis.pension_analysis.map((p, i) => (
                     <div key={i} className="rounded-lg p-3" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
@@ -1728,15 +1728,15 @@ function IsraelExitWizard({
               <h3 className="font-semibold text-sm mb-2" style={{ color: '#f59e0b' }}>⚠️ {tr.israelExitTax}</h3>
               <div className="grid grid-cols-2 gap-2 mb-3">
                 <div className="text-center rounded-lg p-2" style={{ background: 'var(--surface)' }}>
-                  <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? 'רווח לא ממומש' : 'Unrealized gain'}</div>
+                  <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.unrealizedGain}</div>
                   <div className="font-bold">${fmt(analysis.exit_tax_analysis.unrealized_gain_estimate)}</div>
                 </div>
                 <div className="text-center rounded-lg p-2" style={{ background: 'rgba(239,68,68,0.08)' }}>
-                  <div className="text-xs" style={{ color: '#ef4444' }}>{isHe ? 'מס יציאה (25%)' : 'Exit tax (25%)'}</div>
+                  <div className="text-xs" style={{ color: '#ef4444' }}>{tr.exitTaxPct}</div>
                   <div className="font-bold" style={{ color: '#ef4444' }}>${fmt(analysis.exit_tax_analysis.exit_tax_estimate)}</div>
                 </div>
               </div>
-              <div className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>{isHe ? 'אפשרויות דחייה:' : 'Deferral options:'}</div>
+              <div className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>{tr.deferralOptions}</div>
               <div className="space-y-1">
                 {(isHe ? analysis.exit_tax_analysis.deferral_options_he : analysis.exit_tax_analysis.deferral_options_en).map((opt, i) => (
                   <div key={i} className="text-xs rounded p-1.5" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>{opt}</div>
@@ -1776,7 +1776,7 @@ function IsraelExitWizard({
                     {analysis.bituach_leumi.old_age_pension.qualifies && (
                       <div className="mt-1 text-sm font-bold" style={{ color: '#10b981' }}>
                         ₪{analysis.bituach_leumi.old_age_pension.monthly_ils.toLocaleString()}/
-                        {isHe ? 'חודש' : 'month'}
+                        {tr.monthLabel}
                       </div>
                     )}
                   </div>
@@ -1807,7 +1807,7 @@ function IsraelExitWizard({
         {step === 2 && analysis && (
           <div className="space-y-3">
             <div className="text-xs font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>
-              {isHe ? 'מדינות מומלצות לישראלים — ממוינות לפי פרופיל שלך' : 'Recommended countries for Israelis — sorted by your profile'}
+              {tr.recommendedForIsraelis}
             </div>
             {analysis.country_recommendations.map((c, i) => (
               <div key={c.code} className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
@@ -1819,12 +1819,12 @@ function IsraelExitWizard({
                     </span>
                     <div>
                       <span className="font-bold">{isHe ? c.name : c.name_en}</span>
-                      {i === 0 && <span className="ml-2 text-xs px-1.5 py-0.5 rounded-full font-medium" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b' }}>⭐ {isHe ? 'מומלץ' : 'Recommended'}</span>}
+                      {i === 0 && <span className="ml-2 text-xs px-1.5 py-0.5 rounded-full font-medium" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b' }}>⭐ {tr.recommended}</span>}
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="font-bold text-lg" style={{ color: 'var(--accent)' }}>{c.adjusted_score}</div>
-                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{isHe ? 'ציון' : 'score'}</div>
+                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.scoreShort}</div>
                   </div>
                 </div>
 
@@ -1921,7 +1921,7 @@ function IsraelExitWizard({
               </div>
             </div>
             <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
-              {isHe ? 'סמן כל שלב שביצעת:' : 'Check each step as you complete it:'}
+              {tr.checkEachStep}
             </div>
             {analysis.exit_process.map(item => (
               <div key={item.step}
@@ -1963,7 +1963,7 @@ function IsraelExitWizard({
                 {Object.values(checklist).filter(Boolean).length} / {analysis.exit_process.length}
               </div>
               <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                {isHe ? 'שלבים הושלמו' : 'steps completed'}
+                {tr.stepsCompleted}
               </div>
             </div>
           </div>
@@ -1992,7 +1992,7 @@ function IsraelExitWizard({
                     <div className="font-bold">${fmt(israelTax)}/yr</div>
                   </div>
                   <div className="text-center rounded-lg p-2" style={{ background: 'rgba(239,68,68,0.07)' }}>
-                    <div className="text-xs" style={{ color: '#ef4444' }}>{isHe ? 'מס יציאה' : 'Exit tax'}</div>
+                    <div className="text-xs" style={{ color: '#ef4444' }}>{tr.exitTaxShort}</div>
                     <div className="font-bold" style={{ color: '#ef4444' }}>-${fmt(exitTax)}</div>
                   </div>
                 </div>
@@ -2016,7 +2016,7 @@ function IsraelExitWizard({
                       <div className="font-semibold text-sm">{isHe ? c.name : c.name_en}</div>
                       <div className="flex items-center gap-3">
                         <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                          {isHe ? 'חיסכון שנתי:' : 'Annual saving:'} <span className="font-bold" style={{ color: '#10b981' }}>${fmt(annualSaving)}</span>
+                          {tr.annualSavingLabel} <span className="font-bold" style={{ color: '#10b981' }}>${fmt(annualSaving)}</span>
                         </span>
                         <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: net5y > 0 ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', color: net5y > 0 ? '#10b981' : '#ef4444' }}>
                           5yr: {net5y > 0 ? '+' : ''}{fmt(net5y)}
@@ -2027,7 +2027,7 @@ function IsraelExitWizard({
                       <thead>
                         <tr style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
                           <th className="px-3 py-1.5 text-left font-medium" style={{ color: 'var(--text-muted)' }}>{tr.israelProjectionYear}</th>
-                          <th className="px-3 py-1.5 text-right font-medium" style={{ color: 'var(--text-muted)' }}>{isHe ? 'חיסכון מצטבר' : 'Cumulative saving'}</th>
+                          <th className="px-3 py-1.5 text-right font-medium" style={{ color: 'var(--text-muted)' }}>{tr.cumulativeSaving}</th>
                           <th className="px-3 py-1.5 text-right font-medium" style={{ color: 'var(--text-muted)' }}>{tr.israelProjectionNetGain}</th>
                         </tr>
                       </thead>
@@ -2056,7 +2056,7 @@ function IsraelExitWizard({
 
               {countries.length === 0 && (
                 <div className="text-center py-6 text-sm" style={{ color: 'var(--text-muted)' }}>
-                  {isHe ? 'הכנס הכנסות בפרופיל לחישוב תחזית מדויקת' : 'Enter income in your profile for accurate projections'}
+                  {tr.enterIncomeForProjection}
                 </div>
               )}
             </div>
@@ -2068,7 +2068,7 @@ function IsraelExitWizard({
           const baseIncome = analysis.total_income_usd || 1;
           const incomeRatio = whatIfIncome > 0 ? whatIfIncome / baseIncome : 1;
           const dest = analysis.country_recommendations[whatIfDestIdx] || analysis.country_recommendations[0];
-          if (!dest) return <div className="text-center py-6 text-sm" style={{ color: 'var(--text-muted)' }}>{isHe ? 'אין המלצות' : 'No recommendations'}</div>;
+          if (!dest) return <div className="text-center py-6 text-sm" style={{ color: 'var(--text-muted)' }}>{tr.noRecommendations}</div>;
 
           const scaledSaving = dest.annual_savings_vs_israel != null ? Math.round(dest.annual_savings_vs_israel * incomeRatio) : 0;
           const exitTax = Math.round(analysis.exit_tax_analysis.exit_tax_estimate * incomeRatio);
@@ -2102,7 +2102,7 @@ function IsraelExitWizard({
                 <div className="mb-4">
                   <div className="flex justify-between text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
                     <span>{tr.whatIfYears}</span>
-                    <span className="font-bold" style={{ color: 'var(--accent)' }}>{whatIfYears} {isHe ? 'שנים' : 'yrs'}</span>
+                    <span className="font-bold" style={{ color: 'var(--accent)' }}>{whatIfYears} {tr.yearsLabel}</span>
                   </div>
                   <input type="range" min={0} max={40} step={1}
                     value={whatIfYears}
@@ -2249,17 +2249,17 @@ function FatcaAdvisoryPanel({ lang, profile, setProfile, onAsk, onClose }: {
   const risks = [
     { flag: fbarRequired, label: isHe ? `FBAR — חייב בהגשה (נכסים זרים ${fmt(totalAssets)})` : `FBAR filing required (foreign assets ${fmt(totalAssets)})`, severity: 'warn' },
     { flag: fatcaFormRequired, label: isHe ? `טופס 8938 — נדרש (נכסים ${fmt(totalAssets)} > $200K)` : `Form 8938 required (assets ${fmt(totalAssets)} > $200K)`, severity: 'warn' },
-    { flag: true, label: isHe ? 'קרן השתלמות / קופת גמל — עלולות להיות PFIC (ריבוי מסים + קנסות)' : 'Keren Hishtalmut / Kupat Gemel — may be classified as PFIC (severe penalties)', severity: 'high' },
+    { flag: true, label: tr.pficWarning, severity: 'high' },
     { flag: coveredExpatriate, label: isHe ? `Covered Expatriate — ויתור על אזרחות מחייב מס יציאה אמריקאי (שווי נכסים ${fmt(totalAssets)})` : `Covered Expatriate — renouncing citizenship triggers US exit tax (assets ${fmt(totalAssets)})`, severity: 'high' },
-    { flag: true, label: isHe ? 'ביטול תושבות ישראלית לא פוטר ממס אמריקאי — חייב בהגשה לעד כל חיים' : 'Breaking Israeli residency does NOT eliminate US tax — must file for life', severity: 'info' },
+    { flag: true, label: tr.israelResidencyNoExempt, severity: 'info' },
   ].filter(r => r.flag);
 
   const actions = [
-    isHe ? 'הגש FBAR (FinCEN 114) עד 15 באפריל כל שנה — קנס $10K–$100K על אי-הגשה' : 'File FBAR (FinCEN 114) by April 15 each year — $10K–$100K penalty for non-filing',
-    isHe ? 'הגש Form 8938 עם 1040 אם נכסים זרים > $200K (מחוץ לארה"ב, נשוי בנפרד)' : 'File Form 8938 with 1040 if foreign assets > $200K (living abroad, single)',
-    isHe ? 'בדוק אם קרנות ישראליות = PFIC — שקול חשבון broker אמריקאי (Interactive Brokers) לניירות ערך' : 'Check if Israeli funds = PFIC — consider US broker (Interactive Brokers) for securities',
-    isHe ? 'שקול "Foreign Earned Income Exclusion" (Form 2555) להכנסת עבודה עד $126,500' : 'Consider FEIE (Form 2555) to exclude up to $126,500 of earned income',
-    isHe ? 'תכנן זיכוי מס זר (Form 1116) — מסים ישראלים גבוהים בד"כ מכסים את המס האמריקאי' : 'Plan Foreign Tax Credit (Form 1116) — high Israeli taxes usually cover US liability',
+    tr.fbarAction,
+    tr.form8938Action,
+    tr.pficBrokerAction,
+    tr.feieAction,
+    tr.ftcAction,
   ];
 
   return (
@@ -2278,10 +2278,10 @@ function FatcaAdvisoryPanel({ lang, profile, setProfile, onAsk, onClose }: {
         {/* Key numbers */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           {[
-            { label: tr.fatcaFeie, value: feieApplied > 0 ? fmt(feieApplied) : isHe ? 'לא חל' : 'N/A', color: '#10b981', sub: isHe ? 'פטור הכנסת עבודה זרה' : 'earned income exclusion' },
+            { label: tr.fatcaFeie, value: feieApplied > 0 ? fmt(feieApplied) : tr.notApplicable, color: '#10b981', sub: isHe ? 'פטור הכנסת עבודה זרה' : 'earned income exclusion' },
             { label: tr.fatcaFtc, value: fmt(ftcApplied), color: '#10b981', sub: isHe ? `מתוך ${fmt(ftcLimit)} מקסימום` : `of ${fmt(ftcLimit)} max` },
-            { label: tr.fatcaAdditionalUs, value: additionalUsTax > 0 ? fmt(additionalUsTax) : '✓ $0', color: additionalUsTax > 0 ? '#ef4444' : '#10b981', sub: isHe ? 'מס ארה"ב לתשלום' : 'US tax owed' },
-            { label: tr.fatcaNetRate, value: `${combinedRate.toFixed(1)}%`, color: combinedRate > 40 ? '#ef4444' : combinedRate > 25 ? '#f59e0b' : '#10b981', sub: isHe ? 'ישראל + ארה"ב ביחד' : 'Israel + US combined' },
+            { label: tr.fatcaAdditionalUs, value: additionalUsTax > 0 ? fmt(additionalUsTax) : '✓ $0', color: additionalUsTax > 0 ? '#ef4444' : '#10b981', sub: tr.usTaxOwed },
+            { label: tr.fatcaNetRate, value: `${combinedRate.toFixed(1)}%`, color: combinedRate > 40 ? '#ef4444' : combinedRate > 25 ? '#f59e0b' : '#10b981', sub: tr.israelUsCombined },
           ].map((card, i) => (
             <div key={i} className="rounded-xl p-3 text-center" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
               <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{card.label}</div>
@@ -2349,7 +2349,7 @@ function FatcaAdvisoryPanel({ lang, profile, setProfile, onAsk, onClose }: {
             : `I am an Israel-USA dual citizen with ${fmt(totalIncome)} income and ${fmt(totalAssets)} assets. ${fbarRequired ? 'FBAR required.' : ''} ${fatcaFormRequired ? 'Form 8938 required.' : ''} ${coveredExpatriate ? 'I am a covered expatriate.' : ''} Explain all my US tax obligations, what the foreign tax credit covers, and how to optimize my situation.`)}
           className="w-full py-2 rounded-xl text-sm font-medium transition-all hover:opacity-80"
           style={{ background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px solid var(--border)' }}>
-          {isHe ? '🤖 שאל AI על הסיטואציה שלי →' : '🤖 Ask AI about my situation →'}
+          {tr.askAiSituation}
         </button>
       </div>
     </div>
@@ -2431,7 +2431,7 @@ function ConversationalOnboarding({ lang, profile, onComplete, onClose }: {
       <div className="rounded-2xl p-8 text-center max-w-sm mx-4" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
         <div className="text-5xl mb-3">🎉</div>
         <div className="font-bold text-lg mb-1">{tr.onboardingDone}</div>
-        <div className="text-sm" style={{ color: 'var(--text-muted)' }}>{isHe ? 'הפרופיל שלך מוכן' : 'Your profile is ready'}</div>
+        <div className="text-sm" style={{ color: 'var(--text-muted)' }}>{tr.profileReady}</div>
       </div>
     </div>
   );
@@ -2467,7 +2467,7 @@ function ConversationalOnboarding({ lang, profile, onComplete, onClose }: {
           {step > 0 && Object.entries(answers).slice(-1).map(([k, v]) => (
             <div key={k} className={`flex gap-2 ${isHe ? '' : 'flex-row-reverse'}`}>
               <div className="rounded-2xl px-4 py-2.5 text-sm" style={{ background: 'var(--accent)', color: 'white' }}>
-                {Array.isArray(v) ? (v as string[]).join(', ') : String(v === true ? (isHe ? 'כן' : 'Yes') : v === false ? (isHe ? 'לא' : 'No') : v)}
+                {Array.isArray(v) ? (v as string[]).join(', ') : String(v === true ? tr.yesLabel : v === false ? tr.noLabel : v)}
               </div>
             </div>
           ))}
@@ -2483,7 +2483,7 @@ function ConversationalOnboarding({ lang, profile, onComplete, onClose }: {
                     color: boolVal === b ? 'white' : 'var(--text-muted)',
                     border: `1px solid ${boolVal === b ? 'var(--accent)' : 'var(--border)'}`,
                   }}>
-                  {b ? (isHe ? 'כן' : 'Yes') : (isHe ? 'לא' : 'No')}
+                  {b ? tr.yesLabel : tr.noLabel}
                 </button>
               ))}
             </div>
@@ -2584,7 +2584,7 @@ function ScenarioDiff({ lang, onClose }: { lang: Lang; onClose: () => void }) {
     {
       label_he: 'סיכוני תושבות', label_en: 'Residency Risks',
       getValue: s => s.analysis.residency_risks.length,
-      format: v => `${v} ${isHe ? 'סיכונים' : 'risks'}`, highlight: 'low',
+      format: v => `${v} ${tr.risksLabel}`, highlight: 'low',
     },
     {
       label_he: 'קרן השתלמות', label_en: 'Keren Hishtalmut',
@@ -2644,7 +2644,7 @@ function ScenarioDiff({ lang, onClose }: { lang: Lang; onClose: () => void }) {
               <thead>
                 <tr style={{ background: 'var(--surface-2)', borderBottom: '2px solid var(--accent)' }}>
                   <th className="px-3 py-2.5 text-left text-xs font-semibold" style={{ color: 'var(--text-muted)', minWidth: 160 }}>
-                    {isHe ? 'מדד' : 'Metric'}
+                    {tr.metricLabel}
                   </th>
                   {selectedScenarios.map(s => (
                     <th key={s.id} className="px-3 py-2.5 text-center text-sm font-bold">
@@ -7387,6 +7387,7 @@ interface DashboardProps {
 
 function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
   const isHe = lang === 'he';
+  const tr = useTranslation(lang);
   const totalIncome = Object.values(profile.income).reduce((a, b) => a + b, 0);
   const totalAssets = Object.values(profile.assets).reduce((a, b) => a + b, 0);
 
@@ -7422,11 +7423,11 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
   // Upcoming deadlines (static, always relevant)
   const now = new Date();
   const deadlines = [
-    { date: new Date(now.getFullYear(), 3, 15), label: isHe ? 'הגשת החזר מס ארה"ב' : 'US Tax Return', emoji: '🇺🇸' },
-    { date: new Date(now.getFullYear(), 5, 30), label: isHe ? 'הגשה ישראלית' : 'Israel Tax Filing', emoji: '🇮🇱' },
+    { date: new Date(now.getFullYear(), 3, 15), label: tr.usTaxReturnDeadline, emoji: '🇺🇸' },
+    { date: new Date(now.getFullYear(), 5, 30), label: tr.israelTaxFiling, emoji: '🇮🇱' },
     { date: new Date(now.getFullYear(), 3, 15), label: isHe ? 'FBAR' : 'FBAR', emoji: '📋' },
     { date: new Date(now.getFullYear(), 5, 15), label: isHe ? 'Form 8938 (FATCA)' : 'Form 8938 (FATCA)', emoji: '📝' },
-    { date: new Date(now.getFullYear(), 8, 15), label: isHe ? 'מקדמת מס רבעונית' : 'Quarterly Tax Payment', emoji: '💸' },
+    { date: new Date(now.getFullYear(), 8, 15), label: tr.quarterlyTax, emoji: '💸' },
   ]
     .map(d => {
       let target = d.date;
@@ -7445,14 +7446,14 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
     days <= 30 ? '#ef4444' : days <= 90 ? '#f59e0b' : '#10b981';
 
   const quickTools = [
-    { icon: '🏆', label: isHe ? 'מיטוב דרכון' : 'Passport', tool: 'passportOptimizer' },
-    { icon: '💰', label: isHe ? 'חיסכון מס' : 'Savings', tool: 'savings' },
-    { icon: '🕵️', label: isHe ? 'סימולטור ביקורת' : 'Audit Sim', tool: 'taxAudit' },
-    { icon: '📄', label: isHe ? 'אנליזת מסמך' : 'Doc Analyze', tool: 'docAnalyzer' },
-    { icon: '📊', label: isHe ? 'דוח PDF' : 'PDF Report', tool: 'pdfReport' },
-    { icon: '📅', label: isHe ? 'יומן מס' : 'Calendar', tool: 'calendarSync' },
-    { icon: '🔮', label: isHe ? 'תחזית 2030' : 'Forecast', tool: 'taxForecast' },
-    { icon: '🤝', label: isHe ? 'השוואת עמיתים' : 'Benchmark', tool: 'peerBenchmark' },
+    { icon: '🏆', label: tr.passportTool, tool: 'passportOptimizer' },
+    { icon: '💰', label: tr.savingsTool, tool: 'savings' },
+    { icon: '🕵️', label: tr.auditSimTool, tool: 'taxAudit' },
+    { icon: '📄', label: tr.docAnalyzeTool, tool: 'docAnalyzer' },
+    { icon: '📊', label: tr.pdfReportTool, tool: 'pdfReport' },
+    { icon: '📅', label: tr.calendarTool, tool: 'calendarSync' },
+    { icon: '🔮', label: tr.forecastTool, tool: 'taxForecast' },
+    { icon: '🤝', label: tr.benchmarkTool, tool: 'peerBenchmark' },
   ];
 
   const nextAction = top3[0]
@@ -7476,15 +7477,15 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
         <div className="flex-1 rounded-2xl p-5 relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%)', border: '1px solid rgba(59,130,246,0.25)' }}>
           <div className="text-xs font-semibold mb-1 opacity-60" style={{ color: '#93c5fd' }}>
-            {isHe ? '💸 אתה משלם יותר מדי מדי שנה' : '💸 You overpay every year'}
+            {tr.overpayAlert}
           </div>
           <div className="text-3xl font-black mb-1" style={{ color: '#f87171' }}>
-            {maxSaving > 0 ? fmt(maxSaving) : isHe ? 'הכנס פרופיל' : 'Add income'}
+            {maxSaving > 0 ? fmt(maxSaving) : tr.addIncomeHint}
           </div>
           <div className="text-xs opacity-50" style={{ color: '#e2e8f0' }}>
             {maxSaving > 0
               ? (isHe ? `חיסכון פוטנציאלי שנתי אם תעבור ל${top3[0]?.code}` : `Potential annual savings moving to ${top3[0]?.code}`)
-              : (isHe ? 'עדכן את ההכנסה שלך בפרופיל' : 'Update your income in profile')}
+              : tr.updateIncomeHint}
           </div>
           <div className="absolute bottom-3 end-4 text-5xl opacity-10 select-none">💸</div>
         </div>
@@ -7505,12 +7506,12 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
             </text>
           </svg>
           <div className="text-xs text-center mt-1 font-semibold" style={{ color: 'var(--text-muted)' }}>
-            {isHe ? 'ציון אופטימיזציה' : 'Opt. Score'}
+            {tr.optScore}
           </div>
           <div className="text-xs text-center" style={{ color: scoreColor }}>
-            {optScore >= 60 ? (isHe ? '⚠️ דחוף לטפל' : '⚠️ Act now')
-              : optScore >= 30 ? (isHe ? '🔶 יש מה לשפר' : '🔶 Room to improve')
-              : (isHe ? '✅ מצוין' : '✅ Well optimized')}
+            {optScore >= 60 ? tr.actNow
+              : optScore >= 30 ? tr.roomToImprove
+              : tr.wellOptimized}
           </div>
         </div>
       </div>
@@ -7519,7 +7520,7 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
       {top3.length > 0 && (
         <div className="mb-4">
           <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
-            {isHe ? '🌍 המדינות הטובות ביותר עבורך' : '🌍 Best countries for you'}
+            {tr.bestCountriesForYou}
           </div>
           <div className="grid grid-cols-3 gap-2">
             {top3.map((c, i) => (
@@ -7535,7 +7536,7 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
                 <div className="text-xs font-black" style={{ color: '#10b981' }}>
                   {fmt(c.saving)}
                 </div>
-                <div className="text-xs opacity-50">{isHe ? 'חיסכון/שנה' : '/yr saved'}</div>
+                <div className="text-xs opacity-50">{tr.savedPerYear}</div>
                 {i === 0 && <div className="text-xs mt-1">🏆</div>}
               </button>
             ))}
@@ -7548,7 +7549,7 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
         {/* Deadlines */}
         <div className="flex-1 rounded-xl p-4" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
           <div className="text-xs font-semibold mb-3" style={{ color: 'var(--text-muted)' }}>
-            ⏱️ {isHe ? 'דד-ליינים קרובים' : 'Upcoming deadlines'}
+            {tr.upcomingDeadlines}
           </div>
           {deadlines.map((dl, i) => (
             <div key={i} className="flex items-center gap-2 mb-2 last:mb-0">
@@ -7556,21 +7557,21 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-medium truncate">{dl.label}</div>
                 <div className="text-xs" style={{ color: urgencyColor(dl.daysLeft) }}>
-                  {dl.daysLeft === 0 ? (isHe ? 'היום!' : 'Today!')
+                  {dl.daysLeft === 0 ? tr.today
                     : isHe ? `בעוד ${dl.daysLeft} ימים` : `${dl.daysLeft} days`}
                 </div>
               </div>
               <div className="text-xs font-bold px-2 py-0.5 rounded-full"
                 style={{ background: `${urgencyColor(dl.daysLeft)}20`, color: urgencyColor(dl.daysLeft) }}>
-                {dl.daysLeft <= 7 ? (isHe ? 'דחוף' : 'Urgent')
-                  : dl.daysLeft <= 30 ? (isHe ? 'קרוב' : 'Soon') : (isHe ? 'תכנן' : 'Plan')}
+                {dl.daysLeft <= 7 ? tr.urgent
+                  : dl.daysLeft <= 30 ? tr.soon : tr.plan}
               </div>
             </div>
           ))}
           <button onClick={() => onOpenTool('calendarSync')}
             className="mt-3 w-full text-xs py-1.5 rounded-lg font-semibold transition-all hover:opacity-80"
             style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
-            {isHe ? '📅 הוסף ליומן' : '📅 Sync to Calendar'}
+            {tr.syncCalendar}
           </button>
         </div>
 
@@ -7579,7 +7580,7 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
           <div className="flex-1 rounded-xl p-4"
             style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(16,185,129,0.08) 100%)', border: '1px solid rgba(59,130,246,0.25)' }}>
             <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
-              {isHe ? '🎯 הצעד הבא המומלץ' : '🎯 Recommended next step'}
+              {tr.recommendedNextStep}
             </div>
             <div className="text-2xl mb-2">{nextAction.emoji}</div>
             <div className="text-sm font-bold mb-1">{nextAction.title}</div>
@@ -7587,7 +7588,7 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
             <button onClick={() => onChat(nextAction.action)}
               className="w-full py-2 rounded-lg text-xs font-bold transition-all hover:opacity-80"
               style={{ background: 'var(--accent)', color: 'white' }}>
-              {isHe ? '💬 שאל את ה-AI' : '💬 Ask AI'}
+              {tr.askAiBtn}
             </button>
           </div>
         )}
@@ -7596,7 +7597,7 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
       {/* Quick tools grid */}
       <div>
         <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
-          {isHe ? '⚡ כלים מהירים' : '⚡ Quick tools'}
+          {tr.quickTools}
         </div>
         <div className="grid grid-cols-4 gap-2">
           {quickTools.map((t, i) => (
@@ -7614,10 +7615,10 @@ function Dashboard({ lang, profile, onOpenTool, onChat }: DashboardProps) {
       <div className="mt-4 rounded-xl p-4 flex gap-6"
         style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
         {[
-          { label: isHe ? 'הכנסה שנתית' : 'Annual Income', value: fmt(totalIncome), icon: '💰' },
-          { label: isHe ? 'סך נכסים' : 'Total Assets', value: fmt(totalAssets), icon: '🏦' },
-          { label: isHe ? 'שיעור מס נוכחי' : 'Est. Tax Rate', value: totalIncome > 0 ? '~35%' : '—', icon: '📊' },
-          { label: isHe ? 'שיעור מס אופטימלי' : 'Optimal Rate', value: top3[0] ? `${Math.round(top3[0].effectiveRate * 100)}%` : '—', icon: '🎯' },
+          { label: tr.annualIncomeLabel, value: fmt(totalIncome), icon: '💰' },
+          { label: tr.totalAssetsLabel, value: fmt(totalAssets), icon: '🏦' },
+          { label: tr.estTaxRate, value: totalIncome > 0 ? '~35%' : '—', icon: '📊' },
+          { label: tr.optimalRate, value: top3[0] ? `${Math.round(top3[0].effectiveRate * 100)}%` : '—', icon: '🎯' },
         ].map((stat, i) => (
           <div key={i} className="flex-1 text-center">
             <div className="text-lg mb-0.5">{stat.icon}</div>
