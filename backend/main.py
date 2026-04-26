@@ -349,6 +349,15 @@ async def get_country_detail(code: str):
     return {"code": code.upper(), "data": cdata, "exit_tax": exit_info}
 
 
+ALLOWED_MEDIA_TYPES = {
+    "application/pdf",
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+}
+
 class AnalyzeReq(BaseModel):
     filename: str = ""
     content_base64: str
@@ -361,6 +370,12 @@ class AnalyzeReq(BaseModel):
 async def analyze_document(request: AnalyzeReq, req: Request):
     """Analyze an uploaded document and return tax insights."""
     require_quota(req)
+
+    # Validate media_type against allowlist
+    if request.media_type not in ALLOWED_MEDIA_TYPES:
+        from fastapi import HTTPException as _HTTPException
+        raise _HTTPException(status_code=400, detail="Unsupported file type.")
+
     import anthropic as _anthropic
 
     client = _anthropic.Anthropic()
