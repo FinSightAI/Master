@@ -39,7 +39,13 @@ export function WizeBar() {
   const [allTools, setAllTools] = useState('כל הכלים →');
   useEffect(() => {
     const l = localStorage.getItem('wl_lang') || 'he';
-    setAllTools(l === 'he' ? 'כל הכלים →' : '← All Tools');
+    const labels: Record<string, string> = {
+      he: 'כל הכלים →',
+      en: '← All Tools',
+      pt: '← Todas as ferramentas',
+      es: '← Todas las herramientas',
+    };
+    setAllTools(labels[l] || '← All Tools');
   }, []);
   return (
     <div style={{position:'fixed',top:0,left:0,right:0,height:36,zIndex:99999,background:'rgba(5,6,15,0.96)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 16px',fontFamily:'Inter,-apple-system,sans-serif',boxSizing:'border-box',direction:'ltr'}}>
