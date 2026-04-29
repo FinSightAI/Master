@@ -40,7 +40,7 @@ export function WizeBar() {
   useEffect(() => {
     const l = localStorage.getItem('wl_lang') || 'he';
     const labels: Record<string, string> = {
-      he: 'כל הכלים →',
+      he: '← כל הכלים',
       en: '← All Tools',
       pt: '← Todas as ferramentas',
       es: '← Todas las herramientas',
