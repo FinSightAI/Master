@@ -8,6 +8,8 @@ export function WizeOnboarding() {
   const OB: Record<string, {title:string,sub:string,features:string[],btn:string,nosee:string}> = {
     he: { title:'ברוך הבא ל-WizeTax', sub:'ייעוץ מס גלובלי חכם', features:['🌍 תכנון מס לישראלים בחו"ל ובארץ','⚖️ אופטימיזציה חוקית להפחתת מס','💬 שאלות מס בעברית, אנגלית ועוד'], btn:'בואו נתחיל ←', nosee:'אל תציג שוב בהפעלה' },
     en: { title:'Welcome to WizeTax', sub:'Smart global tax advisory', features:['🌍 Tax planning for Israelis abroad & at home','⚖️ Legal tax optimization strategies','💬 Tax questions in any language'], btn:'Get started →', nosee:"Don't show on startup" },
+    pt: { title:'Bem-vindo ao WizeTax', sub:'Consultoria tributária global inteligente', features:['🌍 Planejamento tributário para brasileiros no mundo','⚖️ Estratégias legais de otimização fiscal','💬 Perguntas sobre impostos em qualquer idioma'], btn:'Vamos lá →', nosee:'Não mostrar na inicialização' },
+    es: { title:'Bienvenido a WizeTax', sub:'Asesoría tributaria global inteligente', features:['🌍 Planificación fiscal para hispanos en el mundo','⚖️ Estrategias legales de optimización fiscal','💬 Preguntas sobre impuestos en cualquier idioma'], btn:'Empecemos →', nosee:'No mostrar al iniciar' },
   };
   const t = OB[lang] || OB.he;
   const isRtl = lang === 'he';
