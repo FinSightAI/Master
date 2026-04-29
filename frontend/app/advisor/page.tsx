@@ -4907,7 +4907,7 @@ function BusinessExitPanel({ lang, profile, onClose }: { lang: Lang; profile: Us
   }, [companyType, companyValue, retainedEarnings, scenario]);
 
   const scenarioColor = { sell:'#3b82f6', dividend:'#10b981', liquidate:'#f59e0b', holdco:'#8b5cf6' };
-  const scenarioLabel = {
+  const scenarioLabel: Record<string, { sell: string; dividend: string; liquidate: string; holdco: string }> = {
     he: { sell:'מכירת מניות', dividend:'חלוקת דיבידנד', liquidate:'פירוק', holdco:'מבנה Holding' },
     en: { sell:'Sell Shares', dividend:'Distribute Dividend', liquidate:'Liquidate', holdco:'Holding Structure' },
   };
