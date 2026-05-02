@@ -3,7 +3,18 @@
  * Project: finzilla-7f1f9
  */
 import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut as fbSignOut, User } from 'firebase/auth';
+
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+export async function signInWithGoogle() {
+  return signInWithPopup(auth, googleProvider);
+}
+
+export async function signOut() {
+  return fbSignOut(auth);
+}
 
 const firebaseConfig = {
   apiKey:            "AIzaSyDuzJHOMe89YmEFpKlaTgxT40BCNhK6PU0",
@@ -49,3 +60,4 @@ export function onAuth(callback: (user: User | null) => void) {
 }
 
 export { auth };
+export type { User };

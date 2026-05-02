@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { onAuth, signInWithGoogle, signOut, type User } from '../lib/firebase';
 
 const LANGS = ['he','en','pt','es'] as const;
 type Lang = typeof LANGS[number];
@@ -295,6 +296,9 @@ export function WizeOnboarding() {
 
 export function WizeBar() {
   const [allTools, setAllTools] = useState('← כל הכלים');
+  const [user, setUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+
   useEffect(() => {
     const l = localStorage.getItem('wl_lang') || 'he';
     const labels: Record<string, string> = {
@@ -302,7 +306,16 @@ export function WizeBar() {
       pt: '← Todas as ferramentas', es: '← Todas las herramientas',
     };
     setAllTools(labels[l] || '← All Tools');
+    const unsub = onAuth((u) => { setUser(u); setAuthReady(true); });
+    return unsub;
   }, []);
+
+  const btnStyle: React.CSSProperties = {
+    fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+    border: 'none', borderRadius: 6, padding: '3px 10px', lineHeight: '20px',
+    whiteSpace: 'nowrap',
+  };
+
   return (
     <div style={{position:'fixed',top:0,left:0,right:0,height:36,zIndex:99999,background:'rgba(5,6,15,0.96)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 16px',fontFamily:'Inter,-apple-system,sans-serif',boxSizing:'border-box',direction:'ltr'}}>
       <a href="https://finsightai.github.io/wizelife/dashboard.html" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none',lineHeight:1}}>
@@ -310,8 +323,21 @@ export function WizeBar() {
         <span style={{fontSize:13,fontWeight:700,color:'#eef2ff',letterSpacing:'-0.3px'}}>WizeLife</span>
         <span style={{fontSize:11,fontWeight:600,color:'#f59e0b',background:'rgba(245,158,11,0.12)',padding:'2px 8px',borderRadius:99,lineHeight:1.4}}>WizeTax</span>
       </a>
-      <div style={{display:'flex',alignItems:'center',gap:12}}>
+      <div style={{display:'flex',alignItems:'center',gap:10}}>
         <LangSwitcher color="#f59e0b" />
+        {authReady && (
+          user ? (
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              {user.photoURL && <img src={user.photoURL} alt="" style={{width:20,height:20,borderRadius:'50%'}} referrerPolicy="no-referrer" />}
+              <span style={{fontSize:11,color:'#9ca3af',maxWidth:100,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user.displayName || user.email}</span>
+              <button onClick={() => signOut()} style={{...btnStyle,background:'rgba(255,255,255,0.08)',color:'#9ca3af'}}>✕</button>
+            </div>
+          ) : (
+            <button onClick={() => signInWithGoogle()} style={{...btnStyle,background:'rgba(245,158,11,0.15)',color:'#f59e0b',border:'1px solid rgba(245,158,11,0.3)'}}>
+              Sign in with Google
+            </button>
+          )
+        )}
         <a href="https://finsightai.github.io/wizelife/dashboard.html" style={{fontSize:12,color:'#7b88ad',textDecoration:'none',fontWeight:500,whiteSpace:'nowrap'}}>{allTools}</a>
       </div>
     </div>
