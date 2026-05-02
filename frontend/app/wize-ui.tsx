@@ -276,7 +276,7 @@ export function WizeOnboarding() {
               style={{width:50,height:50,borderRadius:'50%',background:'rgba(255,255,255,0.08)',
                 border:'1px solid rgba(255,255,255,0.15)',color:'white',fontSize:22,
                 cursor:'pointer',flexShrink:0,fontFamily:'inherit'}}>
-              {isRtl ? '←' : '→'}
+              {'←'}
             </button>
           )}
           {!isLast && (
