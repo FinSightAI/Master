@@ -420,7 +420,8 @@ class SavingsReq(BaseModel):
 
 
 @app.post("/api/savings")
-async def get_savings(request: SavingsReq):
+@limiter.limit("30/minute")
+async def get_savings(request: SavingsReq, req: Request):
     """Calculate estimated annual tax savings across countries for a user profile."""
     from pathlib import Path as P
 
@@ -1039,7 +1040,8 @@ class CompanyReq(BaseModel):
 
 
 @app.post("/api/company")
-async def company_optimizer(req: CompanyReq):
+@limiter.limit("30/minute")
+async def company_optimizer(req: CompanyReq, request: Request):
     """Compare company structures across jurisdictions."""
     profit = req.annual_profit_usd
     results = []
@@ -1085,7 +1087,8 @@ class IsraelReq(BaseModel):
 
 
 @app.post("/api/israel")
-async def israel_analysis(request: IsraelReq):
+@limiter.limit("20/minute")
+async def israel_analysis(request: IsraelReq, req: Request):
     """Full Israeli exit planning analysis."""
     p = request.profile
     ip = request.israel_profile
