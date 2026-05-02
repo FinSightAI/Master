@@ -2,13 +2,13 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Tax Master AI — Global Tax Advisor',
-    short_name: 'Tax Master',
-    description: 'AI-powered international tax advisor for optimal tax planning.',
+    name: 'WizeTax — Global Tax Advisor',
+    short_name: 'WizeTax',
+    description: 'AI-powered international tax advisor for optimal tax planning across all jurisdictions.',
     start_url: '/advisor',
     display: 'standalone',
     background_color: '#0f1117',
-    theme_color: '#10b981',
+    theme_color: '#f59e0b',
     orientation: 'portrait-primary',
     icons: [
       {
