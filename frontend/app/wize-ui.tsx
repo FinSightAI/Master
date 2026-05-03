@@ -294,10 +294,19 @@ export function WizeOnboarding() {
   );
 }
 
+function decodeWlToken(token: string): { email?: string } | null {
+  try {
+    const b64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const p = JSON.parse(atob(b64));
+    return { email: p.email };
+  } catch { return null; }
+}
+
 export function WizeBar() {
   const [allTools, setAllTools] = useState('← כל הכלים');
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
+  const [sso, setSso] = useState<{ nick?: string; email?: string } | null>(null);
 
   useEffect(() => {
     const l = localStorage.getItem('wl_lang') || 'he';
@@ -307,6 +316,24 @@ export function WizeBar() {
     };
     setAllTools(labels[l] || '← All Tools');
     const unsub = onAuth((u) => { setUser(u); setAuthReady(true); });
+
+    try {
+      const p = new URLSearchParams(window.location.search);
+      const t = p.get('wl_token');
+      const n = p.get('wl_nick');
+      if (t || n) {
+        const stored: Record<string,string> = JSON.parse(localStorage.getItem('wl_sso') || '{}');
+        if (t) { stored.token = t; const d = decodeWlToken(t); if (d?.email) stored.email = d.email; }
+        if (n) stored.nick = decodeURIComponent(n);
+        localStorage.setItem('wl_sso', JSON.stringify(stored));
+        const url = new URL(window.location.href);
+        url.searchParams.delete('wl_token'); url.searchParams.delete('wl_nick');
+        window.history.replaceState({}, '', url.toString());
+      }
+      const s: Record<string,string> = JSON.parse(localStorage.getItem('wl_sso') || '{}');
+      if (s.token) setSso({ nick: s.nick, email: s.email });
+    } catch {}
+
     return unsub;
   }, []);
 
@@ -315,6 +342,9 @@ export function WizeBar() {
     border: 'none', borderRadius: 6, padding: '3px 10px', lineHeight: '20px',
     whiteSpace: 'nowrap',
   };
+
+  const displayName = user ? (user.displayName || user.email) : (sso?.nick || sso?.email);
+  const isConnected = !!(user || sso?.token);
 
   return (
     <div style={{position:'fixed',top:0,left:0,right:0,height:36,zIndex:99999,background:'rgba(5,6,15,0.96)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 16px',fontFamily:'Inter,-apple-system,sans-serif',boxSizing:'border-box',direction:'ltr'}}>
@@ -325,18 +355,17 @@ export function WizeBar() {
       </a>
       <div style={{display:'flex',alignItems:'center',gap:10}}>
         <LangSwitcher color="#f59e0b" />
-        {authReady && (
-          user ? (
-            <div style={{display:'flex',alignItems:'center',gap:8}}>
-              {user.photoURL && <img src={user.photoURL} alt="" style={{width:20,height:20,borderRadius:'50%'}} referrerPolicy="no-referrer" />}
-              <span style={{fontSize:11,color:'#9ca3af',maxWidth:100,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user.displayName || user.email}</span>
-              <button onClick={() => signOut()} style={{...btnStyle,background:'rgba(255,255,255,0.08)',color:'#9ca3af'}}>✕</button>
-            </div>
-          ) : (
-            <button onClick={() => signInWithGoogle()} style={{...btnStyle,background:'rgba(245,158,11,0.15)',color:'#f59e0b',border:'1px solid rgba(245,158,11,0.3)'}}>
-              Sign in with Google
-            </button>
-          )
+        {authReady && isConnected && (
+          <div style={{display:'flex',alignItems:'center',gap:5,padding:'3px 10px 3px 7px',borderRadius:99,background:'rgba(34,197,94,0.1)',border:'1px solid rgba(34,197,94,0.25)'}}>
+            <div style={{width:7,height:7,borderRadius:'50%',background:'#22c55e',boxShadow:'0 0 6px #22c55e',flexShrink:0}}/>
+            <span style={{fontSize:11,fontWeight:700,color:'#86efac',maxWidth:120,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{displayName || 'מחובר'}</span>
+            {user && <button onClick={() => signOut()} style={{...btnStyle,background:'none',color:'#6b7280',padding:'0 0 0 4px',fontSize:10}}>✕</button>}
+          </div>
+        )}
+        {authReady && !isConnected && (
+          <button onClick={() => signInWithGoogle()} style={{...btnStyle,background:'rgba(245,158,11,0.15)',color:'#f59e0b',border:'1px solid rgba(245,158,11,0.3)'}}>
+            Sign in
+          </button>
         )}
         <a href="https://finsightai.github.io/wizelife/dashboard.html" style={{fontSize:12,color:'#7b88ad',textDecoration:'none',fontWeight:500,whiteSpace:'nowrap'}}>{allTools}</a>
       </div>
