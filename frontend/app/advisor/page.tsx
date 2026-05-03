@@ -9636,6 +9636,7 @@ function RealEstateAbroadPanel({ lang, onClose }: { lang: Lang; onClose: () => v
 export default function AdvisorPage() {
   const [mounted, setMounted] = useState(false);
   const [lang, setLang] = useState<Lang>('he');
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -9961,7 +9962,7 @@ export default function AdvisorPage() {
     <>
     <div dir={dir} style={{ position: 'fixed', inset: 0, display: 'flex', background: 'var(--background)' }}>
       {/* ── Sidebar ── */}
-      <div style={{ width: '240px', flexShrink: 0, display: 'flex', flexDirection: 'column', background: 'var(--surface)', borderRight: '1px solid var(--border)', overflow: 'hidden' }}>
+      <div className={`wt-sidebar${mobileSidebarOpen ? ' open' : ''}`} style={{ width: '240px', flexShrink: 0, display: 'flex', flexDirection: 'column', background: 'var(--surface)', borderRight: '1px solid var(--border)', overflow: 'hidden' }}>
         {/* Logo + lang toggle */}
         <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
           <div className="flex items-center gap-2">
@@ -10396,8 +10397,16 @@ export default function AdvisorPage() {
         </div>
       </div>
 
+      {/* ── Sidebar overlay (mobile) ── */}
+      {mobileSidebarOpen && <div className="wt-overlay" onClick={() => setMobileSidebarOpen(false)} />}
+
       {/* ── Main ── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0, minHeight: 0 }}>
+        {/* Mobile hamburger */}
+        <button className="wt-hamburger" onClick={() => setMobileSidebarOpen(o => !o)}
+          style={{ position: 'fixed', top: 8, zIndex: 201, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 10px', fontSize: 18, color: 'var(--text)', cursor: 'pointer', [dir === 'rtl' ? 'right' : 'left']: 8 }}>
+          ☰
+        </button>
         {/* Panels */}
         {showProfile && (
           <ProfilePanel lang={lang} profile={profile} setProfile={setProfile}
@@ -10844,7 +10853,7 @@ export default function AdvisorPage() {
                 onKeyDown={handleKeyDown} disabled={isLoading}
                 placeholder={planMode ? tr.checkPlanPlaceholder : tr.inputPlaceholder} rows={1}
                 dir={lang === 'he' ? 'rtl' : 'ltr'}
-                className="flex-1 bg-transparent outline-none resize-none text-sm px-2 py-1"
+                className="wt-chat-input flex-1 bg-transparent outline-none resize-none text-sm px-2 py-1"
                 style={{ color: 'var(--text)', minHeight: '36px', maxHeight: '120px' }}
                 onInput={e => {
                   const el = e.currentTarget;

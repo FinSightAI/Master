@@ -129,3 +129,27 @@ body {
   /* Make panels visible and scrollable */
   .border-b.overflow-y-auto { max-height: none !important; overflow: visible !important; }
 }
+
+/* ── Mobile sidebar drawer ── */
+@media (max-width: 768px) {
+  .wt-sidebar {
+    position: fixed !important;
+    top: 0; bottom: 0;
+    z-index: 200;
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+  }
+  [dir="rtl"] .wt-sidebar { right: 0; transform: translateX(100%); }
+  [dir="ltr"] .wt-sidebar { left: 0; transform: translateX(-100%); }
+  .wt-sidebar.open { transform: translateX(0) !important; }
+  .wt-overlay {
+    position: fixed; inset: 0; z-index: 199;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(3px);
+  }
+  .wt-hamburger { display: flex !important; }
+  .wt-chat-input { font-size: 16px !important; }
+}
+@media (min-width: 769px) {
+  .wt-hamburger { display: none !important; }
+  .wt-overlay { display: none !important; }
+}
