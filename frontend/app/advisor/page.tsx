@@ -9797,6 +9797,31 @@ export default function AdvisorPage() {
     localStorage.setItem('tax_master_profile', JSON.stringify(profile));
     setProfileSaved(true);
     setShowProfile(false);
+    // Sync to Firestore for WizeAI
+    getIdToken().then(tok => {
+      if (!tok) return;
+      try {
+        const pl = JSON.parse(atob(tok.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+        const uid = pl.user_id || pl.sub;
+        if (!uid) return;
+        const totalIncome = Object.values(profile.income).reduce((s:number, v) => s + (v as number), 0);
+        const totalAssets = Object.values(profile.assets).reduce((s:number, v) => s + (v as number), 0);
+        const ctx = {
+          fields: {
+            totalIncomeUSD: { doubleValue: totalIncome },
+            residency: { stringValue: profile.current_residency || '' },
+            citizenships: { arrayValue: { values: (profile.citizenships||[]).map((c:string) => ({ stringValue: c })) } },
+            incomeBreakdown: { stringValue: Object.entries(profile.income).filter(([,v])=>(v as number)>0).map(([k,v])=>).join(',') },
+            totalAssetsUSD: { doubleValue: totalAssets },
+            goals: { arrayValue: { values: (profile.goals||[]).map((g:string) => ({ stringValue: g })) } },
+            syncedAt: { stringValue: new Date().toISOString() }
+          }
+        };
+        fetch(,
+          { method: 'PATCH', headers: { Authorization: 'Bearer '+tok, 'Content-Type': 'application/json' }, body: JSON.stringify(ctx) }
+        ).catch(() => {});
+      } catch {}
+    });
   };
 
   const toggleLang = () => {
