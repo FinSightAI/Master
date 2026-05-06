@@ -9852,6 +9852,68 @@ export default function AdvisorPage() {
     localStorage.setItem('tax_master_lang', next);
     localStorage.setItem('wl_lang', next);  // shared cross-app key
   };
+    // Close all tool panels (helper to ensure only one panel is open at a time)
+    const closeAllPanels = useCallback(() => {
+        setShowAdvisorPortal(false);
+        setShowAgreements(false);
+        setShowAnnualTax(false);
+        setShowBankMigration(false);
+        setShowBusinessExit(false);
+        setShowCRSChecker(false);
+        setShowCalendarSync(false);
+        setShowCompMatrix(false);
+        setShowCompanyOptimizer(false);
+        setShowCompare(false);
+        setShowCountryFit(false);
+        setShowCountryProfiles(false);
+        setShowCryptoCalc(false);
+        setShowDaysTracker(false);
+        setShowDeadlines(false);
+        setShowDocAnalyzer(false);
+        setShowDocChecklist(false);
+        setShowDtaaCalc(false);
+        setShowEmigROI(false);
+        setShowEstatePlanner(false);
+        setShowExitTax(false);
+        setShowFamilyImpact(false);
+        setShowFatca(false);
+        setShowFxCalc(false);
+        setShowIsraelWizard(false);
+        setShowLegalDocs(false);
+        setShowLetterGenerator(false);
+        setShowLifetimeSavings(false);
+        setShowMultiYear(false);
+        setShowMyPlan(false);
+        setShowPassportOptimizer(false);
+        setShowPdfReport(false);
+        setShowPeerBenchmark(false);
+        setShowPensionCalc(false);
+        setShowPensionGuide(false);
+        setShowPortfolioOpt(false);
+        setShowProDirectory(false);
+        setShowProfile(false);
+        setShowRealEstateAbroad(false);
+        setShowRealEstateCalc(false);
+        setShowRedFlags(false);
+        setShowRemoteWorker(false);
+        setShowSavings(false);
+        setShowScenarioDiff(false);
+        setShowSection100A(false);
+        setShowSideBySide(false);
+        setShowTaxAlerts(false);
+        setShowTaxAudit(false);
+        setShowTaxForecast(false);
+        setShowTaxMap(false);
+        setShowTaxScore(false);
+        setShowTaxUpdates(false);
+        setShowTimeline(false);
+        setShowTimingCalc(false);
+        setShowTreatyLookup(false);
+        setShowVisaPanel(false);
+        setShowWealthSim(false);
+    }, []);
+
+
 
   const sendMessage = useCallback(async (text?: string) => {
     const raw = text || input.trim();
@@ -10187,181 +10249,181 @@ export default function AdvisorPage() {
             <Award size={14} />
             {tr.fitScore}
           </button>
-          <button onClick={() => { setShowRedFlags(f => !f); setShowCountryFit(false); setShowVisaPanel(false); setShowTimeline(false); setShowWealthSim(false); setShowBankMigration(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowRedFlags(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showRedFlags ? 'rgba(239,68,68,0.12)' : 'var(--surface-2)', color: showRedFlags ? '#ef4444' : 'var(--text-muted)', border: showRedFlags ? '1px solid rgba(239,68,68,0.4)' : '1px solid transparent' }}>
             <AlertTriangle size={14} />
             {tr.redFlags}
           </button>
-          <button onClick={() => { setShowTimeline(t => !t); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowWealthSim(false); setShowBankMigration(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowTimeline(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTimeline ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTimeline ? 'var(--accent)' : 'var(--text-muted)', border: showTimeline ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <CalendarClock size={14} />
             {tr.decisionTimeline}
           </button>
-          <button onClick={() => { setShowWealthSim(w => !w); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowBankMigration(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowWealthSim(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showWealthSim ? 'var(--accent-glow)' : 'var(--surface-2)', color: showWealthSim ? 'var(--accent)' : 'var(--text-muted)', border: showWealthSim ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Coins size={14} />
             {tr.wealthSim}
           </button>
-          <button onClick={() => { setShowBankMigration(b => !b); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowBankMigration(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showBankMigration ? 'var(--accent-glow)' : 'var(--surface-2)', color: showBankMigration ? 'var(--accent)' : 'var(--text-muted)', border: showBankMigration ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Landmark size={14} />
             {tr.bankMigration}
           </button>
-          <button onClick={() => { setShowCryptoCalc(c => !c); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowCRSChecker(false); setShowRemoteWorker(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowCryptoCalc(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showCryptoCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCryptoCalc ? 'var(--accent)' : 'var(--text-muted)', border: showCryptoCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>₿</span>
             {tr.cryptoCalc}
           </button>
-          <button onClick={() => { setShowCRSChecker(c => !c); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRemoteWorker(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowCRSChecker(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showCRSChecker ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCRSChecker ? 'var(--accent)' : 'var(--text-muted)', border: showCRSChecker ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🔍</span>
             {tr.crsChecker}
           </button>
-          <button onClick={() => { setShowRemoteWorker(r => !r); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowRemoteWorker(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showRemoteWorker ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRemoteWorker ? 'var(--accent)' : 'var(--text-muted)', border: showRemoteWorker ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>💻</span>
             {tr.remoteWorker}
           </button>
-          <button onClick={() => { setShowPensionGuide(p => !p); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowBusinessExit(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowPensionGuide(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showPensionGuide ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPensionGuide ? 'var(--accent)' : 'var(--text-muted)', border: showPensionGuide ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🏛️</span>
             {tr.pensionGuide}
           </button>
-          <button onClick={() => { setShowBusinessExit(b => !b); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowBusinessExit(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showBusinessExit ? 'var(--accent-glow)' : 'var(--surface-2)', color: showBusinessExit ? 'var(--accent)' : 'var(--text-muted)', border: showBusinessExit ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🏢</span>
             {tr.businessExit}
           </button>
-          <button onClick={() => { setShowMyPlan(p=>!p); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowCompMatrix(false); setShowEstatePlanner(false); setShowPortfolioOpt(false); setShowFxCalc(false); setShowProDirectory(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowMyPlan(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showMyPlan ? 'var(--accent-glow)' : 'var(--surface-2)', color: showMyPlan ? 'var(--accent)' : 'var(--text-muted)', border: showMyPlan ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🗺️</span>
             {tr.myPlan}
           </button>
-          <button onClick={() => { setShowCompMatrix(p=>!p); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowEstatePlanner(false); setShowPortfolioOpt(false); setShowFxCalc(false); setShowProDirectory(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowCompMatrix(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showCompMatrix ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCompMatrix ? 'var(--accent)' : 'var(--text-muted)', border: showCompMatrix ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📊</span>
             {tr.compMatrix}
           </button>
-          <button onClick={() => { setShowEstatePlanner(p=>!p); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowPortfolioOpt(false); setShowFxCalc(false); setShowProDirectory(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowEstatePlanner(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showEstatePlanner ? 'var(--accent-glow)' : 'var(--surface-2)', color: showEstatePlanner ? 'var(--accent)' : 'var(--text-muted)', border: showEstatePlanner ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🏰</span>
             {tr.estatePlanner}
           </button>
-          <button onClick={() => { setShowPortfolioOpt(p=>!p); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowFxCalc(false); setShowProDirectory(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowPortfolioOpt(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showPortfolioOpt ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPortfolioOpt ? 'var(--accent)' : 'var(--text-muted)', border: showPortfolioOpt ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📈</span>
             {tr.portfolioOpt}
           </button>
-          <button onClick={() => { setShowFxCalc(p=>!p); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowProDirectory(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowFxCalc(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showFxCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFxCalc ? 'var(--accent)' : 'var(--text-muted)', border: showFxCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>💱</span>
             {tr.fxCalc}
           </button>
-          <button onClick={() => { setShowProDirectory(p=>!p); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowTaxMap(false); setShowLifetimeSavings(false); setShowFamilyImpact(false); setShowTaxAlerts(false); setShowTaxScore(false); }}
+          <button onClick={() => { closeAllPanels(); setShowProDirectory(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showProDirectory ? 'var(--accent-glow)' : 'var(--surface-2)', color: showProDirectory ? 'var(--accent)' : 'var(--text-muted)', border: showProDirectory ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📋</span>
             {tr.proDirectory}
           </button>
-          <button onClick={() => { setShowTaxMap(p=>!p); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowLifetimeSavings(false); setShowFamilyImpact(false); setShowTaxAlerts(false); setShowTaxScore(false); }}
+          <button onClick={() => { closeAllPanels(); setShowTaxMap(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTaxMap ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxMap ? 'var(--accent)' : 'var(--text-muted)', border: showTaxMap ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🗺️</span>
             {tr.taxMap}
           </button>
-          <button onClick={() => { setShowLifetimeSavings(p=>!p); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowFamilyImpact(false); setShowTaxAlerts(false); setShowTaxScore(false); }}
+          <button onClick={() => { closeAllPanels(); setShowLifetimeSavings(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showLifetimeSavings ? 'var(--accent-glow)' : 'var(--surface-2)', color: showLifetimeSavings ? 'var(--accent)' : 'var(--text-muted)', border: showLifetimeSavings ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>💸</span>
             {tr.lifetimeSavings}
           </button>
-          <button onClick={() => { setShowFamilyImpact(p=>!p); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowTaxAlerts(false); setShowTaxScore(false); }}
+          <button onClick={() => { closeAllPanels(); setShowFamilyImpact(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showFamilyImpact ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFamilyImpact ? 'var(--accent)' : 'var(--text-muted)', border: showFamilyImpact ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>👨‍👩‍👧</span>
             {tr.familyImpact}
           </button>
-          <button onClick={() => { setShowTaxAlerts(p=>!p); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowTaxScore(false); }}
+          <button onClick={() => { closeAllPanels(); setShowTaxAlerts(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTaxAlerts ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxAlerts ? 'var(--accent)' : 'var(--text-muted)', border: showTaxAlerts ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🔔</span>
             {tr.taxAlerts}
           </button>
-          <button onClick={() => { setShowTaxScore(p=>!p); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowTaxScore(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTaxScore ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxScore ? 'var(--accent)' : 'var(--text-muted)', border: showTaxScore ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📊</span>
             {tr.taxScore}
           </button>
-          <button onClick={() => { setShowTaxAudit(p=>!p); setShowTaxScore(false); setShowTaxForecast(false); setShowPeerBenchmark(false); setShowDocAnalyzer(false); setShowDeadlines(false); setShowPassportOptimizer(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowTaxAudit(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTaxAudit ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxAudit ? 'var(--accent)' : 'var(--text-muted)', border: showTaxAudit ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🕵️</span>
             {tr.taxAudit}
           </button>
-          <button onClick={() => { setShowPassportOptimizer(p=>!p); setShowTaxAudit(false); setShowTaxScore(false); setShowTaxForecast(false); setShowPeerBenchmark(false); setShowDocAnalyzer(false); setShowDeadlines(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowPassportOptimizer(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showPassportOptimizer ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPassportOptimizer ? 'var(--accent)' : 'var(--text-muted)', border: showPassportOptimizer ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🏆</span>
             {tr.passportOptimizer}
           </button>
-          <button onClick={() => { setShowDeadlines(p=>!p); setShowPassportOptimizer(false); setShowTaxAudit(false); setShowTaxScore(false); setShowTaxForecast(false); setShowPeerBenchmark(false); setShowDocAnalyzer(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowDeadlines(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showDeadlines ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDeadlines ? 'var(--accent)' : 'var(--text-muted)', border: showDeadlines ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>⏱️</span>
             {tr.deadlines}
           </button>
-          <button onClick={() => { setShowDocAnalyzer(p=>!p); setShowDeadlines(false); setShowPassportOptimizer(false); setShowTaxAudit(false); setShowTaxScore(false); setShowTaxForecast(false); setShowPeerBenchmark(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowDocAnalyzer(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showDocAnalyzer ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDocAnalyzer ? 'var(--accent)' : 'var(--text-muted)', border: showDocAnalyzer ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📄</span>
             {tr.docAnalyzer}
           </button>
-          <button onClick={() => { setShowPeerBenchmark(p=>!p); setShowDocAnalyzer(false); setShowDeadlines(false); setShowPassportOptimizer(false); setShowTaxAudit(false); setShowTaxScore(false); setShowTaxForecast(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowPeerBenchmark(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showPeerBenchmark ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPeerBenchmark ? 'var(--accent)' : 'var(--text-muted)', border: showPeerBenchmark ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🤝</span>
             {tr.peerBenchmark}
           </button>
-          <button onClick={() => { setShowTaxForecast(p=>!p); setShowPeerBenchmark(false); setShowDocAnalyzer(false); setShowDeadlines(false); setShowPassportOptimizer(false); setShowTaxAudit(false); setShowTaxScore(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowTaxForecast(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTaxForecast ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxForecast ? 'var(--accent)' : 'var(--text-muted)', border: showTaxForecast ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🔮</span>
             {tr.taxForecast}
           </button>
-          <button onClick={() => { setShowLegalDocs(p=>!p); setShowTaxForecast(false); setShowPeerBenchmark(false); setShowDocAnalyzer(false); setShowDeadlines(false); setShowPassportOptimizer(false); setShowTaxAudit(false); setShowTaxScore(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowAdvisorPortal(false); setShowCalendarSync(false); setShowPdfReport(false); }}
+          <button onClick={() => { closeAllPanels(); setShowLegalDocs(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showLegalDocs ? 'var(--accent-glow)' : 'var(--surface-2)', color: showLegalDocs ? 'var(--accent)' : 'var(--text-muted)', border: showLegalDocs ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📝</span>
             {tr.legalDocs}
           </button>
-          <button onClick={() => { setShowAdvisorPortal(p=>!p); setShowLegalDocs(false); setShowTaxForecast(false); setShowPeerBenchmark(false); setShowDocAnalyzer(false); setShowDeadlines(false); setShowPassportOptimizer(false); setShowTaxAudit(false); setShowTaxScore(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowCalendarSync(false); setShowPdfReport(false); }}
+          <button onClick={() => { closeAllPanels(); setShowAdvisorPortal(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showAdvisorPortal ? 'var(--accent-glow)' : 'var(--surface-2)', color: showAdvisorPortal ? 'var(--accent)' : 'var(--text-muted)', border: showAdvisorPortal ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🤝</span>
             {tr.advisorPortal}
           </button>
-          <button onClick={() => { setShowCalendarSync(p=>!p); setShowAdvisorPortal(false); setShowLegalDocs(false); setShowTaxForecast(false); setShowPeerBenchmark(false); setShowDocAnalyzer(false); setShowDeadlines(false); setShowPassportOptimizer(false); setShowTaxAudit(false); setShowTaxScore(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowPdfReport(false); }}
+          <button onClick={() => { closeAllPanels(); setShowCalendarSync(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showCalendarSync ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCalendarSync ? 'var(--accent)' : 'var(--text-muted)', border: showCalendarSync ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📅</span>
             {tr.calendarSync}
           </button>
-          <button onClick={() => { setShowPdfReport(p=>!p); setShowCalendarSync(false); setShowAdvisorPortal(false); setShowLegalDocs(false); setShowTaxForecast(false); setShowPeerBenchmark(false); setShowDocAnalyzer(false); setShowDeadlines(false); setShowPassportOptimizer(false); setShowTaxAudit(false); setShowTaxScore(false); setShowTaxAlerts(false); setShowFamilyImpact(false); setShowLifetimeSavings(false); setShowTaxMap(false); setShowProDirectory(false); setShowFxCalc(false); setShowPortfolioOpt(false); setShowEstatePlanner(false); setShowCompMatrix(false); setShowMyPlan(false); setShowBusinessExit(false); setShowPensionGuide(false); setShowRemoteWorker(false); setShowCRSChecker(false); setShowCryptoCalc(false); setShowBankMigration(false); setShowWealthSim(false); setShowTimeline(false); setShowRedFlags(false); setShowCountryFit(false); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowPdfReport(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showPdfReport ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPdfReport ? 'var(--accent)' : 'var(--text-muted)', border: showPdfReport ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📊</span>
