@@ -211,3 +211,12 @@ html[data-theme="light"] body > div[style*="background:'#030508'"] {
   background: #f8fafc !important;
   color: #1e293b !important;
 }
+
+
+/* WizeBar React component — force light in light mode */
+html[data-theme="light"] .wl-bar-react {
+  background: rgba(255,255,255,0.95) !important;
+  border-bottom-color: rgba(0,0,0,0.08) !important;
+}
+html[data-theme="light"] .wl-bar-react * { color: #1e293b !important; }
+html[data-theme="light"] .wl-bar-react [style*="color:#7b88ad"] { color: #475569 !important; }
