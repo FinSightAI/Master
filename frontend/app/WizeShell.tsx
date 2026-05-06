@@ -101,7 +101,58 @@ export default function WizeShell({ children }: { children: ReactNode }) {
       <main style={{ flex: 1, minWidth: 0, height: 'calc(100vh - 36px)', overflowY: 'auto' }}>
         {children}
       </main>
+      <aside className="wl-tax-rpanel" style={{
+        width: 240, flexShrink: 0,
+        background: '#060810',
+        borderLeft: isRtl ? 'none' : '1px solid rgba(255,255,255,0.07)',
+        borderRight: isRtl ? '1px solid rgba(255,255,255,0.07)' : 'none',
+        padding: '16px',
+        display: 'flex', flexDirection: 'column', gap: 14,
+        position: 'sticky', top: 36, alignSelf: 'flex-start',
+        height: 'calc(100vh - 36px)', overflowY: 'auto'
+      }}>
+        <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 12, fontWeight: 800, color: '#eef2ff', marginBottom: 4 }}>
+          {lang==='he'?'תובנות AI':'AI Insights'}
+        </div>
+
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: 12 }}>
+          <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 10 }}>
+            {lang==='he'?'נטו צפוי':'Estimated Net'}
+          </div>
+          <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 28, fontWeight: 900, color: '#fbbf24', textAlign: 'center', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>—</div>
+          <div style={{ fontSize: 10, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>{lang==='he'?'שאל את היועץ':'Ask the advisor'}</div>
+        </div>
+
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: 12 }}>
+          <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 10 }}>
+            {lang==='he'?'טיפים מהירים':'Quick Tips'}
+          </div>
+          {(lang==='he'?[
+            'נתוני PwC/OECD מאומתים — 26 מדינות',
+            'מס יציאה משתנה לפי תקופת תושבות',
+            'קצבת לידה ופנסיה — בדוק לכל מדינה',
+          ]:[
+            'PwC/OECD verified data — 26 countries',
+            'Exit tax depends on residency duration',
+            'Maternity & pension — varies per country',
+          ]).map((t,i,arr) => (
+            <div key={i} style={{ fontSize: 11.5, color: '#94a3b8', lineHeight: 1.55, padding: '8px 0', borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>{t}</div>
+          ))}
+        </div>
+
+        <div style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', borderRadius: 12, padding: 12 }}>
+          <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(165,180,252,0.6)', marginBottom: 6 }}>
+            WizeAI
+          </div>
+          <a href="https://wizelife.ai/wize-ai.html" target="_blank" rel="noopener noreferrer" style={{ display:'flex', alignItems:'center', gap:6, textDecoration:'none', color:'#a5b4fc', fontSize:12, fontWeight:600 }}>
+            {lang==='he'?'יועץ חוצה אפליקציות ←':'Cross-app advisor →'}
+          </a>
+        </div>
+      </aside>
       <style>{`
+        @media (max-width: 1100px) {
+          .wl-tax-rpanel { display: none !important; }
+        }
         @media (max-width: 768px) {
           .wl-tax-sidebar { display: none !important; }
         }
