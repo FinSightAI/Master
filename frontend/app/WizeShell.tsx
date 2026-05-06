@@ -48,6 +48,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
     setActive(id);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('wize-nav', { detail: { view: id } }));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

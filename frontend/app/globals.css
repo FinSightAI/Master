@@ -1,4 +1,6 @@
-@import url('https://wizelife.ai/wizelife-design.css');
+/* WizeLife smooth-transition base */
+html { scroll-behavior: smooth; }
+body { transition: background 200ms ease; }
 
 @tailwind base;
 @tailwind components;
