@@ -10020,13 +10020,7 @@ export default function AdvisorPage() {
               <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.appSubtitle}</div>
             </div>
           </div>
-          <button onClick={toggleLang}
-            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all hover:opacity-80"
-            style={{ background: 'var(--surface-2)', color: 'var(--accent)', border: '1px solid var(--border)' }}
-            title={lang === 'he' ? 'Switch to English' : lang === 'en' ? 'Português' : lang === 'pt' ? 'Español' : 'עברית'}>
-            <Globe size={11} />
-            {lang === 'he' ? 'EN' : lang === 'en' ? 'PT' : lang === 'pt' ? 'ES' : 'עב'}
-          </button>
+
         </div>
 
         {/* Actions */}
@@ -10064,7 +10058,8 @@ export default function AdvisorPage() {
           <button onClick={() => { setShowIsraelWizard(!showIsraelWizard); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowCompanyOptimizer(false); setShowTaxUpdates(false); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showIsraelWizard ? 'var(--accent-glow)' : 'var(--surface-2)', color: showIsraelWizard ? 'var(--accent)' : 'var(--text-muted)', border: showIsraelWizard ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            🇮🇱 {tr.israelWizard}
+            <Landmark size={14} />
+            {tr.israelWizard}
           </button>
           <button onClick={() => { setShowCompanyOptimizer(!showCompanyOptimizer); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowTaxUpdates(false); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
@@ -10093,12 +10088,13 @@ export default function AdvisorPage() {
           <button onClick={() => { setShowFatca(!showFatca); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowScenarioDiff(false); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showFatca ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFatca ? 'var(--accent)' : 'var(--text-muted)', border: showFatca ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            🇺🇸 {tr.fatcaPanel}
+            <AlertTriangle size={14} />
+            {tr.fatcaPanel}
           </button>
           <button onClick={() => { setShowScenarioDiff(!showScenarioDiff); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showScenarioDiff ? 'var(--accent-glow)' : 'var(--surface-2)', color: showScenarioDiff ? 'var(--accent)' : 'var(--text-muted)', border: showScenarioDiff ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <GitCompare size={14} />
+            <Shuffle size={14} />
             {tr.scenarioDiff}
           </button>
           <button onClick={() => { setShowDocChecklist(!showDocChecklist); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowTimingCalc(false); setShowTreatyLookup(false); }}
@@ -10116,7 +10112,8 @@ export default function AdvisorPage() {
           <button onClick={() => { setShowTreatyLookup(!showTreatyLookup); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowCountryProfiles(false); setShowRealEstateCalc(false); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTreatyLookup ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTreatyLookup ? 'var(--accent)' : 'var(--text-muted)', border: showTreatyLookup ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            🤝 {tr.treatyLookup}
+            <Award size={14} />
+            {tr.treatyLookup}
           </button>
           <button onClick={() => { setShowCountryProfiles(!showCountryProfiles); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowRealEstateCalc(false); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
