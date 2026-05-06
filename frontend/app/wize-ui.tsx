@@ -303,7 +303,10 @@ function decodeWlToken(token: string): { email?: string } | null {
 }
 
 export function WizeBar() {
-  const [wlBarLight, setWlBarLight] = useState(false);
+  const [wlBarLight, setWlBarLight] = useState(() => {
+    if (typeof document === 'undefined') return false;
+    return document.documentElement.classList.contains('light') || document.documentElement.getAttribute('data-theme') === 'light';
+  });
   useEffect(() => {
     const sync = () => {
       const t = document.documentElement.getAttribute('data-theme');
