@@ -23,6 +23,8 @@ const ICONS: Record<string, ReactNode> = {
 
 export default function WizeShell({ children }: { children: ReactNode }) {
   const [active, setActive] = useState<string>('advisor');
+  const [rpCollapsed, setRpCollapsed] = useState<boolean>(false);
+  useEffect(() => { const saved = typeof window !== 'undefined' ? localStorage.getItem('wl_rp_collapsed') : null; if (saved === '1') setRpCollapsed(true); }, []);
   const [lang, setLang] = useState<Lang>('he');
 
   useEffect(() => {
@@ -101,6 +103,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
       <main style={{ flex: 1, minWidth: 0, height: 'calc(100vh - 52px)', overflowY: 'auto' }}>
         {children}
       </main>
+      {!rpCollapsed && (
       <aside className="wl-tax-rpanel" style={{
         width: 240, flexShrink: 0,
         background: '#060810',
@@ -111,6 +114,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
         position: 'sticky', top: 52, alignSelf: 'flex-start',
         height: 'calc(100vh - 52px)', overflowY: 'auto'
       }}>
+        <button onClick={() => { setRpCollapsed(true); localStorage.setItem('wl_rp_collapsed', '1'); }} aria-label="Collapse panel" style={{position:'absolute',top:10,right:10,width:24,height:24,borderRadius:6,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',color:'#94a3b8',cursor:'pointer',fontSize:14,lineHeight:'1',padding:0,fontFamily:'inherit'}}>×</button>
         <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 12, fontWeight: 800, color: '#eef2ff', marginBottom: 4 }}>
           {lang==='he'?'תובנות AI':'AI Insights'}
         </div>
@@ -149,6 +153,10 @@ export default function WizeShell({ children }: { children: ReactNode }) {
           </a>
         </div>
       </aside>
+      )}
+      {rpCollapsed && (
+        <button onClick={() => { setRpCollapsed(false); localStorage.setItem('wl_rp_collapsed', '0'); }} aria-label="Open AI panel" style={{position:'fixed',top:'50%',left:0,transform:'translateY(-50%)',width:24,height:60,borderRadius:'0 8px 8px 0',background:'rgba(99,102,241,0.18)',border:'1px solid rgba(99,102,241,0.3)',borderLeft:'none',color:'#a5b4fc',cursor:'pointer',fontSize:14,lineHeight:'60px',textAlign:'center',padding:0,zIndex:51,fontFamily:'inherit'}}>›</button>
+      )}
       <style>{`
         @media (max-width: 1100px) {
           .wl-tax-rpanel { display: none !important; }
