@@ -119,9 +119,9 @@ export default function WizeShell({ children }: { children: ReactNode }) {
       {!rpCollapsed && (
       <aside className="wl-tax-rpanel" style={{
         width: 240, flexShrink: 0,
-        background: '#060810',
-        borderLeft: isRtl ? 'none' : '1px solid rgba(255,255,255,0.07)',
-        borderRight: isRtl ? '1px solid rgba(255,255,255,0.07)' : 'none',
+        background: isLight ? '#ffffff' : '#060810',
+        borderLeft: isRtl ? 'none' : (isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)'),
+        borderRight: isRtl ? (isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)') : 'none',
         padding: '16px',
         display: 'flex', flexDirection: 'column', gap: 14,
         height: 'calc(100vh - 36px)', overflowY: 'auto'

@@ -6,25 +6,37 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     const saved = localStorage.getItem('wl_theme');
-    if (saved === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-      setLight(true);
-    }
+    const isL = saved === 'light';
+    setLight(isL);
+    apply(isL);
   }, []);
+
+  function apply(isL: boolean) {
+    const de = document.documentElement;
+    if (isL) {
+      de.setAttribute('data-theme', 'light');
+      de.classList.remove('dark');
+      de.classList.add('light');
+      document.body.classList.add('light');
+      document.body.classList.remove('dark');
+    } else {
+      de.setAttribute('data-theme', 'dark');
+      de.classList.add('dark');
+      de.classList.remove('light');
+      document.body.classList.remove('light');
+      document.body.classList.add('dark');
+    }
+  }
 
   function toggle() {
     const next = !light;
     setLight(next);
-    if (next) document.documentElement.setAttribute('data-theme', 'light');
-    else document.documentElement.removeAttribute('data-theme');
+    apply(next);
     localStorage.setItem('wl_theme', next ? 'light' : 'dark');
   }
 
   return (
-    <button
-      onClick={toggle}
-      title="Toggle theme"
-      className="wl-theme-btn"
+    <button onClick={toggle} title="Toggle theme" className="wl-theme-btn"
       style={{
         position: 'fixed', bottom: 18, left: 18, zIndex: 9999,
         width: 38, height: 38, borderRadius: '50%',
@@ -36,8 +48,7 @@ export default function ThemeToggle() {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         boxShadow: light ? '0 4px 16px rgba(0,0,0,0.08)' : '0 4px 16px rgba(0,0,0,0.25)',
         transition: 'all .18s ease',
-      }}
-    >
+      }}>
       {light ? '🌙' : '☀️'}
     </button>
   );
