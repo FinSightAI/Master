@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: #0f1117;
-  --surface: #1a1d27;
-  --surface-2: #22263a;
-  --border: #2d3148;
+  --background: #030508;
+  --surface: #060810;
+  --surface-2: #0d1020;
+  --border: rgba(255,255,255,0.08);
   --text: #e2e8f0;
   --text-muted: #94a3b8;
-  --accent: #10b981;
-  --accent-glow: rgba(16, 185, 129, 0.15);
+  --accent: #f59e0b;
+  --accent-glow: rgba(245, 158, 11, 0.15);
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
@@ -43,7 +43,7 @@ html, body {
 body {
   background-color: var(--background);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   margin: 0;
 }
 
@@ -152,4 +152,28 @@ body {
 @media (min-width: 769px) {
   .wt-hamburger { display: none !important; }
   .wt-overlay { display: none !important; }
+}
+
+
+/* ── WizeLife Design System ── */
+h1, h2, h3, h4 {
+  font-family: var(--font-jakarta), var(--font-inter), sans-serif;
+  letter-spacing: -0.3px;
+}
+
+.font-display { font-family: var(--font-jakarta), var(--font-inter), sans-serif; letter-spacing: -0.3px; }
+
+/* Cards / surfaces */
+.surface-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+}
+
+/* WizeTax accent — amber gradient */
+.btn-accent {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+  font-family: var(--font-jakarta), sans-serif;
+  font-weight: 700;
 }

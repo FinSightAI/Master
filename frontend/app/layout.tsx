@@ -1,4 +1,8 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin','latin-ext'], variable: '--font-inter' });
+const jakarta = Plus_Jakarta_Sans({ subsets: ['latin','latin-ext'], weight: ['500','600','700','800','900'], variable: '--font-jakarta' });
 import Script from 'next/script';
 import './globals.css';
 import ThemeToggle from './theme-toggle';
@@ -17,7 +21,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl">
+    <html lang="he" dir="rtl" className={`${inter.variable} ${jakarta.variable}`}>
       <body style={{ margin: 0, padding: 0, paddingTop: 36, overflow: 'hidden' }}>
         <WizeBar />
         <WizeOnboarding />
