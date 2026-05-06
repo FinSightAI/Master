@@ -10663,7 +10663,8 @@ export default function AdvisorPage() {
           </div>
         )}
 
-        {/* Messages */}
+        {/* Messages — only on chat view, hidden when a tool panel is open */}
+        {(!showProfile && !showCompare && !showSavings && !showExitTax && !showIsraelWizard && !showCompanyOptimizer && !showTaxUpdates && !showLetterGenerator && !showSideBySide && !showFatca && !showScenarioDiff && !showDocChecklist && !showTimingCalc && !showTreatyLookup) && (
         <div style={{ flex: '1 1 0', overflowY: 'auto', padding: '1rem' }}>
           <div className="max-w-3xl mx-auto space-y-6">
             {messages.length === 0 && (() => {
@@ -10801,6 +10802,7 @@ export default function AdvisorPage() {
             <div ref={messagesEndRef} />
           </div>
         </div>
+        )}
 
         {/* Input — only on chat view */}
         {(!showProfile && !showCompare && !showSavings && !showExitTax && !showIsraelWizard && !showCompanyOptimizer && !showTaxUpdates && !showLetterGenerator && !showSideBySide && !showFatca && !showScenarioDiff && !showDocChecklist && !showTimingCalc && !showTreatyLookup) && (
