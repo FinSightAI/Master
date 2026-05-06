@@ -85,7 +85,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
             Wize<span style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Tax</span>
           </div>
         </div>
-        <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', padding: '14px 16px 4px' }}>
+        <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isLight ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.25)', padding: '14px 16px 4px' }}>
           {SECTION_LABEL[lang]}
         </div>
         {NAV_IDS.map(id => (
@@ -132,7 +132,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
         </div>
 
         <div style={{ background: isLight ? '#f8fafc' : 'rgba(255,255,255,0.03)', border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: 12 }}>
-          <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 10 }}>
+          <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isLight ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.3)', marginBottom: 10 }}>
             {lang==='he'?'נטו צפוי':'Estimated Net'}
           </div>
           <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 28, fontWeight: 900, color: '#fbbf24', textAlign: 'center', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>—</div>
@@ -140,7 +140,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
         </div>
 
         <div style={{ background: isLight ? '#f8fafc' : 'rgba(255,255,255,0.03)', border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: 12 }}>
-          <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 10 }}>
+          <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isLight ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.3)', marginBottom: 10 }}>
             {lang==='he'?'טיפים מהירים':'Quick Tips'}
           </div>
           {(lang==='he'?[
@@ -152,11 +152,11 @@ export default function WizeShell({ children }: { children: ReactNode }) {
             'Exit tax depends on residency duration',
             'Maternity & pension — varies per country',
           ]).map((t,i,arr) => (
-            <div key={i} style={{ fontSize: 11.5, color: '#94a3b8', lineHeight: 1.55, padding: '8px 0', borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>{t}</div>
+            <div key={i} style={{ fontSize: 11.5, color: isLight ? '#475569' : '#94a3b8', lineHeight: 1.55, padding: '8px 0', borderBottom: i < arr.length - 1 ? (isLight ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.04)') : 'none' }}>{t}</div>
           ))}
         </div>
 
-        <div style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', borderRadius: 12, padding: 12 }}>
+        <div style={{ background: isLight ? 'rgba(99,102,241,0.06)' : 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', borderRadius: 12, padding: 12 }}>
           <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(165,180,252,0.6)', marginBottom: 6 }}>
             WizeAI
           </div>
