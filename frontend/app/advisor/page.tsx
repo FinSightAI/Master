@@ -10099,151 +10099,151 @@ export default function AdvisorPage() {
             <Settings size={14} />
             {profileSaved ? tr.profileSaved : tr.profile}
           </button>
-          <button onClick={() => { setShowCompare(!showCompare); setShowProfile(false); setShowSavings(false); }}
+          <button onClick={() => { closeAllPanels(); setShowCompare(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
             <BarChart3 size={14} />
             {tr.compare}
           </button>
-          <button onClick={() => { setShowSavings(!showSavings); setShowProfile(false); setShowCompare(false); setShowExitTax(false); }}
+          <button onClick={() => { closeAllPanels(); setShowSavings(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showSavings ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSavings ? 'var(--accent)' : 'var(--text-muted)', border: showSavings ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <TrendingDown size={14} />
             {tr.savings}
           </button>
-          <button onClick={() => { setShowExitTax(!showExitTax); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowIsraelWizard(false); }}
+          <button onClick={() => { closeAllPanels(); setShowExitTax(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showExitTax ? 'var(--accent-glow)' : 'var(--surface-2)', color: showExitTax ? 'var(--accent)' : 'var(--text-muted)', border: showExitTax ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Calculator size={14} />
             {tr.exitTaxCalc}
           </button>
-          <button onClick={() => { setShowIsraelWizard(!showIsraelWizard); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowCompanyOptimizer(false); setShowTaxUpdates(false); }}
+          <button onClick={() => { closeAllPanels(); setShowIsraelWizard(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showIsraelWizard ? 'var(--accent-glow)' : 'var(--surface-2)', color: showIsraelWizard ? 'var(--accent)' : 'var(--text-muted)', border: showIsraelWizard ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Landmark size={14} />
             {tr.israelWizard}
           </button>
-          <button onClick={() => { setShowCompanyOptimizer(!showCompanyOptimizer); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowTaxUpdates(false); }}
+          <button onClick={() => { closeAllPanels(); setShowCompanyOptimizer(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showCompanyOptimizer ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCompanyOptimizer ? 'var(--accent)' : 'var(--text-muted)', border: showCompanyOptimizer ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Building2 size={14} />
             {tr.companyOptimizer}
           </button>
-          <button onClick={() => { setShowTaxUpdates(!showTaxUpdates); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowLetterGenerator(false); setShowSideBySide(false); }}
+          <button onClick={() => { closeAllPanels(); setShowTaxUpdates(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTaxUpdates ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxUpdates ? 'var(--accent)' : 'var(--text-muted)', border: showTaxUpdates ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Bell size={14} />
             {tr.taxUpdates}
           </button>
-          <button onClick={() => { setShowLetterGenerator(!showLetterGenerator); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowSideBySide(false); }}
+          <button onClick={() => { closeAllPanels(); setShowLetterGenerator(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showLetterGenerator ? 'var(--accent-glow)' : 'var(--surface-2)', color: showLetterGenerator ? 'var(--accent)' : 'var(--text-muted)', border: showLetterGenerator ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Mail size={14} />
             {tr.letterGenerator}
           </button>
-          <button onClick={() => { setShowSideBySide(!showSideBySide); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowSideBySide(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showSideBySide ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSideBySide ? 'var(--accent)' : 'var(--text-muted)', border: showSideBySide ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <GitCompare size={14} />
             {tr.sideByCompare}
           </button>
-          <button onClick={() => { setShowFatca(!showFatca); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowScenarioDiff(false); }}
+          <button onClick={() => { closeAllPanels(); setShowFatca(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showFatca ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFatca ? 'var(--accent)' : 'var(--text-muted)', border: showFatca ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <AlertTriangle size={14} />
             {tr.fatcaPanel}
           </button>
-          <button onClick={() => { setShowScenarioDiff(!showScenarioDiff); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowScenarioDiff(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showScenarioDiff ? 'var(--accent-glow)' : 'var(--surface-2)', color: showScenarioDiff ? 'var(--accent)' : 'var(--text-muted)', border: showScenarioDiff ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Shuffle size={14} />
             {tr.scenarioDiff}
           </button>
-          <button onClick={() => { setShowDocChecklist(!showDocChecklist); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowTimingCalc(false); setShowTreatyLookup(false); }}
+          <button onClick={() => { closeAllPanels(); setShowDocChecklist(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showDocChecklist ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDocChecklist ? 'var(--accent)' : 'var(--text-muted)', border: showDocChecklist ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <ClipboardCheck size={14} />
             {tr.docChecklist}
           </button>
-          <button onClick={() => { setShowTimingCalc(!showTimingCalc); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowTreatyLookup(false); }}
+          <button onClick={() => { closeAllPanels(); setShowTimingCalc(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTimingCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTimingCalc ? 'var(--accent)' : 'var(--text-muted)', border: showTimingCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Clock size={14} />
             {tr.timingCalc}
           </button>
-          <button onClick={() => { setShowTreatyLookup(!showTreatyLookup); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowCountryProfiles(false); setShowRealEstateCalc(false); }}
+          <button onClick={() => { closeAllPanels(); setShowTreatyLookup(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTreatyLookup ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTreatyLookup ? 'var(--accent)' : 'var(--text-muted)', border: showTreatyLookup ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Award size={14} />
             {tr.treatyLookup}
           </button>
-          <button onClick={() => { setShowCountryProfiles(!showCountryProfiles); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); setShowRealEstateCalc(false); }}
+          <button onClick={() => { closeAllPanels(); setShowCountryProfiles(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showCountryProfiles ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCountryProfiles ? 'var(--accent)' : 'var(--text-muted)', border: showCountryProfiles ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Globe size={14} />
             {tr.countryProfiles}
           </button>
-          <button onClick={() => { setShowRealEstateCalc(!showRealEstateCalc); setShowCountryProfiles(false); setShowPensionCalc(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowRealEstateCalc(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showRealEstateCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRealEstateCalc ? 'var(--accent)' : 'var(--text-muted)', border: showRealEstateCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Home size={14} />
             {tr.realEstate}
           </button>
-          <button onClick={() => { setShowPensionCalc(!showPensionCalc); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowPensionCalc(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showPensionCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPensionCalc ? 'var(--accent)' : 'var(--text-muted)', border: showPensionCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <PiggyBank size={14} />
             {tr.pensionCalc}
           </button>
-          <button onClick={() => { setShowSection100A(!showSection100A); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowDtaaCalc(false); setShowAnnualTax(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowSection100A(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showSection100A ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSection100A ? 'var(--accent)' : 'var(--text-muted)', border: showSection100A ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Calculator size={14} />
             {tr.section100a}
           </button>
-          <button onClick={() => { setShowDtaaCalc(!showDtaaCalc); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowAnnualTax(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowDtaaCalc(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showDtaaCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDtaaCalc ? 'var(--accent)' : 'var(--text-muted)', border: showDtaaCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Globe size={14} />
             {tr.dtaaCalc}
           </button>
-          <button onClick={() => { setShowAnnualTax(!showAnnualTax); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowAnnualTax(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showAnnualTax ? 'var(--accent-glow)' : 'var(--surface-2)', color: showAnnualTax ? 'var(--accent)' : 'var(--text-muted)', border: showAnnualTax ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <TrendingUp size={14} />
             {tr.annualTax}
           </button>
-          <button onClick={() => { setShowDaysTracker(!showDaysTracker); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowEmigROI(false); setShowMultiYear(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowDaysTracker(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showDaysTracker ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDaysTracker ? 'var(--accent)' : 'var(--text-muted)', border: showDaysTracker ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Calendar size={14} />
             {tr.daysTracker}
           </button>
-          <button onClick={() => { setShowEmigROI(!showEmigROI); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowMultiYear(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowEmigROI(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showEmigROI ? 'var(--accent-glow)' : 'var(--surface-2)', color: showEmigROI ? 'var(--accent)' : 'var(--text-muted)', border: showEmigROI ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <TrendingDown size={14} />
             {tr.emigROI}
           </button>
-          <button onClick={() => { setShowMultiYear(!showMultiYear); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowMultiYear(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showMultiYear ? 'var(--accent-glow)' : 'var(--surface-2)', color: showMultiYear ? 'var(--accent)' : 'var(--text-muted)', border: showMultiYear ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <BarChart3 size={14} />
             {tr.multiYear}
           </button>
-          <button onClick={() => { setShowRealEstateAbroad(!showRealEstateAbroad); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowRealEstateAbroad(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showRealEstateAbroad ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRealEstateAbroad ? 'var(--accent)' : 'var(--text-muted)', border: showRealEstateAbroad ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Globe size={14} />
             {tr.realEstateAbroad}
           </button>
-          <button onClick={() => { setShowVisaPanel(!showVisaPanel); setShowRealEstateAbroad(false); setShowCountryFit(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowVisaPanel(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showVisaPanel ? 'var(--accent-glow)' : 'var(--surface-2)', color: showVisaPanel ? 'var(--accent)' : 'var(--text-muted)', border: showVisaPanel ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Plane size={14} />
             {tr.visaPanel}
           </button>
-          <button onClick={() => { setShowCountryFit(!showCountryFit); setShowVisaPanel(false); setShowRealEstateAbroad(false); setShowMultiYear(false); setShowEmigROI(false); setShowDaysTracker(false); setShowAnnualTax(false); setShowDtaaCalc(false); setShowSection100A(false); setShowPensionCalc(false); setShowRealEstateCalc(false); setShowCountryProfiles(false); setShowTreatyLookup(false); setShowTimingCalc(false); setShowDocChecklist(false); setShowScenarioDiff(false); setShowFatca(false); setShowSideBySide(false); setShowLetterGenerator(false); setShowTaxUpdates(false); setShowCompanyOptimizer(false); setShowIsraelWizard(false); setShowExitTax(false); setShowSavings(false); setShowProfile(false); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowCountryFit(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showCountryFit ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCountryFit ? 'var(--accent)' : 'var(--text-muted)', border: showCountryFit ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Award size={14} />
