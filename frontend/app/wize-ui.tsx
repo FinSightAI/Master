@@ -335,6 +335,10 @@ export function WizeBar() {
     try {
       const p = new URLSearchParams(window.location.search);
       const t = p.get('wl_token');
+        const planParam = p.get('wl_plan');
+        if (planParam && ['pro','yolo','free'].includes(planParam)) {
+          localStorage.setItem('wl_plan', planParam);
+        }
       const n = p.get('wl_nick');
       if (t || n) {
         const stored: Record<string,string> = JSON.parse(localStorage.getItem('wl_sso') || '{}');
