@@ -303,6 +303,18 @@ function decodeWlToken(token: string): { email?: string } | null {
 }
 
 export function WizeBar() {
+  const [wlBarLight, setWlBarLight] = useState(false);
+  useEffect(() => {
+    const sync = () => {
+      const t = document.documentElement.getAttribute('data-theme');
+      setWlBarLight(t === 'light');
+    };
+    sync();
+    const obs = new MutationObserver(sync);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => obs.disconnect();
+  }, []);
+
   const [allTools, setAllTools] = useState('← כל הכלים');
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
