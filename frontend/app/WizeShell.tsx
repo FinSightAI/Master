@@ -71,15 +71,14 @@ export default function WizeShell({ children }: { children: ReactNode }) {
   const isRtl = lang === 'he';
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 36px)', background: isLight ? '#f8fafc' : '#030508', color: isLight ? '#1e293b' : '#eef2ff', direction: isRtl ? 'rtl' : 'ltr' }}>
+    <div style={{ display: 'flex', height: 'calc(100vh - 36px)', background: isLight ? '#f8fafc' : '#030508', color: isLight ? '#1e293b' : '#eef2ff', direction: isRtl ? 'rtl' : 'ltr' }}>
       <aside className="wl-tax-sidebar" style={{
         width: 220, flexShrink: 0,
         background: isLight ? '#ffffff' : '#060810',
         borderRight: isRtl ? 'none' : (isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)'),
         borderLeft: isRtl ? (isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)') : 'none',
         display: 'flex', flexDirection: 'column',
-        position: 'sticky', top: 52, alignSelf: 'flex-start',
-        height: 'calc(100vh - 52px)', overflowY: 'auto'
+        height: 'calc(100vh - 36px)', overflowY: 'auto'
       }}>
         <div style={{ padding: '18px 16px 14px', borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)' }}>
           <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 13, fontWeight: 800, letterSpacing: '-0.3px', color: '#eef2ff' }}>
@@ -125,8 +124,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
         borderRight: isRtl ? '1px solid rgba(255,255,255,0.07)' : 'none',
         padding: '16px',
         display: 'flex', flexDirection: 'column', gap: 14,
-        position: 'sticky', top: 52, alignSelf: 'flex-start',
-        height: 'calc(100vh - 52px)', overflowY: 'auto'
+        height: 'calc(100vh - 36px)', overflowY: 'auto'
       }}>
         <button onClick={() => { setRpCollapsed(true); localStorage.setItem('wl_rp_collapsed', '1'); }} aria-label="Collapse panel" style={{position:'absolute',top:10,right:10,width:24,height:24,borderRadius:6,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',color:'#94a3b8',cursor:'pointer',fontSize:14,lineHeight:'1',padding:0,fontFamily:'inherit'}}>×</button>
         <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 12, fontWeight: 800, color: isLight ? '#1e293b' : '#eef2ff', marginBottom: 4 }}>
