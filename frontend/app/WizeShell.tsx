@@ -71,7 +71,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
   const isRtl = lang === 'he';
 
   return (
-    <div style={{ display: 'flex', height: 'calc(100vh - 36px)', background: isLight ? '#f8fafc' : '#030508', color: isLight ? '#1e293b' : '#eef2ff', direction: isRtl ? 'rtl' : 'ltr' }}>
+    <div className="wl-shell-outer" style={{ display: 'flex', height: 'calc(100vh - 36px)', background: isLight ? '#f8fafc' : '#030508', color: isLight ? '#1e293b' : '#eef2ff', direction: isRtl ? 'rtl' : 'ltr' }}>
       <aside className="wl-tax-sidebar" style={{
         width: 220, flexShrink: 0,
         background: isLight ? '#ffffff' : '#060810',

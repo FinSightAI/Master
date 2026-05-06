@@ -220,3 +220,14 @@ html[data-theme="light"] .wl-bar-react {
 }
 html[data-theme="light"] .wl-bar-react * { color: #1e293b !important; }
 html[data-theme="light"] .wl-bar-react [style*="color:#7b88ad"] { color: #475569 !important; }
+
+
+/* WizeShell outer wrapper — force theme */
+html[data-theme="light"] .wl-shell-outer {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+}
+html:not([data-theme="light"]) .wl-shell-outer {
+  background: #030508 !important;
+  color: #eef2ff !important;
+}
