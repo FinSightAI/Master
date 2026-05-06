@@ -10664,7 +10664,7 @@ export default function AdvisorPage() {
         )}
 
         {/* Messages — only on chat view, hidden when a tool panel is open */}
-        {(!showProfile && !showCompare && !showSavings && !showExitTax && !showIsraelWizard && !showCompanyOptimizer && !showTaxUpdates && !showLetterGenerator && !showSideBySide && !showFatca && !showScenarioDiff && !showDocChecklist && !showTimingCalc && !showTreatyLookup) && (
+        {(!(showAdvisorPortal || showAgreements || showAnnualTax || showBankMigration || showBusinessExit || showCRSChecker || showCalendarSync || showCompMatrix || showCompanyOptimizer || showCompare || showCountryFit || showCountryProfiles || showCryptoCalc || showDaysTracker || showDeadlines || showDocAnalyzer || showDocChecklist || showDtaaCalc || showEmigROI || showEstatePlanner || showExitTax || showFamilyImpact || showFatca || showFxCalc || showIsraelWizard || showLegalDocs || showLetterGenerator || showLifetimeSavings || showMultiYear || showMyPlan || showPassportOptimizer || showPdfReport || showPeerBenchmark || showPensionCalc || showPensionGuide || showPortfolioOpt || showProDirectory || showProfile || showRealEstateAbroad || showRealEstateCalc || showRedFlags || showRemoteWorker || showSavings || showScenarioDiff || showSection100A || showSideBySide || showTaxAlerts || showTaxAudit || showTaxForecast || showTaxMap || showTaxScore || showTaxUpdates || showTimeline || showTimingCalc || showTreatyLookup || showVisaPanel || showWealthSim)) && (
         <div style={{ flex: '1 1 0', overflowY: 'auto', padding: '1rem' }}>
           <div className="max-w-3xl mx-auto space-y-6">
             {messages.length === 0 && (() => {
@@ -10806,7 +10806,7 @@ export default function AdvisorPage() {
         )}
 
         {/* Input — only on chat view */}
-        {(!showProfile && !showCompare && !showSavings && !showExitTax && !showIsraelWizard && !showCompanyOptimizer && !showTaxUpdates && !showLetterGenerator && !showSideBySide && !showFatca && !showScenarioDiff && !showDocChecklist && !showTimingCalc && !showTreatyLookup) && (
+        {(!(showAdvisorPortal || showAgreements || showAnnualTax || showBankMigration || showBusinessExit || showCRSChecker || showCalendarSync || showCompMatrix || showCompanyOptimizer || showCompare || showCountryFit || showCountryProfiles || showCryptoCalc || showDaysTracker || showDeadlines || showDocAnalyzer || showDocChecklist || showDtaaCalc || showEmigROI || showEstatePlanner || showExitTax || showFamilyImpact || showFatca || showFxCalc || showIsraelWizard || showLegalDocs || showLetterGenerator || showLifetimeSavings || showMultiYear || showMyPlan || showPassportOptimizer || showPdfReport || showPeerBenchmark || showPensionCalc || showPensionGuide || showPortfolioOpt || showProDirectory || showProfile || showRealEstateAbroad || showRealEstateCalc || showRedFlags || showRemoteWorker || showSavings || showScenarioDiff || showSection100A || showSideBySide || showTaxAlerts || showTaxAudit || showTaxForecast || showTaxMap || showTaxScore || showTaxUpdates || showTimeline || showTimingCalc || showTreatyLookup || showVisaPanel || showWealthSim)) && (
         <div style={{ marginTop: 'auto', flex: '0 0 auto', padding: '1rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
           <div className="max-w-3xl mx-auto">
             {devilMode && (
