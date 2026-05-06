@@ -98,7 +98,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
           {FOOTER_SUB[lang]}
         </div>
       </aside>
-      <main style={{ flex: 1, minWidth: 0 }}>
+      <main style={{ flex: 1, minWidth: 0, height: 'calc(100vh - 36px)', overflowY: 'auto' }}>
         {children}
       </main>
       <style>{`
