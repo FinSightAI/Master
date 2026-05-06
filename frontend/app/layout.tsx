@@ -8,7 +8,6 @@ import Script from 'next/script';
 import './globals.css';
 import ThemeToggle from './theme-toggle';
 import { WizeBar, WizeOnboarding } from './wize-ui';
-import WizeShell from './WizeShell';
 
 export const metadata: Metadata = {
   title: 'WizeTax — Global Tax Advisor',
@@ -36,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           gtag('js', new Date());
           gtag('config', 'G-3W9ZZ0008E');
         `}</Script>
-        <WizeShell>{children}</WizeShell>
+        {children}
         <ThemeToggle />
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
