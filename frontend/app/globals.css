@@ -185,3 +185,29 @@ h1, h2, h3, h4 {
 
 /* Monospace utility for numbers/prices */
 .font-mono-wl { font-family: var(--font-mono), ui-monospace, 'SF Mono', Menlo, monospace; font-variant-numeric: tabular-nums; }
+
+
+/* Force WizeBar + WizeShell outer to follow theme */
+/* WizeBar: 36px fixed bar at top — selector matches its inline style */
+html[data-theme="light"] body > div:first-of-type[style*="rgba(5,6,15"],
+html[data-theme="light"] div[id="wl-bar"] {
+  background: rgba(255,255,255,0.95) !important;
+  border-bottom-color: rgba(0,0,0,0.08) !important;
+}
+html[data-theme="light"] div[id="wl-bar"] *,
+html[data-theme="light"] body > div:first-of-type[style*="rgba(5,6,15"] * {
+  color: #1e293b !important;
+}
+html[data-theme="light"] div[id="wl-bar"] [style*="color:#7b88ad"],
+html[data-theme="light"] body > div:first-of-type[style*="rgba(5,6,15"] [style*="color:#7b88ad"] {
+  color: #475569 !important;
+}
+
+/* WizeShell outer div with background:#030508 */
+html[data-theme="light"] body > div[style*="background:#030508"],
+html[data-theme="light"] body > div[style*="background: #030508"],
+html[data-theme="light"] body > div[style*="rgb(3,5,8)"],
+html[data-theme="light"] body > div[style*="background:'#030508'"] {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+}
