@@ -9798,9 +9798,11 @@ export default function AdvisorPage() {
     setProfileSaved(true);
     setShowProfile(false);
     // Sync to Firestore for WizeAI
-    getIdToken().then(tok => {
-      if (!tok) return;
+    (() => {
       try {
+        const sso = JSON.parse(typeof window !== 'undefined' ? (localStorage.getItem('wl_sso') || '{}') : '{}');
+        const tok: string = sso.token;
+        if (!tok) return;
         const pl = JSON.parse(atob(tok.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
         const uid = pl.user_id || pl.sub;
         if (!uid) return;
@@ -9821,7 +9823,7 @@ export default function AdvisorPage() {
           { method: 'PATCH', headers: { Authorization: 'Bearer '+tok, 'Content-Type': 'application/json' }, body: JSON.stringify(ctx) }
         ).catch(() => {});
       } catch {}
-    });
+    })();
   };
 
   const toggleLang = () => {
