@@ -179,3 +179,7 @@ h1, h2, h3, h4 {
   font-family: var(--font-jakarta), sans-serif;
   font-weight: 700;
 }
+
+
+/* Monospace utility for numbers/prices */
+.font-mono-wl { font-family: var(--font-mono), ui-monospace, 'SF Mono', Menlo, monospace; font-variant-numeric: tabular-nums; }
