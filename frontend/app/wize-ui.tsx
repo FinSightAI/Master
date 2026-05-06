@@ -365,7 +365,7 @@ export function WizeBar() {
   };
 
   const displayName = user ? (user.displayName || user.email) : (sso?.nick || sso?.email);
-  const isConnected = !!(user || sso?.token);
+  const isConnected = !!(user || sso);
 
   return (
     <div style={{position:'fixed',top:0,left:0,right:0,height:36,zIndex:99999,background:'rgba(5,6,15,0.96)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 16px',fontFamily:'Inter,-apple-system,sans-serif',boxSizing:'border-box',direction:'ltr'}}>
