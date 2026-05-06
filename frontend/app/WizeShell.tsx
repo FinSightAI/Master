@@ -48,7 +48,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
     setActive(id);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('wize-nav', { detail: { view: id } }));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 52, behavior: 'smooth' });
     }
   };
 
@@ -62,8 +62,8 @@ export default function WizeShell({ children }: { children: ReactNode }) {
         borderRight: isRtl ? 'none' : '1px solid rgba(255,255,255,0.07)',
         borderLeft: isRtl ? '1px solid rgba(255,255,255,0.07)' : 'none',
         display: 'flex', flexDirection: 'column',
-        position: 'sticky', top: 0, alignSelf: 'flex-start',
-        height: 'calc(100vh - 36px)', overflowY: 'auto'
+        position: 'sticky', top: 52, alignSelf: 'flex-start',
+        height: 'calc(100vh - 52px)', overflowY: 'auto'
       }}>
         <div style={{ padding: '18px 16px 14px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 13, fontWeight: 800, letterSpacing: '-0.3px', color: '#eef2ff' }}>
@@ -98,7 +98,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
           {FOOTER_SUB[lang]}
         </div>
       </aside>
-      <main style={{ flex: 1, minWidth: 0, height: 'calc(100vh - 36px)', overflowY: 'auto' }}>
+      <main style={{ flex: 1, minWidth: 0, height: 'calc(100vh - 52px)', overflowY: 'auto' }}>
         {children}
       </main>
       <aside className="wl-tax-rpanel" style={{
@@ -108,8 +108,8 @@ export default function WizeShell({ children }: { children: ReactNode }) {
         borderRight: isRtl ? '1px solid rgba(255,255,255,0.07)' : 'none',
         padding: '16px',
         display: 'flex', flexDirection: 'column', gap: 14,
-        position: 'sticky', top: 0, alignSelf: 'flex-start',
-        height: 'calc(100vh - 36px)', overflowY: 'auto'
+        position: 'sticky', top: 52, alignSelf: 'flex-start',
+        height: 'calc(100vh - 52px)', overflowY: 'auto'
       }}>
         <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 12, fontWeight: 800, color: '#eef2ff', marginBottom: 4 }}>
           {lang==='he'?'תובנות AI':'AI Insights'}
