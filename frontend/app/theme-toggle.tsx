@@ -24,13 +24,18 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       title="Toggle theme"
+      className="wl-theme-btn"
       style={{
-        position: 'fixed', bottom: 16, left: 16, zIndex: 9999,
-        width: 36, height: 36, borderRadius: '50%',
-        background: 'var(--surface)', border: '1px solid var(--border)',
-        color: 'var(--text-muted)', fontSize: 16,
-        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        position: 'fixed', bottom: 18, left: 18, zIndex: 9999,
+        width: 38, height: 38, borderRadius: '50%',
+        background: light ? 'rgba(255,255,255,0.95)' : 'rgba(15,23,42,0.85)',
+        backdropFilter: 'blur(12px)',
+        border: light ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255,255,255,0.12)',
+        color: light ? '#475569' : '#cbd5e1',
+        fontSize: 15, cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        boxShadow: light ? '0 4px 16px rgba(0,0,0,0.08)' : '0 4px 16px rgba(0,0,0,0.25)',
+        transition: 'all .18s ease',
       }}
     >
       {light ? '🌙' : '☀️'}
