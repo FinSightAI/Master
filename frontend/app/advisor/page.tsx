@@ -9811,13 +9811,13 @@ export default function AdvisorPage() {
             totalIncomeUSD: { doubleValue: totalIncome },
             residency: { stringValue: profile.current_residency || '' },
             citizenships: { arrayValue: { values: (profile.citizenships||[]).map((c:string) => ({ stringValue: c })) } },
-            incomeBreakdown: { stringValue: Object.entries(profile.income).filter(([,v])=>(v as number)>0).map(([k,v])=>).join(',') },
+            incomeBreakdown: { stringValue: Object.entries(profile.income).filter(([,v])=>(v as number)>0).map(([k,v])=>`${k}:${v}`).join(',') },
             totalAssetsUSD: { doubleValue: totalAssets },
             goals: { arrayValue: { values: (profile.goals||[]).map((g:string) => ({ stringValue: g })) } },
             syncedAt: { stringValue: new Date().toISOString() }
           }
         };
-        fetch(,
+        fetch(`https://firestore.googleapis.com/v1/projects/finzilla-7f1f9/databases/(default)/documents/users/${uid}/context/tax`,
           { method: 'PATCH', headers: { Authorization: 'Bearer '+tok, 'Content-Type': 'application/json' }, body: JSON.stringify(ctx) }
         ).catch(() => {});
       } catch {}
