@@ -231,14 +231,3 @@ html:not([data-theme="light"]) .wl-shell-outer {
   background: #030508 !important;
   color: #eef2ff !important;
 }
-
-
-/* Push Tax Master content down 2cm */
-body {
-  padding-top: 76px !important;
-}
-@media (max-width: 768px) {
-  body {
-    padding-top: 64px !important;
-  }
-}
