@@ -24,7 +24,21 @@ const ICONS: Record<string, ReactNode> = {
 export default function WizeShell({ children }: { children: ReactNode }) {
   const [active, setActive] = useState<string>('advisor');
   const [rpCollapsed, setRpCollapsed] = useState<boolean>(false);
-  useEffect(() => { const saved = typeof window !== 'undefined' ? localStorage.getItem('wl_rp_collapsed') : null; if (saved === '1') setRpCollapsed(true); }, []);
+  const [isLight, setIsLight] = useState<boolean>(false);
+  useEffect(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('wl_rp_collapsed') : null;
+    if (saved === '1') setRpCollapsed(true);
+    const detectTheme = () => {
+      if (typeof document === 'undefined') return;
+      const t = document.documentElement.getAttribute('data-theme') || document.body.className;
+      setIsLight(t.includes('light'));
+    };
+    detectTheme();
+    const obs = new MutationObserver(detectTheme);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+    obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    return () => obs.disconnect();
+  }, []);
   const [lang, setLang] = useState<Lang>('he');
 
   useEffect(() => {
@@ -57,17 +71,17 @@ export default function WizeShell({ children }: { children: ReactNode }) {
   const isRtl = lang === 'he';
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 36px)', background: '#030508', color: '#eef2ff', direction: isRtl ? 'rtl' : 'ltr' }}>
+    <div style={{ display: 'flex', minHeight: 'calc(100vh - 36px)', background: isLight ? '#f8fafc' : '#030508', color: isLight ? '#1e293b' : '#eef2ff', direction: isRtl ? 'rtl' : 'ltr' }}>
       <aside className="wl-tax-sidebar" style={{
         width: 220, flexShrink: 0,
-        background: '#060810',
-        borderRight: isRtl ? 'none' : '1px solid rgba(255,255,255,0.07)',
-        borderLeft: isRtl ? '1px solid rgba(255,255,255,0.07)' : 'none',
+        background: isLight ? '#ffffff' : '#060810',
+        borderRight: isRtl ? 'none' : (isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)'),
+        borderLeft: isRtl ? (isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)') : 'none',
         display: 'flex', flexDirection: 'column',
         position: 'sticky', top: 52, alignSelf: 'flex-start',
         height: 'calc(100vh - 52px)', overflowY: 'auto'
       }}>
-        <div style={{ padding: '18px 16px 14px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+        <div style={{ padding: '18px 16px 14px', borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)' }}>
           <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 13, fontWeight: 800, letterSpacing: '-0.3px', color: '#eef2ff' }}>
             Wize<span style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Tax</span>
           </div>
@@ -95,7 +109,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
           </button>
         ))}
         <div style={{ flex: 1 }} />
-        <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.07)', fontSize: 11, color: '#6b7280' }}>
+        <div style={{ padding: '12px 16px', borderTop: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)', fontSize: 11, color: isLight ? '#475569' : '#6b7280' }}>
           <strong style={{ color: '#eef2ff', display: 'block', marginBottom: 2 }}>WizeTax</strong>
           {FOOTER_SUB[lang]}
         </div>
@@ -115,11 +129,11 @@ export default function WizeShell({ children }: { children: ReactNode }) {
         height: 'calc(100vh - 52px)', overflowY: 'auto'
       }}>
         <button onClick={() => { setRpCollapsed(true); localStorage.setItem('wl_rp_collapsed', '1'); }} aria-label="Collapse panel" style={{position:'absolute',top:10,right:10,width:24,height:24,borderRadius:6,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',color:'#94a3b8',cursor:'pointer',fontSize:14,lineHeight:'1',padding:0,fontFamily:'inherit'}}>×</button>
-        <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 12, fontWeight: 800, color: '#eef2ff', marginBottom: 4 }}>
+        <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 12, fontWeight: 800, color: isLight ? '#1e293b' : '#eef2ff', marginBottom: 4 }}>
           {lang==='he'?'תובנות AI':'AI Insights'}
         </div>
 
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: 12 }}>
+        <div style={{ background: isLight ? '#f8fafc' : 'rgba(255,255,255,0.03)', border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: 12 }}>
           <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 10 }}>
             {lang==='he'?'נטו צפוי':'Estimated Net'}
           </div>
@@ -127,7 +141,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
           <div style={{ fontSize: 10, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>{lang==='he'?'שאל את היועץ':'Ask the advisor'}</div>
         </div>
 
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: 12 }}>
+        <div style={{ background: isLight ? '#f8fafc' : 'rgba(255,255,255,0.03)', border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: 12 }}>
           <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 10 }}>
             {lang==='he'?'טיפים מהירים':'Quick Tips'}
           </div>
