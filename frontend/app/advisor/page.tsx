@@ -10802,7 +10802,8 @@ export default function AdvisorPage() {
           </div>
         </div>
 
-        {/* Input */}
+        {/* Input — only on chat view */}
+        {(!showProfile && !showCompare && !showSavings && !showExitTax && !showIsraelWizard && !showCompanyOptimizer && !showTaxUpdates && !showLetterGenerator && !showSideBySide && !showFatca && !showScenarioDiff && !showDocChecklist && !showTimingCalc && !showTreatyLookup) && (
         <div style={{ marginTop: 'auto', flex: '0 0 auto', padding: '1rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
           <div className="max-w-3xl mx-auto">
             {devilMode && (
@@ -10912,8 +10913,47 @@ export default function AdvisorPage() {
             </div>
           </div>
         </div>
+        )}
         </div>{/* end chat section wrapper */}
       </div>
+
+        {/* WizeLife right panel — language-aware tips */}
+        {(typeof window !== 'undefined' && (
+          (() => { try { return localStorage.getItem('wl_rp_collapsed') !== '1'; } catch { return true; } })()
+        )) && (
+        <aside className="wt-rpanel" style={{
+          width: 260, flexShrink: 0, padding: 14, borderInlineStart: '1px solid var(--border)',
+          background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: 10,
+          overflowY: 'auto',
+        }}>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            {lang === 'he' ? 'טיפים מהירים' : lang === 'pt' ? 'Dicas Rápidas' : lang === 'es' ? 'Consejos Rápidos' : 'Quick Tips'}
+          </div>
+          {(lang === 'he' ? [
+            'בדוק תושבות מס לפני מעבר',
+            'OECD Tax Database עודכן ב-2024',
+            'אמנת מס יכולה לחסוך עד 20%',
+          ] : lang === 'pt' ? [
+            'Verifique residência fiscal antes de mudar',
+            'OECD Tax Database atualizado em 2024',
+            'Tratados podem economizar até 20%',
+          ] : lang === 'es' ? [
+            'Verifica residencia fiscal antes de mudarte',
+            'Base OECD actualizada en 2024',
+            'Tratados pueden ahorrar hasta 20%',
+          ] : [
+            'Check tax residency before relocating',
+            'OECD Tax Database updated 2024',
+            'Tax treaties can save up to 20%',
+          ]).map((tip, i) => (
+            <div key={i} style={{
+              fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5,
+              padding: '8px 10px', borderRadius: 8, background: 'var(--surface-2)',
+              border: '1px solid var(--border)',
+            }}>{tip}</div>
+          ))}
+        </aside>
+        )}
     </div>
 
     {selectedCountry && (
