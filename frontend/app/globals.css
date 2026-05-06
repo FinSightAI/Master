@@ -231,3 +231,10 @@ html:not([data-theme="light"]) .wl-shell-outer {
   background: #030508 !important;
   color: #eef2ff !important;
 }
+
+
+/* Tax Master sidebar scroll fix — content 2978px > 800px viewport */
+.wt-sidebar, [class*="wt-sidebar"] {
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+}
