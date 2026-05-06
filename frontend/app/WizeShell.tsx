@@ -62,7 +62,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
         borderRight: isRtl ? 'none' : '1px solid rgba(255,255,255,0.07)',
         borderLeft: isRtl ? '1px solid rgba(255,255,255,0.07)' : 'none',
         display: 'flex', flexDirection: 'column',
-        position: 'sticky', top: 36, alignSelf: 'flex-start',
+        position: 'sticky', top: 0, alignSelf: 'flex-start',
         height: 'calc(100vh - 36px)', overflowY: 'auto'
       }}>
         <div style={{ padding: '18px 16px 14px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
@@ -108,7 +108,7 @@ export default function WizeShell({ children }: { children: ReactNode }) {
         borderRight: isRtl ? '1px solid rgba(255,255,255,0.07)' : 'none',
         padding: '16px',
         display: 'flex', flexDirection: 'column', gap: 14,
-        position: 'sticky', top: 36, alignSelf: 'flex-start',
+        position: 'sticky', top: 0, alignSelf: 'flex-start',
         height: 'calc(100vh - 36px)', overflowY: 'auto'
       }}>
         <div style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 12, fontWeight: 800, color: '#eef2ff', marginBottom: 4 }}>

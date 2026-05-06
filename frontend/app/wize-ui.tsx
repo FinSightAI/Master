@@ -375,7 +375,7 @@ export function WizeBar() {
         <span style={{fontSize:11,fontWeight:600,color:'#f59e0b',background:'rgba(245,158,11,0.12)',padding:'2px 8px',borderRadius:99,lineHeight:1.4}}>WizeTax</span>
       </a>
       <div style={{display:'flex',alignItems:'center',gap:10}}>
-        <LangSwitcher color="#f59e0b" />
+        
         {authReady && isConnected && (
           <div style={{display:'flex',alignItems:'center',gap:5,padding:'3px 10px 3px 7px',borderRadius:99,background:'rgba(34,197,94,0.1)',border:'1px solid rgba(34,197,94,0.25)'}}>
             <div style={{width:7,height:7,borderRadius:'50%',background:'#22c55e',boxShadow:'0 0 6px #22c55e',flexShrink:0}}/>
