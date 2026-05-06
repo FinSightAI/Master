@@ -1352,6 +1352,26 @@ function WealthProjectionChart({
             );
           })}
         </div>
+
+        {/* Data source disclaimer */}
+        <div data-source-disclaimer style={{
+          marginTop: 16, padding: '10px 12px', borderRadius: 10,
+          background: 'var(--surface-2)', border: '1px solid var(--border)',
+          fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.55,
+        }}>
+          <div style={{ fontWeight: 700, marginBottom: 4, color: 'var(--text)' }}>
+            {isHe ? 'מקור הנתונים' : 'Data Sources'}
+          </div>
+          {isHe ? (
+            <>שיעורי המס מבוססים על פרסומי OECD Tax Database, KPMG Global Tax Rates,
+            ו-PwC Worldwide Tax Summaries. הנתונים עודכנו לאחרונה ב-{new Date().toLocaleDateString('he-IL', {year:'numeric', month:'long'})}.
+            ההשוואה מתייחסת לאזרח ישראלי שעובר תושבות. אינו מהווה ייעוץ מס.</>
+          ) : (
+            <>Tax rates based on OECD Tax Database, KPMG Global Tax Rates, and PwC Worldwide
+            Tax Summaries. Last updated: {new Date().toLocaleDateString('en-US', {year:'numeric', month:'long'})}.
+            Comparison assumes an Israeli resident relocating. Not tax advice.</>
+          )}
+        </div>
       </div>
     </div>
   );
