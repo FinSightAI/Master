@@ -406,9 +406,9 @@ export function WizeBar() {
           </div>
         )}
         {authReady && !isConnected && (
-          <button onClick={() => signInWithGoogle()} style={{...btnStyle,background:'rgba(245,158,11,0.15)',color:'#f59e0b',border:'1px solid rgba(245,158,11,0.3)'}}>
+          <a href="https://wizelife.ai/auth.html" style={{...btnStyle,background:'rgba(245,158,11,0.15)',color:'#f59e0b',border:'1px solid rgba(245,158,11,0.3)',textDecoration:'none',display:'inline-flex',alignItems:'center'}}>
             Sign in
-          </button>
+          </a>
         )}
         <a href="https://finsightai.github.io/wizelife/dashboard.html" style={{fontSize:12,color:'#7b88ad',textDecoration:'none',fontWeight:500,whiteSpace:'nowrap'}}>{allTools}</a>
       </div>
