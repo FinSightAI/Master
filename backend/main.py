@@ -70,7 +70,9 @@ async def ai_proxy(request: Request, body: AIProxyRequest):
     if body.system:
         payload["system_instruction"] = {"parts": [{"text": body.system}]}
 
-    model_name = os.getenv("AI_PROXY_MODEL", "gemini-2.5-flash")
+    # gemini-2.5-flash-lite = same price as the retired 2.0-flash ($0.10/$0.40 per 1M tokens),
+    # newer than 1.5, supported. Use full 2.5-flash only via env override if you want top quality.
+    model_name = os.getenv("AI_PROXY_MODEL", "gemini-2.5-flash-lite")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
