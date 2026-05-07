@@ -239,6 +239,20 @@ html:not([data-theme="light"]) .wl-shell-outer {
   scrollbar-width: thin;
 }
 
+/* WizeTax brand title gradient (yellow theme — matches WizeBar pill) */
+.wize-brand-grad {
+  background: linear-gradient(120deg, #f59e0b 0%, #fbbf24 30%, #fde047 50%, #facc15 75%, #f59e0b 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: wize-brand-shift 8s ease infinite;
+}
+@keyframes wize-brand-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 /* Collapsible categories — chevron indicator + hover state */
 .wt-cat > summary {
   position: relative;

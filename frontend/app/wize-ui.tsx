@@ -385,7 +385,10 @@ export function WizeBar() {
     whiteSpace: 'nowrap',
   };
 
-  const displayName = user ? (user.displayName || user.email) : (sso?.nick || sso?.email);
+  const rawIdentity = user ? (user.displayName || user.email) : (sso?.nick || sso?.email);
+  const displayName = rawIdentity && rawIdentity.includes('@') && !user?.displayName
+    ? rawIdentity.split('@')[0]
+    : rawIdentity;
   const isConnected = !!(user || sso);
 
   return (

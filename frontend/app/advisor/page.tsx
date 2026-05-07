@@ -10076,10 +10076,10 @@ export default function AdvisorPage() {
         {/* Logo + lang toggle */}
         <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg"
-              style={{ background: 'var(--accent)' }}>💰</div>
             <div style={{ minWidth: 0, flex: 1 }}>
-              <div className="font-bold text-sm" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tr.appName}</div>
+              <div className="font-bold text-base" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: '"Plus Jakarta Sans", Inter, sans-serif', letterSpacing: -0.4 }}>
+                Wize<span className="wize-brand-grad">Tax</span>
+              </div>
               <div className="text-xs" style={{ color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tr.appSubtitle}</div>
             </div>
           </div>
@@ -10785,9 +10785,10 @@ export default function AdvisorPage() {
               return (
                 <div className="slide-in">
                   <div className="text-center pt-8 pb-6">
-                    <div className="text-5xl mb-3">🌍</div>
-                    <h1 className="text-2xl font-bold mb-2">{tr.welcomeTitle}</h1>
-                    <p className="max-w-md mx-auto text-sm" style={{ color: 'var(--text-muted)' }}>
+                    <h1 style={{ fontFamily: '"Plus Jakarta Sans", Inter, sans-serif', fontSize: 'clamp(40px, 7vw, 64px)', fontWeight: 900, color: 'var(--text)', letterSpacing: -1.5, marginBottom: 14, lineHeight: 1 }}>
+                      Wize<span className="wize-brand-grad">Tax</span>
+                    </h1>
+                    <p className="max-w-md mx-auto text-sm" style={{ color: 'var(--text-muted)', marginBottom: 6 }}>
                       {tr.welcomeSubtitle}
                     </p>
                   </div>
