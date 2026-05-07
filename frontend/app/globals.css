@@ -7,9 +7,9 @@ body { transition: background 200ms ease; }
 @tailwind utilities;
 
 :root {
-  --background: #030508;
-  --surface: #060810;
-  --surface-2: #0d1020;
+  --background: #050507;
+  --surface: #0a0a0c;
+  --surface-2: #141417;
   --border: rgba(255,255,255,0.08);
   --text: #e2e8f0;
   --text-muted: #94a3b8;
