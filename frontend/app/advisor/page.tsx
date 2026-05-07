@@ -10070,7 +10070,7 @@ export default function AdvisorPage() {
 
   return (
     <>
-    <div dir={dir} style={{ position: 'fixed', inset: 0, display: 'flex', background: 'var(--background)' }}>
+    <div dir={dir} style={{ position: 'fixed', top: 36, bottom: 0, left: 0, right: 0, display: 'flex', background: 'var(--background)' }}>
       {/* ── Sidebar ── */}
       <div className={`wt-sidebar${mobileSidebarOpen ? ' open' : ''}`} style={{ width: '240px', flexShrink: 0, display: 'flex', flexDirection: 'column', background: 'var(--surface)', borderRight: '1px solid var(--border)', overflowX: 'hidden', overflowY: 'auto' }}>
         {/* Logo + lang toggle */}
