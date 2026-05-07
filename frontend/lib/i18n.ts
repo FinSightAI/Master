@@ -2,7 +2,7 @@ export type Lang = 'he' | 'en' | 'pt' | 'es';
 
 export const t = {
   he: {
-    appName: 'Tax Master AI',
+    appName: 'WizeTax',
     appSubtitle: 'יועץ מס גלובלי',
     newChat: 'שיחה חדשה',
     profile: 'פרופיל',
@@ -28,7 +28,7 @@ export const t = {
     cancel: 'ביטול',
     inputPlaceholder: 'שאל שאלה על מיסים, תכנון מס, העברת תושבות...',
     disclaimer: 'לצורך מידע בלבד. תמיד התייעץ עם יועץ מס מוסמך לפני נקיטת פעולה',
-    welcomeTitle: 'Tax Master AI',
+    welcomeTitle: 'WizeTax',
     welcomeSubtitle: 'יועץ המס הגלובלי שלך - מכיר את כל החוקים בכל המדינות ויעזור לך לחסוך מס בצורה חוקית',
     setupProfile: 'הגדר פרופיל פיננסי לאנליזה מדויקת ←',
     toolsUsed: 'כלים בשימוש',
@@ -582,7 +582,7 @@ export const t = {
     optimalRate: 'שיעור מס אופטימלי',
 },
   en: {
-    appName: 'Tax Master AI',
+    appName: 'WizeTax',
     appSubtitle: 'Global Tax Advisor',
     newChat: 'New Chat',
     profile: 'Profile',
@@ -608,7 +608,7 @@ export const t = {
     cancel: 'Cancel',
     inputPlaceholder: 'Ask about taxes, tax planning, residency moves...',
     disclaimer: 'For informational purposes only. Always consult a licensed tax professional before taking action',
-    welcomeTitle: 'Tax Master AI',
+    welcomeTitle: 'WizeTax',
     welcomeSubtitle: 'Your global tax advisor — knows the laws in every country and helps you save tax legally',
     setupProfile: 'Set up your financial profile for accurate analysis →',
     toolsUsed: 'tools used',
@@ -1162,7 +1162,7 @@ export const t = {
     optimalRate: 'Optimal Rate',
   },
   pt: {
-    appName: 'Tax Master AI',
+    appName: 'WizeTax',
     appSubtitle: 'Consultor Fiscal Global',
     newChat: 'Nova Conversa',
     profile: 'Perfil',
@@ -1188,7 +1188,7 @@ export const t = {
     cancel: 'Cancelar',
     inputPlaceholder: 'Pergunte sobre impostos, planejamento tributário, mudança de residência...',
     disclaimer: 'Apenas para fins informativos. Sempre consulte um contador ou advogado tributário antes de agir',
-    welcomeTitle: 'Tax Master AI',
+    welcomeTitle: 'WizeTax',
     welcomeSubtitle: 'Seu consultor fiscal global — conhece as leis de todos os países e ajuda a economizar impostos de forma legal',
     setupProfile: 'Configure seu perfil financeiro para análise precisa →',
     toolsUsed: 'ferramentas usadas',
@@ -1722,7 +1722,7 @@ export const t = {
     optimalRate: 'Alíquota Ótima',
   },
   es: {
-    appName: 'Tax Master AI',
+    appName: 'WizeTax',
     appSubtitle: 'Asesor Fiscal Global',
     newChat: 'Nueva Conversación',
     profile: 'Perfil',
@@ -1748,7 +1748,7 @@ export const t = {
     cancel: 'Cancelar',
     inputPlaceholder: 'Pregunta sobre impuestos, planificación fiscal, cambio de residencia...',
     disclaimer: 'Solo con fines informativos. Consulta siempre a un contador o asesor fiscal antes de actuar',
-    welcomeTitle: 'Tax Master AI',
+    welcomeTitle: 'WizeTax',
     welcomeSubtitle: 'Tu asesor fiscal global — conoce las leyes de todos los países y te ayuda a ahorrar impuestos legalmente',
     setupProfile: 'Configura tu perfil financiero para análisis preciso →',
     toolsUsed: 'herramientas usadas',
