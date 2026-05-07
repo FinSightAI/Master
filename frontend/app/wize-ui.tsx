@@ -398,13 +398,22 @@ export function WizeBar() {
       <div style={{display:'flex',alignItems:'center',gap:10}}>
         
         {authReady && isConnected && (
-          <div style={{display:'flex',alignItems:'center',gap:5,padding:'3px 10px 3px 7px',borderRadius:99,background:'rgba(34,197,94,0.1)',border:'1px solid rgba(34,197,94,0.25)'}}>
-            <div style={{width:7,height:7,borderRadius:'50%',background:'#22c55e',boxShadow:'0 0 6px #22c55e',flexShrink:0}}/>
-            <span style={{fontSize:11,fontWeight:700,color:'#86efac',maxWidth:120,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
-              {displayName || 'מחובר'}
-              {(()=>{const p=user?null:sso?.plan;return p&&p!=='free'?<span style={{marginLeft:4,color:p==='yolo'?'#fbbf24':'#a78bfa'}}>{p==='yolo'?'⚡':'💎'}</span>:null;})()}
-            </span>
-            {user && <button onClick={() => signOut()} style={{...btnStyle,background:'none',color:'#6b7280',padding:'0 0 0 4px',fontSize:10}}>✕</button>}
+          <div style={{display:'flex',alignItems:'center',gap:6}}>
+            {(() => {
+              const p = sso?.plan || (user ? 'free' : null);
+              if (!p) return null;
+              const c = p === 'yolo' ? '#fbbf24' : p === 'pro' ? '#34d399' : '#a5b4fc';
+              const bg = p === 'yolo' ? 'rgba(245,158,11,0.18)' : p === 'pro' ? 'rgba(16,185,129,0.18)' : 'rgba(99,102,241,0.15)';
+              const lbl = p === 'yolo' ? '⚡ YOLO' : p === 'pro' ? '✦ PRO' : 'FREE';
+              return <span style={{fontSize:10,fontWeight:800,letterSpacing:.4,padding:'3px 9px',borderRadius:99,background:bg,color:c,border:`1px solid ${c}55`,whiteSpace:'nowrap'}}>{lbl}</span>;
+            })()}
+            <div style={{display:'flex',alignItems:'center',gap:5,padding:'3px 10px 3px 7px',borderRadius:99,background:'rgba(34,197,94,0.1)',border:'1px solid rgba(34,197,94,0.25)'}}>
+              <div style={{width:7,height:7,borderRadius:'50%',background:'#22c55e',boxShadow:'0 0 6px #22c55e',flexShrink:0}}/>
+              <span style={{fontSize:11,fontWeight:700,color:'#86efac',maxWidth:120,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                {displayName || 'מחובר'}
+              </span>
+              {user && <button onClick={() => signOut()} style={{...btnStyle,background:'none',color:'#6b7280',padding:'0 0 0 4px',fontSize:10}}>✕</button>}
+            </div>
           </div>
         )}
         {authReady && !isConnected && (

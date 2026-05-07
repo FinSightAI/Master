@@ -10890,8 +10890,8 @@ export default function AdvisorPage() {
 
         {/* Input — only on chat view */}
         {(!(showAdvisorPortal || showAnnualTax || showBankMigration || showBusinessExit || showCRSChecker || showCalendarSync || showCompMatrix || showCompanyOptimizer || showCompare || showCountryFit || showCountryProfiles || showCryptoCalc || showDaysTracker || showDeadlines || showDocAnalyzer || showDocChecklist || showDtaaCalc || showEmigROI || showEstatePlanner || showExitTax || showFamilyImpact || showFatca || showFxCalc || showHistory || showIsraelWizard || showLegalDocs || showLetterGenerator || showLifetimeSavings || showMultiYear || showMyPlan || showOnboarding || showPassportOptimizer || showPdfReport || showPeerBenchmark || showPensionCalc || showPensionGuide || showPortfolioOpt || showProDirectory || showProfile || showRealEstateAbroad || showRealEstateCalc || showRedFlags || showRemoteWorker || showSavings || showScenarioDiff || showSection100A || showSideBySide || showTaxAlerts || showTaxAudit || showTaxForecast || showTaxMap || showTaxScore || showTaxUpdates || showTimeline || showTimingCalc || showTreatyLookup || showVisaPanel || showWealthSim)) && (
-        <div style={{ marginTop: 'auto', flex: '0 0 auto', padding: '1rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
-          <div className="max-w-3xl mx-auto">
+        <div style={{ marginTop: 'auto', flex: '0 0 auto', padding: '0.5rem 0.75rem', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
+          <div className="max-w-2xl mx-auto">
             {devilMode && (
               <div className="mb-2 px-3 py-1.5 rounded-lg text-xs flex items-center gap-2"
                 style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.4)', color: '#ef4444' }}>
