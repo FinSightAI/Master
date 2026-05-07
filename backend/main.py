@@ -70,15 +70,17 @@ async def ai_proxy(request: Request, body: AIProxyRequest):
     if body.system:
         payload["system_instruction"] = {"parts": [{"text": body.system}]}
 
-    model_name = os.getenv("AI_PROXY_MODEL", "gemini-2.0-flash")
+    model_name = os.getenv("AI_PROXY_MODEL", "gemini-2.5-flash")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
             r = await client.post(url, json=payload)
-            if r.status_code != 200:
-                # Try fallback to 1.5-flash if 2.0 hits quota — 1.5 has separate, more generous free tier
-                if r.status_code == 429 and "gemini-2.0" in model_name:
-                    fb_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+            if r.status_code != 200 and r.status_code in (404, 429):
+                # Fallback chain: 2.5 -> 2.5-flash-lite -> flash-latest -> 1.5-flash
+                for fb_model in ("gemini-2.5-flash-lite", "gemini-flash-latest", "gemini-1.5-flash"):
+                    if fb_model == model_name:
+                        continue
+                    fb_url = f"https://generativelanguage.googleapis.com/v1beta/models/{fb_model}:generateContent?key={api_key}"
                     fb = await client.post(fb_url, json=payload)
                     if fb.status_code == 200:
                         data = fb.json()
@@ -86,7 +88,8 @@ async def ai_proxy(request: Request, body: AIProxyRequest):
                         if cands:
                             parts = cands[0].get("content", {}).get("parts") or []
                             text = (parts[0] or {}).get("text", "") if parts else ""
-                            return {"text": text, "fallback": "gemini-1.5-flash"}
+                            return {"text": text, "fallback": fb_model}
+            if r.status_code != 200:
                 err_text = r.text[:800] if r.text else "no body"
                 return {"error": f"Gemini {r.status_code}: {err_text}"}
             data = r.json()
