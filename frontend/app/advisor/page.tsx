@@ -10094,362 +10094,382 @@ export default function AdvisorPage() {
             <RotateCcw size={14} />
             {tr.newChat}
           </button>
-          <button onClick={() => { setShowProfile(!showProfile); setShowCompare(false); }}
+          <button onClick={() => { closeAllPanels(); setShowProfile(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: profileSaved ? 'var(--accent-glow)' : 'var(--surface-2)', color: profileSaved ? 'var(--accent)' : 'var(--text-muted)', border: profileSaved ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Settings size={14} />
             {profileSaved ? tr.profileSaved : tr.profile}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowCompare(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
-            <BarChart3 size={14} />
-            {tr.compare}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowSavings(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showSavings ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSavings ? 'var(--accent)' : 'var(--text-muted)', border: showSavings ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <TrendingDown size={14} />
-            {tr.savings}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowExitTax(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showExitTax ? 'var(--accent-glow)' : 'var(--surface-2)', color: showExitTax ? 'var(--accent)' : 'var(--text-muted)', border: showExitTax ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Calculator size={14} />
-            {tr.exitTaxCalc}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowIsraelWizard(prev => !prev); }}
+          <details className="wt-cat" style={{margin:"6px 0"}}>
+            <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>🇮🇱</span><span>{lang === "he" ? "ישראל — מס יציאה" : lang === "pt" ? "Saída de Israel" : lang === "es" ? "Salida de Israel" : "Israel Exit"}</span></summary>
+            <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
+              <button onClick={() => { closeAllPanels(); setShowIsraelWizard(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showIsraelWizard ? 'var(--accent-glow)' : 'var(--surface-2)', color: showIsraelWizard ? 'var(--accent)' : 'var(--text-muted)', border: showIsraelWizard ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Landmark size={14} />
             {tr.israelWizard}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowCompanyOptimizer(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowExitTax(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showCompanyOptimizer ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCompanyOptimizer ? 'var(--accent)' : 'var(--text-muted)', border: showCompanyOptimizer ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Building2 size={14} />
-            {tr.companyOptimizer}
+            style={{ background: showExitTax ? 'var(--accent-glow)' : 'var(--surface-2)', color: showExitTax ? 'var(--accent)' : 'var(--text-muted)', border: showExitTax ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Calculator size={14} />
+            {tr.exitTaxCalc}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowTaxUpdates(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showTaxUpdates ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxUpdates ? 'var(--accent)' : 'var(--text-muted)', border: showTaxUpdates ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Bell size={14} />
-            {tr.taxUpdates}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowLetterGenerator(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showLetterGenerator ? 'var(--accent-glow)' : 'var(--surface-2)', color: showLetterGenerator ? 'var(--accent)' : 'var(--text-muted)', border: showLetterGenerator ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Mail size={14} />
-            {tr.letterGenerator}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowSideBySide(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showSideBySide ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSideBySide ? 'var(--accent)' : 'var(--text-muted)', border: showSideBySide ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <GitCompare size={14} />
-            {tr.sideByCompare}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowFatca(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showFatca ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFatca ? 'var(--accent)' : 'var(--text-muted)', border: showFatca ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <AlertTriangle size={14} />
-            {tr.fatcaPanel}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowScenarioDiff(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showScenarioDiff ? 'var(--accent-glow)' : 'var(--surface-2)', color: showScenarioDiff ? 'var(--accent)' : 'var(--text-muted)', border: showScenarioDiff ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Shuffle size={14} />
-            {tr.scenarioDiff}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowDocChecklist(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showDocChecklist ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDocChecklist ? 'var(--accent)' : 'var(--text-muted)', border: showDocChecklist ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <ClipboardCheck size={14} />
-            {tr.docChecklist}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowTimingCalc(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showTimingCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTimingCalc ? 'var(--accent)' : 'var(--text-muted)', border: showTimingCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Clock size={14} />
-            {tr.timingCalc}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowTreatyLookup(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showTreatyLookup ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTreatyLookup ? 'var(--accent)' : 'var(--text-muted)', border: showTreatyLookup ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Award size={14} />
-            {tr.treatyLookup}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowCountryProfiles(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showCountryProfiles ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCountryProfiles ? 'var(--accent)' : 'var(--text-muted)', border: showCountryProfiles ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Globe size={14} />
-            {tr.countryProfiles}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowRealEstateCalc(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showRealEstateCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRealEstateCalc ? 'var(--accent)' : 'var(--text-muted)', border: showRealEstateCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Home size={14} />
-            {tr.realEstate}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowPensionCalc(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showPensionCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPensionCalc ? 'var(--accent)' : 'var(--text-muted)', border: showPensionCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <PiggyBank size={14} />
-            {tr.pensionCalc}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowSection100A(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowSection100A(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showSection100A ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSection100A ? 'var(--accent)' : 'var(--text-muted)', border: showSection100A ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Calculator size={14} />
             {tr.section100a}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowDtaaCalc(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowTimingCalc(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showDtaaCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDtaaCalc ? 'var(--accent)' : 'var(--text-muted)', border: showDtaaCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Globe size={14} />
-            {tr.dtaaCalc}
+            style={{ background: showTimingCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTimingCalc ? 'var(--accent)' : 'var(--text-muted)', border: showTimingCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Clock size={14} />
+            {tr.timingCalc}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowAnnualTax(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowDocChecklist(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showAnnualTax ? 'var(--accent-glow)' : 'var(--surface-2)', color: showAnnualTax ? 'var(--accent)' : 'var(--text-muted)', border: showAnnualTax ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <TrendingUp size={14} />
-            {tr.annualTax}
+            style={{ background: showDocChecklist ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDocChecklist ? 'var(--accent)' : 'var(--text-muted)', border: showDocChecklist ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <ClipboardCheck size={14} />
+            {tr.docChecklist}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowDaysTracker(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowDaysTracker(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showDaysTracker ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDaysTracker ? 'var(--accent)' : 'var(--text-muted)', border: showDaysTracker ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Calendar size={14} />
             {tr.daysTracker}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowEmigROI(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowEmigROI(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showEmigROI ? 'var(--accent-glow)' : 'var(--surface-2)', color: showEmigROI ? 'var(--accent)' : 'var(--text-muted)', border: showEmigROI ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <TrendingDown size={14} />
             {tr.emigROI}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowMultiYear(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showMultiYear ? 'var(--accent-glow)' : 'var(--surface-2)', color: showMultiYear ? 'var(--accent)' : 'var(--text-muted)', border: showMultiYear ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <BarChart3 size={14} />
-            {tr.multiYear}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowRealEstateAbroad(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showRealEstateAbroad ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRealEstateAbroad ? 'var(--accent)' : 'var(--text-muted)', border: showRealEstateAbroad ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Globe size={14} />
-            {tr.realEstateAbroad}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowVisaPanel(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showVisaPanel ? 'var(--accent-glow)' : 'var(--surface-2)', color: showVisaPanel ? 'var(--accent)' : 'var(--text-muted)', border: showVisaPanel ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Plane size={14} />
-            {tr.visaPanel}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowCountryFit(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showCountryFit ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCountryFit ? 'var(--accent)' : 'var(--text-muted)', border: showCountryFit ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Award size={14} />
-            {tr.fitScore}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowRedFlags(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showRedFlags ? 'rgba(239,68,68,0.12)' : 'var(--surface-2)', color: showRedFlags ? '#ef4444' : 'var(--text-muted)', border: showRedFlags ? '1px solid rgba(239,68,68,0.4)' : '1px solid transparent' }}>
-            <AlertTriangle size={14} />
-            {tr.redFlags}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowTimeline(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowTimeline(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showTimeline ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTimeline ? 'var(--accent)' : 'var(--text-muted)', border: showTimeline ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <CalendarClock size={14} />
             {tr.decisionTimeline}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowWealthSim(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showWealthSim ? 'var(--accent-glow)' : 'var(--surface-2)', color: showWealthSim ? 'var(--accent)' : 'var(--text-muted)', border: showWealthSim ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <Coins size={14} />
-            {tr.wealthSim}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowBankMigration(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowBankMigration(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showBankMigration ? 'var(--accent-glow)' : 'var(--surface-2)', color: showBankMigration ? 'var(--accent)' : 'var(--text-muted)', border: showBankMigration ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <Landmark size={14} />
             {tr.bankMigration}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowCryptoCalc(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowMultiYear(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showCryptoCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCryptoCalc ? 'var(--accent)' : 'var(--text-muted)', border: showCryptoCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>₿</span>
-            {tr.cryptoCalc}
+            style={{ background: showMultiYear ? 'var(--accent-glow)' : 'var(--surface-2)', color: showMultiYear ? 'var(--accent)' : 'var(--text-muted)', border: showMultiYear ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <BarChart3 size={14} />
+            {tr.multiYear}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowCRSChecker(prev => !prev); }}
+            </div>
+          </details>
+          <details open className="wt-cat" style={{margin:"6px 0"}}>
+            <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>🌍</span><span>{lang === "he" ? "מדינות והשוואות" : lang === "pt" ? "Países e Comparações" : lang === "es" ? "Países y Comparaciones" : "Countries & Compare"}</span></summary>
+            <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
+              <button onClick={() => { closeAllPanels(); setShowCompare(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showCRSChecker ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCRSChecker ? 'var(--accent)' : 'var(--text-muted)', border: showCRSChecker ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🔍</span>
-            {tr.crsChecker}
+            style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
+            <BarChart3 size={14} />
+            {tr.compare}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowRemoteWorker(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowSavings(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showRemoteWorker ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRemoteWorker ? 'var(--accent)' : 'var(--text-muted)', border: showRemoteWorker ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>💻</span>
-            {tr.remoteWorker}
+            style={{ background: showSavings ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSavings ? 'var(--accent)' : 'var(--text-muted)', border: showSavings ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <TrendingDown size={14} />
+            {tr.savings}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowPensionGuide(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowCountryProfiles(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showPensionGuide ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPensionGuide ? 'var(--accent)' : 'var(--text-muted)', border: showPensionGuide ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🏛️</span>
-            {tr.pensionGuide}
+            style={{ background: showCountryProfiles ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCountryProfiles ? 'var(--accent)' : 'var(--text-muted)', border: showCountryProfiles ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Globe size={14} />
+            {tr.countryProfiles}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowBusinessExit(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowCountryFit(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showBusinessExit ? 'var(--accent-glow)' : 'var(--surface-2)', color: showBusinessExit ? 'var(--accent)' : 'var(--text-muted)', border: showBusinessExit ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🏢</span>
-            {tr.businessExit}
+            style={{ background: showCountryFit ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCountryFit ? 'var(--accent)' : 'var(--text-muted)', border: showCountryFit ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Award size={14} />
+            {tr.fitScore}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowMyPlan(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showMyPlan ? 'var(--accent-glow)' : 'var(--surface-2)', color: showMyPlan ? 'var(--accent)' : 'var(--text-muted)', border: showMyPlan ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🗺️</span>
-            {tr.myPlan}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowCompMatrix(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowCompMatrix(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showCompMatrix ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCompMatrix ? 'var(--accent)' : 'var(--text-muted)', border: showCompMatrix ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📊</span>
             {tr.compMatrix}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowEstatePlanner(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowRealEstateAbroad(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showEstatePlanner ? 'var(--accent-glow)' : 'var(--surface-2)', color: showEstatePlanner ? 'var(--accent)' : 'var(--text-muted)', border: showEstatePlanner ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🏰</span>
-            {tr.estatePlanner}
+            style={{ background: showRealEstateAbroad ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRealEstateAbroad ? 'var(--accent)' : 'var(--text-muted)', border: showRealEstateAbroad ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Globe size={14} />
+            {tr.realEstateAbroad}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowPortfolioOpt(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowVisaPanel(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showPortfolioOpt ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPortfolioOpt ? 'var(--accent)' : 'var(--text-muted)', border: showPortfolioOpt ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>📈</span>
-            {tr.portfolioOpt}
+            style={{ background: showVisaPanel ? 'var(--accent-glow)' : 'var(--surface-2)', color: showVisaPanel ? 'var(--accent)' : 'var(--text-muted)', border: showVisaPanel ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Plane size={14} />
+            {tr.visaPanel}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowFxCalc(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showFxCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFxCalc ? 'var(--accent)' : 'var(--text-muted)', border: showFxCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>💱</span>
-            {tr.fxCalc}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowProDirectory(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showProDirectory ? 'var(--accent-glow)' : 'var(--surface-2)', color: showProDirectory ? 'var(--accent)' : 'var(--text-muted)', border: showProDirectory ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>📋</span>
-            {tr.proDirectory}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowTaxMap(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showTaxMap ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxMap ? 'var(--accent)' : 'var(--text-muted)', border: showTaxMap ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🗺️</span>
-            {tr.taxMap}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowLifetimeSavings(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showLifetimeSavings ? 'var(--accent-glow)' : 'var(--surface-2)', color: showLifetimeSavings ? 'var(--accent)' : 'var(--text-muted)', border: showLifetimeSavings ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>💸</span>
-            {tr.lifetimeSavings}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowFamilyImpact(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showFamilyImpact ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFamilyImpact ? 'var(--accent)' : 'var(--text-muted)', border: showFamilyImpact ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>👨‍👩‍👧</span>
-            {tr.familyImpact}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowTaxAlerts(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showTaxAlerts ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxAlerts ? 'var(--accent)' : 'var(--text-muted)', border: showTaxAlerts ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🔔</span>
-            {tr.taxAlerts}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowTaxScore(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showTaxScore ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxScore ? 'var(--accent)' : 'var(--text-muted)', border: showTaxScore ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>📊</span>
-            {tr.taxScore}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowTaxAudit(prev => !prev); }}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showTaxAudit ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxAudit ? 'var(--accent)' : 'var(--text-muted)', border: showTaxAudit ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🕵️</span>
-            {tr.taxAudit}
-          </button>
-          <button onClick={() => { closeAllPanels(); setShowPassportOptimizer(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowPassportOptimizer(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showPassportOptimizer ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPassportOptimizer ? 'var(--accent)' : 'var(--text-muted)', border: showPassportOptimizer ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🏆</span>
             {tr.passportOptimizer}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowDeadlines(prev => !prev); }}
+            </div>
+          </details>
+          <details open className="wt-cat" style={{margin:"6px 0"}}>
+            <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>💼</span><span>{lang === "he" ? "עסקים וקריפטו" : lang === "pt" ? "Negócios e Cripto" : lang === "es" ? "Negocios y Cripto" : "Business & Crypto"}</span></summary>
+            <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
+              <button onClick={() => { closeAllPanels(); setShowCompanyOptimizer(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showDeadlines ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDeadlines ? 'var(--accent)' : 'var(--text-muted)', border: showDeadlines ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>⏱️</span>
-            {tr.deadlines}
+            style={{ background: showCompanyOptimizer ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCompanyOptimizer ? 'var(--accent)' : 'var(--text-muted)', border: showCompanyOptimizer ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Building2 size={14} />
+            {tr.companyOptimizer}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowDocAnalyzer(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowBusinessExit(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showDocAnalyzer ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDocAnalyzer ? 'var(--accent)' : 'var(--text-muted)', border: showDocAnalyzer ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>📄</span>
-            {tr.docAnalyzer}
+            style={{ background: showBusinessExit ? 'var(--accent-glow)' : 'var(--surface-2)', color: showBusinessExit ? 'var(--accent)' : 'var(--text-muted)', border: showBusinessExit ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🏢</span>
+            {tr.businessExit}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowPeerBenchmark(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowCryptoCalc(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showPeerBenchmark ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPeerBenchmark ? 'var(--accent)' : 'var(--text-muted)', border: showPeerBenchmark ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🤝</span>
-            {tr.peerBenchmark}
+            style={{ background: showCryptoCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCryptoCalc ? 'var(--accent)' : 'var(--text-muted)', border: showCryptoCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>₿</span>
+            {tr.cryptoCalc}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowTaxForecast(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowRemoteWorker(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showTaxForecast ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxForecast ? 'var(--accent)' : 'var(--text-muted)', border: showTaxForecast ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>🔮</span>
-            {tr.taxForecast}
+            style={{ background: showRemoteWorker ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRemoteWorker ? 'var(--accent)' : 'var(--text-muted)', border: showRemoteWorker ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>💻</span>
+            {tr.remoteWorker}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowLegalDocs(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowEstatePlanner(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showEstatePlanner ? 'var(--accent-glow)' : 'var(--surface-2)', color: showEstatePlanner ? 'var(--accent)' : 'var(--text-muted)', border: showEstatePlanner ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🏰</span>
+            {tr.estatePlanner}
+          </button>
+            </div>
+          </details>
+          <details open className="wt-cat" style={{margin:"6px 0"}}>
+            <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>📋</span><span>{lang === "he" ? "מסמכים ואמנות" : lang === "pt" ? "Documentos e Tratados" : lang === "es" ? "Documentos y Tratados" : "Documents & Treaties"}</span></summary>
+            <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
+              <button onClick={() => { closeAllPanels(); setShowTaxUpdates(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showTaxUpdates ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxUpdates ? 'var(--accent)' : 'var(--text-muted)', border: showTaxUpdates ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Bell size={14} />
+            {tr.taxUpdates}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowLetterGenerator(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showLetterGenerator ? 'var(--accent-glow)' : 'var(--surface-2)', color: showLetterGenerator ? 'var(--accent)' : 'var(--text-muted)', border: showLetterGenerator ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Mail size={14} />
+            {tr.letterGenerator}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowSideBySide(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showSideBySide ? 'var(--accent-glow)' : 'var(--surface-2)', color: showSideBySide ? 'var(--accent)' : 'var(--text-muted)', border: showSideBySide ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <GitCompare size={14} />
+            {tr.sideByCompare}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowFatca(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showFatca ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFatca ? 'var(--accent)' : 'var(--text-muted)', border: showFatca ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <AlertTriangle size={14} />
+            {tr.fatcaPanel}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowScenarioDiff(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showScenarioDiff ? 'var(--accent-glow)' : 'var(--surface-2)', color: showScenarioDiff ? 'var(--accent)' : 'var(--text-muted)', border: showScenarioDiff ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Shuffle size={14} />
+            {tr.scenarioDiff}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowTreatyLookup(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showTreatyLookup ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTreatyLookup ? 'var(--accent)' : 'var(--text-muted)', border: showTreatyLookup ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Award size={14} />
+            {tr.treatyLookup}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowDtaaCalc(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showDtaaCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDtaaCalc ? 'var(--accent)' : 'var(--text-muted)', border: showDtaaCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Globe size={14} />
+            {tr.dtaaCalc}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowLegalDocs(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showLegalDocs ? 'var(--accent-glow)' : 'var(--surface-2)', color: showLegalDocs ? 'var(--accent)' : 'var(--text-muted)', border: showLegalDocs ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📝</span>
             {tr.legalDocs}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowAdvisorPortal(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowCRSChecker(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showAdvisorPortal ? 'var(--accent-glow)' : 'var(--surface-2)', color: showAdvisorPortal ? 'var(--accent)' : 'var(--text-muted)', border: showAdvisorPortal ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            style={{ background: showCRSChecker ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCRSChecker ? 'var(--accent)' : 'var(--text-muted)', border: showCRSChecker ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🔍</span>
+            {tr.crsChecker}
+          </button>
+            </div>
+          </details>
+          <details open className="wt-cat" style={{margin:"6px 0"}}>
+            <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>📊</span><span>{lang === "he" ? "מחשבונים" : lang === "pt" ? "Calculadoras" : lang === "es" ? "Calculadoras" : "Calculators"}</span></summary>
+            <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
+              <button onClick={() => { closeAllPanels(); setShowRealEstateCalc(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showRealEstateCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showRealEstateCalc ? 'var(--accent)' : 'var(--text-muted)', border: showRealEstateCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Home size={14} />
+            {tr.realEstate}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowPensionCalc(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showPensionCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPensionCalc ? 'var(--accent)' : 'var(--text-muted)', border: showPensionCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <PiggyBank size={14} />
+            {tr.pensionCalc}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowAnnualTax(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showAnnualTax ? 'var(--accent-glow)' : 'var(--surface-2)', color: showAnnualTax ? 'var(--accent)' : 'var(--text-muted)', border: showAnnualTax ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <TrendingUp size={14} />
+            {tr.annualTax}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowWealthSim(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showWealthSim ? 'var(--accent-glow)' : 'var(--surface-2)', color: showWealthSim ? 'var(--accent)' : 'var(--text-muted)', border: showWealthSim ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <Coins size={14} />
+            {tr.wealthSim}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowFxCalc(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showFxCalc ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFxCalc ? 'var(--accent)' : 'var(--text-muted)', border: showFxCalc ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>💱</span>
+            {tr.fxCalc}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowTaxScore(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showTaxScore ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxScore ? 'var(--accent)' : 'var(--text-muted)', border: showTaxScore ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>📊</span>
+            {tr.taxScore}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowTaxMap(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showTaxMap ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxMap ? 'var(--accent)' : 'var(--text-muted)', border: showTaxMap ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🗺️</span>
+            {tr.taxMap}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowTaxForecast(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showTaxForecast ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxForecast ? 'var(--accent)' : 'var(--text-muted)', border: showTaxForecast ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🔮</span>
+            {tr.taxForecast}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowLifetimeSavings(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showLifetimeSavings ? 'var(--accent-glow)' : 'var(--surface-2)', color: showLifetimeSavings ? 'var(--accent)' : 'var(--text-muted)', border: showLifetimeSavings ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>💸</span>
+            {tr.lifetimeSavings}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowPensionGuide(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showPensionGuide ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPensionGuide ? 'var(--accent)' : 'var(--text-muted)', border: showPensionGuide ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🏛️</span>
+            {tr.pensionGuide}
+          </button>
+            </div>
+          </details>
+          <details open className="wt-cat" style={{margin:"6px 0"}}>
+            <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>⚠️</span><span>{lang === "he" ? "התראות וביקורת" : lang === "pt" ? "Alertas e Auditoria" : lang === "es" ? "Alertas y Auditoría" : "Alerts & Audit"}</span></summary>
+            <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
+              <button onClick={() => { closeAllPanels(); setShowRedFlags(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showRedFlags ? 'rgba(239,68,68,0.12)' : 'var(--surface-2)', color: showRedFlags ? '#ef4444' : 'var(--text-muted)', border: showRedFlags ? '1px solid rgba(239,68,68,0.4)' : '1px solid transparent' }}>
+            <AlertTriangle size={14} />
+            {tr.redFlags}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowTaxAlerts(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showTaxAlerts ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxAlerts ? 'var(--accent)' : 'var(--text-muted)', border: showTaxAlerts ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🔔</span>
+            {tr.taxAlerts}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowTaxAudit(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showTaxAudit ? 'var(--accent-glow)' : 'var(--surface-2)', color: showTaxAudit ? 'var(--accent)' : 'var(--text-muted)', border: showTaxAudit ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🕵️</span>
+            {tr.taxAudit}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowPeerBenchmark(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showPeerBenchmark ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPeerBenchmark ? 'var(--accent)' : 'var(--text-muted)', border: showPeerBenchmark ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>🤝</span>
-            {tr.advisorPortal}
+            {tr.peerBenchmark}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowCalendarSync(prev => !prev); }}
+              <button onClick={() => { closeAllPanels(); setShowDeadlines(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: showCalendarSync ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCalendarSync ? 'var(--accent)' : 'var(--text-muted)', border: showCalendarSync ? '1px solid var(--accent)' : '1px solid transparent' }}>
-            <span style={{fontSize:'0.85rem',lineHeight:1}}>📅</span>
-            {tr.calendarSync}
+            style={{ background: showDeadlines ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDeadlines ? 'var(--accent)' : 'var(--text-muted)', border: showDeadlines ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>⏱️</span>
+            {tr.deadlines}
           </button>
-          <button onClick={() => { closeAllPanels(); setShowPdfReport(prev => !prev); }}
+            </div>
+          </details>
+          <details open className="wt-cat" style={{margin:"6px 0"}}>
+            <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>📑</span><span>{lang === "he" ? "תוכניות ודוחות" : lang === "pt" ? "Planos e Relatórios" : lang === "es" ? "Planes e Informes" : "Plans & Reports"}</span></summary>
+            <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
+              <button onClick={() => { closeAllPanels(); setShowMyPlan(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showMyPlan ? 'var(--accent-glow)' : 'var(--surface-2)', color: showMyPlan ? 'var(--accent)' : 'var(--text-muted)', border: showMyPlan ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🗺️</span>
+            {tr.myPlan}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowPortfolioOpt(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showPortfolioOpt ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPortfolioOpt ? 'var(--accent)' : 'var(--text-muted)', border: showPortfolioOpt ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>📈</span>
+            {tr.portfolioOpt}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowFamilyImpact(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showFamilyImpact ? 'var(--accent-glow)' : 'var(--surface-2)', color: showFamilyImpact ? 'var(--accent)' : 'var(--text-muted)', border: showFamilyImpact ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>👨‍👩‍👧</span>
+            {tr.familyImpact}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowPdfReport(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
             style={{ background: showPdfReport ? 'var(--accent-glow)' : 'var(--surface-2)', color: showPdfReport ? 'var(--accent)' : 'var(--text-muted)', border: showPdfReport ? '1px solid var(--accent)' : '1px solid transparent' }}>
             <span style={{fontSize:'0.85rem',lineHeight:1}}>📊</span>
             {tr.pdfReport}
           </button>
-          <button onClick={() => setDevilMode(d => !d)}
+              <button onClick={() => { closeAllPanels(); setShowDocAnalyzer(prev => !prev); }}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: devilMode ? 'rgba(239,68,68,0.12)' : 'var(--surface-2)', color: devilMode ? '#ef4444' : 'var(--text-muted)', border: devilMode ? '1px solid rgba(239,68,68,0.4)' : '1px solid transparent' }}>
-            <Swords size={14} />
-            {devilMode ? tr.devilModeActive : tr.devilMode}
+            style={{ background: showDocAnalyzer ? 'var(--accent-glow)' : 'var(--surface-2)', color: showDocAnalyzer ? 'var(--accent)' : 'var(--text-muted)', border: showDocAnalyzer ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>📄</span>
+            {tr.docAnalyzer}
           </button>
-          <button onClick={() => setShowHistory(!showHistory)}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
-            <div className="flex items-center gap-2">
-              <History size={14} />
-              {tr.history}
             </div>
-            {savedSessions.length > 0 && (
-              <span className="text-xs px-1.5 py-0.5 rounded-full font-bold"
-                style={{ background: 'var(--accent)', color: 'white' }}>
-                {savedSessions.length}
-              </span>
-            )}
+          </details>
+          <details open className="wt-cat" style={{margin:"6px 0"}}>
+            <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>👥</span><span>{lang === "he" ? "יועצים מקצועיים" : lang === "pt" ? "Consultores" : lang === "es" ? "Asesores" : "Pro Advisors"}</span></summary>
+            <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
+              <button onClick={() => { closeAllPanels(); setShowProDirectory(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showProDirectory ? 'var(--accent-glow)' : 'var(--surface-2)', color: showProDirectory ? 'var(--accent)' : 'var(--text-muted)', border: showProDirectory ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>📋</span>
+            {tr.proDirectory}
           </button>
+              <button onClick={() => { closeAllPanels(); setShowAdvisorPortal(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showAdvisorPortal ? 'var(--accent-glow)' : 'var(--surface-2)', color: showAdvisorPortal ? 'var(--accent)' : 'var(--text-muted)', border: showAdvisorPortal ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>🤝</span>
+            {tr.advisorPortal}
+          </button>
+              <button onClick={() => { closeAllPanels(); setShowCalendarSync(prev => !prev); }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all hover:opacity-80"
+            style={{ background: showCalendarSync ? 'var(--accent-glow)' : 'var(--surface-2)', color: showCalendarSync ? 'var(--accent)' : 'var(--text-muted)', border: showCalendarSync ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            <span style={{fontSize:'0.85rem',lineHeight:1}}>📅</span>
+            {tr.calendarSync}
+          </button>
+            </div>
+          </details>
         </div>
 
         {/* History list */}
