@@ -51,39 +51,41 @@ class AIProxyRequest(BaseModel):
 
 @app.post("/api/ai-proxy")
 @limiter.limit("30/minute")
-async def ai_proxy(request: AIProxyRequest, req: Request):
+async def ai_proxy(request: Request, body: AIProxyRequest):
     """Generic Gemini proxy for cross-app AI features (investment advisor, etc).
 
     Calls Gemini REST API directly so the request shape matches the original
     Firebase callable: {messages, system, maxTokens} -> {text}.
     """
     import httpx
+    import traceback
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        return {"error": "AI not configured"}
+        return {"error": "AI not configured (no GEMINI_API_KEY)"}
 
-    body = {
-        "contents": [{"role": m.role, "parts": m.parts} for m in request.messages],
-        "generationConfig": {"maxOutputTokens": request.maxTokens or 2048},
+    payload = {
+        "contents": [{"role": m.role, "parts": m.parts} for m in body.messages],
+        "generationConfig": {"maxOutputTokens": body.maxTokens or 2048},
     }
-    if request.system:
-        body["system_instruction"] = {"parts": [{"text": request.system}]}
+    if body.system:
+        payload["system_instruction"] = {"parts": [{"text": body.system}]}
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
-            r = await client.post(url, json=body)
+            r = await client.post(url, json=payload)
             if r.status_code != 200:
-                return {"error": f"Gemini {r.status_code}"}
+                err_text = r.text[:200] if r.text else "no body"
+                return {"error": f"Gemini {r.status_code}: {err_text}"}
             data = r.json()
             cands = data.get("candidates") or []
             if not cands:
-                return {"error": "Empty response"}
+                return {"error": "Empty response from Gemini"}
             parts = cands[0].get("content", {}).get("parts") or []
             text = (parts[0] or {}).get("text", "") if parts else ""
             return {"text": text}
     except Exception as e:
-        return {"error": str(e)[:200]}
+        return {"error": f"{type(e).__name__}: {str(e)[:200]}"}
 
 
 @app.post("/api/chat")
