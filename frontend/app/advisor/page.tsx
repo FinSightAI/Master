@@ -10165,7 +10165,7 @@ export default function AdvisorPage() {
           </button>
             </div>
           </details>
-          <details open className="wt-cat" style={{margin:"6px 0"}}>
+          <details className="wt-cat" style={{margin:"6px 0"}}>
             <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>🌍</span><span>{lang === "he" ? "מדינות והשוואות" : lang === "pt" ? "Países e Comparações" : lang === "es" ? "Países y Comparaciones" : "Countries & Compare"}</span></summary>
             <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
               <button onClick={() => { closeAllPanels(); setShowCompare(prev => !prev); }}
@@ -10218,7 +10218,7 @@ export default function AdvisorPage() {
           </button>
             </div>
           </details>
-          <details open className="wt-cat" style={{margin:"6px 0"}}>
+          <details className="wt-cat" style={{margin:"6px 0"}}>
             <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>💼</span><span>{lang === "he" ? "עסקים וקריפטו" : lang === "pt" ? "Negócios e Cripto" : lang === "es" ? "Negocios y Cripto" : "Business & Crypto"}</span></summary>
             <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
               <button onClick={() => { closeAllPanels(); setShowCompanyOptimizer(prev => !prev); }}
@@ -10253,7 +10253,7 @@ export default function AdvisorPage() {
           </button>
             </div>
           </details>
-          <details open className="wt-cat" style={{margin:"6px 0"}}>
+          <details className="wt-cat" style={{margin:"6px 0"}}>
             <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>📋</span><span>{lang === "he" ? "מסמכים ואמנות" : lang === "pt" ? "Documentos e Tratados" : lang === "es" ? "Documentos y Tratados" : "Documents & Treaties"}</span></summary>
             <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
               <button onClick={() => { closeAllPanels(); setShowTaxUpdates(prev => !prev); }}
@@ -10312,7 +10312,7 @@ export default function AdvisorPage() {
           </button>
             </div>
           </details>
-          <details open className="wt-cat" style={{margin:"6px 0"}}>
+          <details className="wt-cat" style={{margin:"6px 0"}}>
             <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>📊</span><span>{lang === "he" ? "מחשבונים" : lang === "pt" ? "Calculadoras" : lang === "es" ? "Calculadoras" : "Calculators"}</span></summary>
             <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
               <button onClick={() => { closeAllPanels(); setShowRealEstateCalc(prev => !prev); }}
@@ -10377,7 +10377,7 @@ export default function AdvisorPage() {
           </button>
             </div>
           </details>
-          <details open className="wt-cat" style={{margin:"6px 0"}}>
+          <details className="wt-cat" style={{margin:"6px 0"}}>
             <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>⚠️</span><span>{lang === "he" ? "התראות וביקורת" : lang === "pt" ? "Alertas e Auditoria" : lang === "es" ? "Alertas y Auditoría" : "Alerts & Audit"}</span></summary>
             <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
               <button onClick={() => { closeAllPanels(); setShowRedFlags(prev => !prev); }}
@@ -10412,7 +10412,7 @@ export default function AdvisorPage() {
           </button>
             </div>
           </details>
-          <details open className="wt-cat" style={{margin:"6px 0"}}>
+          <details className="wt-cat" style={{margin:"6px 0"}}>
             <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>📑</span><span>{lang === "he" ? "תוכניות ודוחות" : lang === "pt" ? "Planos e Relatórios" : lang === "es" ? "Planes e Informes" : "Plans & Reports"}</span></summary>
             <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
               <button onClick={() => { closeAllPanels(); setShowMyPlan(prev => !prev); }}
@@ -10447,7 +10447,7 @@ export default function AdvisorPage() {
           </button>
             </div>
           </details>
-          <details open className="wt-cat" style={{margin:"6px 0"}}>
+          <details className="wt-cat" style={{margin:"6px 0"}}>
             <summary style={{listStyle:"none",cursor:"pointer",padding:"6px 10px",fontSize:11,fontWeight:700,letterSpacing:.5,textTransform:"uppercase",color:"var(--text-muted)",userSelect:"none",borderRadius:8,display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14}}>👥</span><span>{lang === "he" ? "יועצים מקצועיים" : lang === "pt" ? "Consultores" : lang === "es" ? "Asesores" : "Pro Advisors"}</span></summary>
             <div style={{display:"flex",flexDirection:"column",gap:4,paddingInlineStart:8,marginTop:4}}>
               <button onClick={() => { closeAllPanels(); setShowProDirectory(prev => !prev); }}

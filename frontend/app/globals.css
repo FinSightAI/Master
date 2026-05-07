@@ -238,3 +238,35 @@ html:not([data-theme="light"]) .wl-shell-outer {
   overflow-y: auto !important;
   scrollbar-width: thin;
 }
+
+/* Collapsible categories — chevron indicator + hover state */
+.wt-cat > summary {
+  position: relative;
+  padding-inline-start: 22px !important;
+}
+.wt-cat > summary::before {
+  content: '▸';
+  position: absolute;
+  inset-inline-start: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+.wt-cat[open] > summary::before {
+  transform: translateY(-50%) rotate(90deg);
+}
+.wt-cat > summary:hover {
+  background: rgba(255,255,255,0.04);
+}
+.wt-cat > summary:hover::before {
+  color: var(--accent);
+}
+[dir="rtl"] .wt-cat > summary::before {
+  content: '◂';
+}
+[dir="rtl"] .wt-cat[open] > summary::before {
+  transform: translateY(-50%) rotate(-90deg);
+}
+.wt-cat > summary::-webkit-details-marker { display: none; }
