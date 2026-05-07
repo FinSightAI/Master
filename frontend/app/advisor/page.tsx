@@ -9855,7 +9855,6 @@ export default function AdvisorPage() {
     // Close all tool panels (helper to ensure only one panel is open at a time)
     const closeAllPanels = useCallback(() => {
         setShowAdvisorPortal(false);
-        setShowAgreements(false);
         setShowAnnualTax(false);
         setShowBankMigration(false);
         setShowBusinessExit(false);
@@ -9878,12 +9877,14 @@ export default function AdvisorPage() {
         setShowFamilyImpact(false);
         setShowFatca(false);
         setShowFxCalc(false);
+        setShowHistory(false);
         setShowIsraelWizard(false);
         setShowLegalDocs(false);
         setShowLetterGenerator(false);
         setShowLifetimeSavings(false);
         setShowMultiYear(false);
         setShowMyPlan(false);
+        setShowOnboarding(false);
         setShowPassportOptimizer(false);
         setShowPdfReport(false);
         setShowPeerBenchmark(false);
