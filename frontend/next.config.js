@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://master-backend-79jx.onrender.com';
 
 const securityHeaders = [
   { key: 'X-Frame-Options',        value: 'SAMEORIGIN' },
