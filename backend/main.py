@@ -52,27 +52,36 @@ class AIProxyRequest(BaseModel):
 @app.post("/api/ai-proxy")
 @limiter.limit("30/minute")
 async def ai_proxy(request: AIProxyRequest, req: Request):
-    """Generic Gemini proxy for cross-app AI features (investment advisor, etc)."""
-    import google.generativeai as genai
+    """Generic Gemini proxy for cross-app AI features (investment advisor, etc).
+
+    Calls Gemini REST API directly so the request shape matches the original
+    Firebase callable: {messages, system, maxTokens} -> {text}.
+    """
+    import httpx
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
         return {"error": "AI not configured"}
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",
-        system_instruction=request.system or "You are a helpful AI assistant.",
-    )
-    contents = [{"role": m.role, "parts": m.parts} for m in request.messages]
+
+    body = {
+        "contents": [{"role": m.role, "parts": m.parts} for m in request.messages],
+        "generationConfig": {"maxOutputTokens": request.maxTokens or 2048},
+    }
+    if request.system:
+        body["system_instruction"] = {"parts": [{"text": request.system}]}
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
     try:
-        result = await asyncio.to_thread(
-            model.generate_content,
-            contents,
-            generation_config={"max_output_tokens": request.maxTokens or 2048},
-        )
-        text = result.text if hasattr(result, "text") else ""
-        if not text and result.candidates:
-            text = result.candidates[0].content.parts[0].text
-        return {"text": text}
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            r = await client.post(url, json=body)
+            if r.status_code != 200:
+                return {"error": f"Gemini {r.status_code}"}
+            data = r.json()
+            cands = data.get("candidates") or []
+            if not cands:
+                return {"error": "Empty response"}
+            parts = cands[0].get("content", {}).get("parts") or []
+            text = (parts[0] or {}).get("text", "") if parts else ""
+            return {"text": text}
     except Exception as e:
         return {"error": str(e)[:200]}
 
