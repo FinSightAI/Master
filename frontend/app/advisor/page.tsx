@@ -10072,15 +10072,15 @@ export default function AdvisorPage() {
     <>
     <div dir={dir} style={{ position: 'fixed', inset: 0, display: 'flex', background: 'var(--background)' }}>
       {/* ── Sidebar ── */}
-      <div className={`wt-sidebar${mobileSidebarOpen ? ' open' : ''}`} style={{ width: '240px', flexShrink: 0, display: 'flex', flexDirection: 'column', background: 'var(--surface)', borderRight: '1px solid var(--border)', overflow: 'hidden' }}>
+      <div className={`wt-sidebar${mobileSidebarOpen ? ' open' : ''}`} style={{ width: '240px', flexShrink: 0, display: 'flex', flexDirection: 'column', background: 'var(--surface)', borderRight: '1px solid var(--border)', overflowX: 'hidden', overflowY: 'auto' }}>
         {/* Logo + lang toggle */}
         <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg"
               style={{ background: 'var(--accent)' }}>💰</div>
-            <div>
-              <div className="font-bold text-sm">{tr.appName}</div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.appSubtitle}</div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div className="font-bold text-sm" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tr.appName}</div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tr.appSubtitle}</div>
             </div>
           </div>
 
