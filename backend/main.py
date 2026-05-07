@@ -1,5 +1,6 @@
 import os
 import json
+import asyncio
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,7 +26,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", os.getenv("FRONTEND_URL", "")],
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origin_regex=r"https://(.*\.vercel\.app|.*\.github\.io|.*\.wizelife\.ai|wizelife\.ai)",
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,6 +36,45 @@ app.add_middleware(
 @app.get("/health")
 async def health():
     return {"status": "ok", "model": os.getenv("AI_PROVIDER", "gemini")}
+
+
+class AIProxyMessage(BaseModel):
+    role: str
+    parts: List[Dict]
+
+
+class AIProxyRequest(BaseModel):
+    messages: List[AIProxyMessage]
+    system: Optional[str] = None
+    maxTokens: Optional[int] = 2048
+
+
+@app.post("/api/ai-proxy")
+@limiter.limit("30/minute")
+async def ai_proxy(request: AIProxyRequest, req: Request):
+    """Generic Gemini proxy for cross-app AI features (investment advisor, etc)."""
+    import google.generativeai as genai
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    if not api_key:
+        return {"error": "AI not configured"}
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(
+        model_name="gemini-2.0-flash",
+        system_instruction=request.system or "You are a helpful AI assistant.",
+    )
+    contents = [{"role": m.role, "parts": m.parts} for m in request.messages]
+    try:
+        result = await asyncio.to_thread(
+            model.generate_content,
+            contents,
+            generation_config={"max_output_tokens": request.maxTokens or 2048},
+        )
+        text = result.text if hasattr(result, "text") else ""
+        if not text and result.candidates:
+            text = result.candidates[0].content.parts[0].text
+        return {"text": text}
+    except Exception as e:
+        return {"error": str(e)[:200]}
 
 
 @app.post("/api/chat")
