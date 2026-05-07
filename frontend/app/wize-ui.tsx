@@ -162,7 +162,9 @@ export function WizeOnboarding() {
   useEffect(() => {
     const l = (localStorage.getItem('wl_lang') as Lang) || 'he';
     setLang(l);
-    if (!localStorage.getItem(OB_KEY)) setShow(true);
+    // Onboarding disabled by default — full-screen takeover is excessive.
+    // Users can still open via the ? button at bottom-left.
+    // if (!localStorage.getItem(OB_KEY)) setShow(true);
   }, []);
 
   const slides = SLIDES[lang] || SLIDES.he;
