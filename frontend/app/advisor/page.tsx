@@ -10771,7 +10771,6 @@ export default function AdvisorPage() {
               if (showDashboard) {
                 return (
                   <div className="max-w-3xl mx-auto pt-4">
-                  <img src="https://wizelife.ai/assets/wizelife-icon.png" alt="WizeLife" style={{display:'block',width:72,height:72,margin:'0 auto 16px',filter:'drop-shadow(0 6px 20px rgba(99,102,241,0.3))'}} />
                     <Dashboard
                       lang={lang}
                       profile={profile}
