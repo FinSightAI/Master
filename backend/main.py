@@ -47,6 +47,64 @@ class AIProxyRequest(BaseModel):
     messages: List[AIProxyMessage]
     system: Optional[str] = None
     maxTokens: Optional[int] = 2048
+    # When true, run a Tavily web search first and inject results into the
+    # prompt before calling Gemini. searchQuery overrides the auto-extracted
+    # query from the last user message.
+    search: Optional[bool] = False
+    searchQuery: Optional[str] = None
+    searchTopic: Optional[str] = "general"  # 'general' | 'finance' | 'news'
+
+
+async def _tavily_search(query: str, topic: str = "general", max_results: int = 5) -> Optional[Dict]:
+    """Run a Tavily search and return clean results for LLM consumption.
+
+    Returns None if the API key isn't configured or the request fails — the
+    caller should treat the absence of search context as "no real-time data".
+    """
+    import httpx
+    key = os.getenv("TAVILY_API_KEY")
+    if not key:
+        return None
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            r = await client.post(
+                "https://api.tavily.com/search",
+                json={
+                    "api_key": key,
+                    "query": query[:380],
+                    "topic": "finance" if topic == "finance" else "news" if topic == "news" else "general",
+                    "search_depth": "basic",
+                    "max_results": max_results,
+                    "include_answer": True,
+                },
+            )
+            if r.status_code != 200:
+                return None
+            return r.json()
+    except Exception:
+        return None
+
+
+def _format_search_block(search: Dict, lang_hint: str = "he") -> str:
+    """Turn Tavily JSON into a markdown block the LLM can reason from."""
+    if not search:
+        return ""
+    lines = []
+    if lang_hint == "he":
+        lines.append("\n📰 **תוצאות חיפוש עדכניות מהאינטרנט (Tavily, " + (search.get('query') or '') + "):**")
+    else:
+        lines.append("\n📰 **Recent web search results (Tavily, " + (search.get('query') or '') + "):**")
+    if search.get("answer"):
+        lines.append(f"\n_Answer summary:_ {search['answer'][:800]}\n")
+    for i, hit in enumerate(search.get("results") or [], start=1):
+        title = (hit.get("title") or "").strip()[:120]
+        url = hit.get("url") or ""
+        content = (hit.get("content") or "").strip().replace("\n", " ")[:600]
+        published = hit.get("published_date") or ""
+        score = hit.get("score") or 0
+        lines.append(f"{i}. **{title}** ({published})\n   {url}\n   {content}\n")
+    lines.append("\nציטט את המקורות בתשובה (Tavily 1, Tavily 2, וכו׳) — המשתמש יכול ללחוץ ולוודא.")
+    return "\n".join(lines)
 
 
 @app.post("/api/ai-proxy")
@@ -56,19 +114,41 @@ async def ai_proxy(request: Request, body: AIProxyRequest):
 
     Calls Gemini REST API directly so the request shape matches the original
     Firebase callable: {messages, system, maxTokens} -> {text}.
+
+    If body.search=True, runs a Tavily web search first and injects fresh
+    sources into the system prompt — gives the answer real-time grounding
+    without paying for a frontier model.
     """
     import httpx
-    import traceback
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
         return {"error": "AI not configured (no GEMINI_API_KEY)"}
+
+    # Optional pre-search: enrich system prompt with up-to-the-minute web data
+    search_data = None
+    if body.search:
+        # Pull search query from explicit param, else from the latest user message
+        q = body.searchQuery
+        if not q and body.messages:
+            for m in reversed(body.messages):
+                if m.role == "user":
+                    parts = m.parts or []
+                    if parts and isinstance(parts[0], dict):
+                        q = (parts[0].get("text") or "").strip()
+                    break
+        if q:
+            search_data = await _tavily_search(q, topic=body.searchTopic or "general", max_results=6)
+
+    sys_text = body.system or ""
+    if search_data:
+        sys_text = sys_text + _format_search_block(search_data)
 
     payload = {
         "contents": [{"role": m.role, "parts": m.parts} for m in body.messages],
         "generationConfig": {"maxOutputTokens": body.maxTokens or 2048},
     }
-    if body.system:
-        payload["system_instruction"] = {"parts": [{"text": body.system}]}
+    if sys_text:
+        payload["system_instruction"] = {"parts": [{"text": sys_text}]}
 
     # gemini-2.5-flash-lite = same price as the retired 2.0-flash ($0.10/$0.40 per 1M tokens),
     # newer than 1.5, supported. Use full 2.5-flash only via env override if you want top quality.
@@ -100,7 +180,16 @@ async def ai_proxy(request: Request, body: AIProxyRequest):
                 return {"error": "Empty response from Gemini"}
             parts = cands[0].get("content", {}).get("parts") or []
             text = (parts[0] or {}).get("text", "") if parts else ""
-            return {"text": text}
+            # Return search sources alongside the answer so the FE can render citations
+            sources = []
+            if search_data:
+                for hit in (search_data.get("results") or [])[:6]:
+                    sources.append({
+                        "title": (hit.get("title") or "")[:120],
+                        "url": hit.get("url") or "",
+                        "published": hit.get("published_date") or "",
+                    })
+            return {"text": text, "sources": sources, "searchUsed": bool(search_data)}
     except Exception as e:
         return {"error": f"{type(e).__name__}: {str(e)[:200]}"}
 
