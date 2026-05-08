@@ -386,9 +386,11 @@ export function WizeBar() {
   };
 
   const rawIdentity = user ? (user.displayName || user.email) : (sso?.nick || sso?.email);
-  const displayName = rawIdentity && rawIdentity.includes('@') && !user?.displayName
+  let displayName = rawIdentity && rawIdentity.includes('@') && !user?.displayName
     ? rawIdentity.split('@')[0]
     : rawIdentity;
+  // First name only — "John Doe" -> "John"
+  if (displayName && /\s/.test(displayName)) displayName = displayName.split(/\s+/)[0];
   const isConnected = !!(user || sso);
 
   return (

@@ -1,10 +1,15 @@
-const CACHE = 'taxmaster-v1';
+const CACHE = 'taxmaster-v2';
 const PRECACHE = ['/', '/advisor'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting())
   );
+});
+
+// Listen for "user clicked Update" message — activate immediately
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
