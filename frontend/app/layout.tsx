@@ -77,6 +77,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
           })(window, document, "clarity", "script", "wnvlwv7gu0");
         `}</Script>
+        <Script src="https://wizelife.ai/js/wize-disclaimer.js" strategy="afterInteractive" />
+        <Script id="wize-disclaimer-gate" strategy="afterInteractive">{`
+          window.addEventListener('load', function(){
+            setTimeout(function(){
+              if (window.WizeDisclaimer) WizeDisclaimer.gate({ app: 'tax' }).catch(function(){});
+            }, 600);
+          });
+        `}</Script>
       </body>
     </html>
   );
