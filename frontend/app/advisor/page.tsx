@@ -11038,6 +11038,30 @@ export default function AdvisorPage() {
               border: '1px solid var(--border)',
             }}>{tip}</div>
           ))}
+
+          {/* ── Quick Questions (click to send) ── */}
+          <div style={{ marginTop: 18, fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            {lang === 'he' ? '⚡ שאלות מהירות' : lang === 'pt' ? '⚡ Perguntas Rápidas' : lang === 'es' ? '⚡ Preguntas Rápidas' : '⚡ Quick Questions'}
+          </div>
+          {tr.sampleQuestions.slice(0, 8).map((q: string, i: number) => (
+            <button
+              key={`qq-${i}`}
+              onClick={() => sendMessage(q)}
+              disabled={isLoading}
+              dir={lang === 'he' ? 'rtl' : 'ltr'}
+              style={{
+                fontSize: 12, color: 'var(--text)', lineHeight: 1.4,
+                padding: '8px 10px', borderRadius: 8, background: 'transparent',
+                border: '1px solid var(--border)', cursor: 'pointer',
+                textAlign: lang === 'he' ? 'right' : 'left', fontFamily: 'inherit',
+                transition: 'all 0.15s', width: '100%',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent-glow)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+            >
+              {q.length > 75 ? q.slice(0, 73) + '…' : q}
+            </button>
+          ))}
         </aside>
         )}
     </div>
