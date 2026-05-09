@@ -65,13 +65,8 @@ export async function fetchTaxUpdates(): Promise<TaxUpdate[]> {
   return res.json();
 }
 
-export async function* streamChat(
-  message: string,
-  profile: UserProfile | null,
-  conversationHistory: Array<{ role: string; content: string }>,
-  provider?: string
-): AsyncGenerator<StreamEvent> {
-  const response = await fetch(`${API_BASE}/chat`, {
+async function _sendChat(message: string, profile: UserProfile | null, conversationHistory: Array<{ role: string; content: string }>, provider?: string) {
+  return fetch(`${API_BASE}/chat`, {
     method: 'POST',
     headers: await authHeaders(),
     body: JSON.stringify({
@@ -81,6 +76,29 @@ export async function* streamChat(
       provider: provider ?? null,
     }),
   });
+}
+
+export async function* streamChat(
+  message: string,
+  profile: UserProfile | null,
+  conversationHistory: Array<{ role: string; content: string }>,
+  provider?: string
+): AsyncGenerator<StreamEvent> {
+  let response = await _sendChat(message, profile, conversationHistory, provider);
+
+  // Render free tier sleeps after 15 min idle and returns 502/503 during cold
+  // start. Auto-retry once after warming /health (takes ~25s on Render free).
+  if (response.status === 502 || response.status === 503 || response.status === 504) {
+    yield { type: 'error', message: 'Waking server… retrying in a moment.' };
+    try { await fetch(`${API_BASE}/health`, { cache: 'no-store' }); } catch {}
+    await new Promise(r => setTimeout(r, 8000));
+    response = await _sendChat(message, profile, conversationHistory, provider);
+    if (response.status === 502 || response.status === 503 || response.status === 504) {
+      // Try once more after another wait
+      await new Promise(r => setTimeout(r, 12000));
+      response = await _sendChat(message, profile, conversationHistory, provider);
+    }
+  }
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
