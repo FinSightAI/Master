@@ -88,13 +88,21 @@ export async function* streamChat(
 
   // Render free tier sleeps after 15 min idle and returns 502/503 during cold
   // start. Auto-retry once after warming /health (takes ~25s on Render free).
+  // User-facing copy is intentionally vague — they don't need to hear about
+  // server-warming machinery, just that the answer is on its way.
   if (response.status === 502 || response.status === 503 || response.status === 504) {
-    yield { type: 'error', message: 'Waking server… retrying in a moment.' };
+    const lang = (typeof window !== 'undefined' ? localStorage.getItem('wl_lang') : null) || 'he';
+    const msg = (
+      { he: '⏳ רגע אחד, מכין את התשובה…',
+        en: '⏳ One moment, getting your answer…',
+        pt: '⏳ Um momento, preparando a resposta…',
+        es: '⏳ Un momento, preparando la respuesta…' } as Record<string, string>
+    )[lang] || '⏳ One moment…';
+    yield { type: 'error', message: msg };
     try { await fetch(`${API_BASE}/health`, { cache: 'no-store' }); } catch {}
     await new Promise(r => setTimeout(r, 8000));
     response = await _sendChat(message, profile, conversationHistory, provider);
     if (response.status === 502 || response.status === 503 || response.status === 504) {
-      // Try once more after another wait
       await new Promise(r => setTimeout(r, 12000));
       response = await _sendChat(message, profile, conversationHistory, provider);
     }
