@@ -81,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           });
         `}</Script>
         <Script src="/wize-bottom-nav.js" strategy="afterInteractive" />
+        <Script src="/wize-onboarding.js" strategy="afterInteractive" />
       </body>
     </html>
   );
