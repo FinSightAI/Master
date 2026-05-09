@@ -16,7 +16,7 @@ def _get_model():
         api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         genai.configure(api_key=api_key)
         _model = genai.GenerativeModel(
-            model_name="gemini-2.0-flash",
+            model_name=os.getenv("AI_CHAT_MODEL", "gemini-2.5-flash-lite"),
             system_instruction=SYSTEM_PROMPT,
             tools=_build_gemini_tools(),
         )
