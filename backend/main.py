@@ -197,11 +197,37 @@ async def ai_proxy(request: Request, body: AIProxyRequest):
 @app.post("/api/chat")
 @limiter.limit("20/minute")
 async def chat(request: ChatRequest, req: Request):
-    """Streaming chat endpoint - returns SSE stream."""
+    """Streaming chat endpoint - returns SSE stream.
+
+    Tax laws change yearly — before sending the question to Gemini we
+    enrich the user profile with a Tavily 'finance' search on the user's
+    question so the agent reasons over current rates / regulations.
+    """
     require_quota(req)
     profile_dict = request.profile.model_dump() if request.profile else {}
 
+    # Pre-search: pull fresh sources for the question and surface them in the
+    # profile so the agent's prompt builder can include them. Silent fallback
+    # if Tavily isn't configured.
+    if os.getenv("TAVILY_API_KEY") and request.message:
+        search_data = await _tavily_search(request.message, topic="finance", max_results=5)
+        if search_data:
+            profile_dict["_web_sources"] = search_data
+            # Also stash for the SSE stream so the FE can render citations
+            cited = [
+                {"title": (h.get("title") or "")[:120], "url": h.get("url") or "", "published": h.get("published_date") or ""}
+                for h in (search_data.get("results") or [])[:5]
+            ]
+        else:
+            cited = []
+    else:
+        cited = []
+
     async def event_stream():
+        # Emit citations as the very first event so the FE can show them
+        # alongside the streaming answer.
+        if cited:
+            yield f"data: {json.dumps({'type': 'sources', 'sources': cited}, ensure_ascii=False)}\n\n"
         async for event in run_agent(
             user_message=request.message,
             profile=profile_dict,

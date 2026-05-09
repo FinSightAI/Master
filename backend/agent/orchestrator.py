@@ -72,6 +72,26 @@ def build_profile_context(profile: dict) -> str:
         parts.append(f"\nContext: {profile['notes']}")
 
     parts.append("</user_profile>")
+
+    # Real-time web search results (Tavily) — main.py stuffs these in
+    # profile["_web_sources"]. They give the agent up-to-the-minute tax
+    # data instead of relying on the model's stale knowledge cutoff.
+    web = profile.get("_web_sources")
+    if web and isinstance(web, dict):
+        parts.append("\n<web_search_results>")
+        if web.get("answer"):
+            parts.append(f"Quick summary: {web['answer'][:600]}")
+        for i, hit in enumerate((web.get("results") or [])[:5], start=1):
+            title = (hit.get("title") or "")[:120]
+            url = hit.get("url") or ""
+            content = (hit.get("content") or "").replace("\n", " ")[:500]
+            published = hit.get("published_date") or ""
+            parts.append(f"[Source {i}] {title} ({published})")
+            parts.append(f"  URL: {url}")
+            parts.append(f"  {content}")
+        parts.append("Cite these sources in your answer with (Source N) when you use them.")
+        parts.append("</web_search_results>")
+
     return "\n".join(parts)
 
 
