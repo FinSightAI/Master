@@ -10499,22 +10499,10 @@ export default function AdvisorPage() {
           </div>
         )}
 
-        {/* Quick questions */}
-        <div className="flex-1 overflow-y-auto p-3">
-          <div className="text-xs font-semibold mb-2 px-1" style={{ color: 'var(--text-muted)' }}>
-            {tr.quickQuestions}
-          </div>
-          <div className="space-y-1.5">
-            {tr.sampleQuestions.slice(0, 6).map((q, i) => (
-              <button key={i} onClick={() => sendMessage(q)} disabled={isLoading}
-                className="w-full text-xs px-2 py-2 rounded-lg transition-all hover:opacity-80 text-left"
-                dir="ltr"
-                style={{ background: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', textAlign: lang === 'he' ? 'right' : 'left' }}>
-                {q.length > 65 ? q.slice(0, 65) + '…' : q}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Quick questions section removed — same prompts already appear on
+            the main landing page, so the left sidebar version was redundant.
+            Spacer keeps the footer pinned to the bottom of the panel. */}
+        <div className="flex-1"></div>
 
         <div className="p-3 border-t text-xs" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
           <div className="flex items-center gap-1">
