@@ -76,7 +76,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="wize-disclaimer-gate" strategy="afterInteractive">{`
           window.addEventListener('load', function(){
             setTimeout(function(){
-              if (window.WizeDisclaimer) WizeDisclaimer.gate({ app: 'tax' }).catch(function(){});
+              if (window.WizeDisclaimer) {
+                WizeDisclaimer.gate({ app: 'tax' }).catch(function(){});
+                /* Persistent slim amber banner — always visible, can't be
+                   dismissed. Reinforces "not licensed tax advice". */
+                try { WizeDisclaimer.showProfessionalDisclaimer({ app: 'tax' }); } catch(e){}
+              }
             }, 600);
           });
         `}</Script>
