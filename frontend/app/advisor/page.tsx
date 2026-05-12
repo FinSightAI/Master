@@ -162,20 +162,25 @@ function ProfilePanel({
   const tr = useTranslation(lang);
   const dir = lang === 'he' ? 'rtl' : 'ltr';
 
-  const ILS_TO_USD = 0.27; // ~3.7 ₪ per $1
+  const ILS_PER_USD = 3.7; // exact rate, no rounding mid-conversion
   const [incomeCurrency, setIncomeCurrency] = useState<'USD' | 'ILS'>('USD');
 
   const update = (field: keyof UserProfile, value: unknown) =>
     setProfile({ ...profile, [field]: value });
 
+  // Convert input → USD without rounding (avoids round-trip drift)
   const updateIncome = (field: string, value: string) => {
     const raw = parseFloat(value) || 0;
-    const usd = incomeCurrency === 'ILS' ? Math.round(raw * ILS_TO_USD) : raw;
+    const usd = incomeCurrency === 'ILS' ? raw / ILS_PER_USD : raw;
     setProfile({ ...profile, income: { ...profile.income, [field]: usd } });
   };
 
-  const displayIncome = (usdValue: number) =>
-    incomeCurrency === 'ILS' ? Math.round(usdValue / ILS_TO_USD) : usdValue;
+  // Round only for display, not for storage. Round-trip stays clean.
+  const displayIncome = (usdValue: number) => {
+    if (!usdValue) return 0;
+    if (incomeCurrency === 'ILS') return Math.round(usdValue * ILS_PER_USD);
+    return Math.round(usdValue);
+  };
 
   const updateAssets = (field: string, value: string) =>
     setProfile({ ...profile, assets: { ...profile.assets, [field]: parseFloat(value) || 0 } });
@@ -188,7 +193,7 @@ function ProfilePanel({
 
   return (
     <div className="border-b overflow-y-auto" dir={dir}
-      style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '65vh' }}>
+      style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '88vh' }}>
       <div className="max-w-3xl mx-auto p-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold text-lg flex items-center gap-2">
@@ -240,7 +245,7 @@ function ProfilePanel({
           {/* Income */}
           <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-sm">{tr.annualIncome}</h3>
+              <h3 className="font-semibold text-sm">{tr.annualIncome} ({incomeCurrency === 'ILS' ? '₪' : '$'})</h3>
               <div className="flex rounded-lg overflow-hidden text-xs" style={{ border: '1px solid var(--border)' }}>
                 {(['USD', 'ILS'] as const).map(c => (
                   <button key={c} onClick={() => setIncomeCurrency(c)}
@@ -276,7 +281,7 @@ function ProfilePanel({
             </div>
             {incomeCurrency === 'ILS' && (
               <div className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'he' ? '* ערכים מומרים ל-USD לצורך חישוב (₪1 ≈ $0.27)' : '* Values converted to USD for calculation (₪1 ≈ $0.27)'}
+                {lang === 'he' ? '* ערכים נשמרים ב-USD לצורך חישוב (₪3.7 ≈ $1)' : '* Stored as USD for calculation (₪3.7 ≈ $1)'}
               </div>
             )}
           </div>
