@@ -192,8 +192,8 @@ function ProfilePanel({
     setProfile({ ...profile, constraints: profile.constraints.includes(c) ? profile.constraints.filter(x => x !== c) : [...profile.constraints, c] });
 
   return (
-    <div className="border-b overflow-y-auto" dir={dir}
-      style={{ borderColor: 'var(--border)', background: 'var(--surface)', maxHeight: '88vh' }}>
+    <div className="border-b" dir={dir}
+      style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
       <div className="max-w-3xl mx-auto p-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold text-lg flex items-center gap-2">
