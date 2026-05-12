@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-03-25",
+  "last_updated": "2026-05-12",
   "countries": {
     "UAE": {
       "name": "United Arab Emirates",
@@ -20,8 +20,20 @@
       "worldwide_taxation": false,
       "residency_days_required": 183,
       "residency_notes": "Or demonstrating center of vital interests in UAE",
-      "special_regimes": ["golden_visa", "freezone_company"],
-      "tax_treaties": ["India", "France", "Germany", "UK", "Singapore", "China", "Pakistan", "Lebanon"],
+      "special_regimes": [
+        "golden_visa",
+        "freezone_company"
+      ],
+      "tax_treaties": [
+        "India",
+        "France",
+        "Germany",
+        "UK",
+        "Singapore",
+        "China",
+        "Pakistan",
+        "Lebanon"
+      ],
       "banking_ease": "excellent",
       "lifestyle_score": 8,
       "cost_of_living": "high",
@@ -43,7 +55,9 @@
       "worldwide_taxation": false,
       "residency_days_required": 0,
       "residency_notes": "Permanent residency by investment available",
-      "special_regimes": ["cayman_residency"],
+      "special_regimes": [
+        "cayman_residency"
+      ],
       "tax_treaties": [],
       "banking_ease": "excellent",
       "lifestyle_score": 7,
@@ -60,15 +74,19 @@
       "dividend_tax": 0,
       "corporate_tax": 0.275,
       "corporate_tax_note": "33.3% on profits from Monaco sources. 0% if >75% revenue from Monaco",
-      "vat": 0.20,
+      "vat": 0.2,
       "inheritance_tax": 0,
       "wealth_tax": 0,
       "territorial_system": false,
       "worldwide_taxation": false,
       "residency_days_required": 183,
       "residency_notes": "Must prove residency: lease/owned property, sufficient resources",
-      "special_regimes": ["monaco_residency"],
-      "tax_treaties": ["France"],
+      "special_regimes": [
+        "monaco_residency"
+      ],
+      "tax_treaties": [
+        "France"
+      ],
       "banking_ease": "excellent",
       "lifestyle_score": 9,
       "cost_of_living": "extreme",
@@ -79,17 +97,61 @@
       "region": "Asia",
       "currency": "SGD",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 20000, "rate": 0},
-        {"min": 20001, "max": 30000, "rate": 0.02},
-        {"min": 30001, "max": 40000, "rate": 0.035},
-        {"min": 40001, "max": 80000, "rate": 0.07},
-        {"min": 80001, "max": 120000, "rate": 0.115},
-        {"min": 120001, "max": 160000, "rate": 0.15},
-        {"min": 160001, "max": 200000, "rate": 0.18},
-        {"min": 200001, "max": 240000, "rate": 0.19},
-        {"min": 240001, "max": 280000, "rate": 0.195},
-        {"min": 280001, "max": 320000, "rate": 0.20},
-        {"min": 320001, "max": null, "rate": 0.24}
+        {
+          "min": 0,
+          "max": 20000,
+          "rate": 0
+        },
+        {
+          "min": 20001,
+          "max": 30000,
+          "rate": 0.02
+        },
+        {
+          "min": 30001,
+          "max": 40000,
+          "rate": 0.035
+        },
+        {
+          "min": 40001,
+          "max": 80000,
+          "rate": 0.07
+        },
+        {
+          "min": 80001,
+          "max": 120000,
+          "rate": 0.115
+        },
+        {
+          "min": 120001,
+          "max": 160000,
+          "rate": 0.15
+        },
+        {
+          "min": 160001,
+          "max": 200000,
+          "rate": 0.18
+        },
+        {
+          "min": 200001,
+          "max": 240000,
+          "rate": 0.19
+        },
+        {
+          "min": 240001,
+          "max": 280000,
+          "rate": 0.195
+        },
+        {
+          "min": 280001,
+          "max": 320000,
+          "rate": 0.2
+        },
+        {
+          "min": 320001,
+          "max": null,
+          "rate": 0.24
+        }
       ],
       "personal_income_tax_top": 0.24,
       "capital_gains_tax": 0,
@@ -106,7 +168,10 @@
       "territorial_system": true,
       "worldwide_taxation": false,
       "residency_days_required": 183,
-      "special_regimes": ["global_investor_program", "employment_pass"],
+      "special_regimes": [
+        "global_investor_program",
+        "employment_pass"
+      ],
       "tax_treaties": 90,
       "banking_ease": "excellent",
       "lifestyle_score": 9,
@@ -118,11 +183,31 @@
       "region": "Asia",
       "currency": "HKD",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 50000, "rate": 0.02},
-        {"min": 50001, "max": 100000, "rate": 0.06},
-        {"min": 100001, "max": 150000, "rate": 0.10},
-        {"min": 150001, "max": 200000, "rate": 0.14},
-        {"min": 200001, "max": null, "rate": 0.17}
+        {
+          "min": 0,
+          "max": 50000,
+          "rate": 0.02
+        },
+        {
+          "min": 50001,
+          "max": 100000,
+          "rate": 0.06
+        },
+        {
+          "min": 100001,
+          "max": 150000,
+          "rate": 0.1
+        },
+        {
+          "min": 150001,
+          "max": 200000,
+          "rate": 0.14
+        },
+        {
+          "min": 200001,
+          "max": null,
+          "rate": 0.17
+        }
       ],
       "personal_income_tax_top": 0.17,
       "personal_income_tax_note": "Standard rate of 15% may apply if lower than progressive rates",
@@ -136,7 +221,9 @@
       "territorial_system": true,
       "worldwide_taxation": false,
       "residency_days_required": 180,
-      "special_regimes": ["quality_migrant"],
+      "special_regimes": [
+        "quality_migrant"
+      ],
       "tax_treaties": 45,
       "banking_ease": "excellent",
       "lifestyle_score": 8,
@@ -149,18 +236,38 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 9100, "rate": 0},
-        {"min": 9101, "max": 14500, "rate": 0.15},
-        {"min": 14501, "max": 19500, "rate": 0.25},
-        {"min": 19501, "max": 60000, "rate": 0.25},
-        {"min": 60001, "max": null, "rate": 0.35}
+        {
+          "min": 0,
+          "max": 9100,
+          "rate": 0
+        },
+        {
+          "min": 9101,
+          "max": 14500,
+          "rate": 0.15
+        },
+        {
+          "min": 14501,
+          "max": 19500,
+          "rate": 0.25
+        },
+        {
+          "min": 19501,
+          "max": 60000,
+          "rate": 0.25
+        },
+        {
+          "min": 60001,
+          "max": null,
+          "rate": 0.35
+        }
       ],
       "personal_income_tax_top": 0.35,
       "capital_gains_tax": 0.35,
       "capital_gains_tax_note": "On property and certain securities. Many exemptions available",
       "dividend_tax_note": "Non-dom residents only taxed on Malta-source income and foreign remittances",
       "corporate_tax": 0.35,
-      "corporate_tax_refund": 0.30,
+      "corporate_tax_refund": 0.3,
       "corporate_tax_note": "35% headline but shareholders receive 6/7 refund on distribution = effective 5%",
       "vat": 0.18,
       "inheritance_tax": 0,
@@ -169,7 +276,11 @@
       "worldwide_taxation": false,
       "non_dom_regime": true,
       "residency_days_required": 183,
-      "special_regimes": ["malta_hnwi", "malta_non_dom", "malta_citizenship"],
+      "special_regimes": [
+        "malta_hnwi",
+        "malta_non_dom",
+        "malta_citizenship"
+      ],
       "tax_treaties": 73,
       "eu_passport": true,
       "banking_ease": "good",
@@ -183,14 +294,34 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 19500, "rate": 0},
-        {"min": 19501, "max": 28000, "rate": 0.20},
-        {"min": 28001, "max": 36300, "rate": 0.25},
-        {"min": 36301, "max": 60000, "rate": 0.30},
-        {"min": 60001, "max": null, "rate": 0.35}
+        {
+          "min": 0,
+          "max": 19500,
+          "rate": 0
+        },
+        {
+          "min": 19501,
+          "max": 28000,
+          "rate": 0.2
+        },
+        {
+          "min": 28001,
+          "max": 36300,
+          "rate": 0.25
+        },
+        {
+          "min": 36301,
+          "max": 60000,
+          "rate": 0.3
+        },
+        {
+          "min": 60001,
+          "max": null,
+          "rate": 0.35
+        }
       ],
       "personal_income_tax_top": 0.35,
-      "capital_gains_tax": 0.20,
+      "capital_gains_tax": 0.2,
       "capital_gains_tax_note": "20% on gains from Cyprus property only. No CGT on foreign securities",
       "dividend_tax": 0,
       "dividend_tax_note": "Non-dom residents exempt from SDC (special defence contribution) on dividends",
@@ -205,7 +336,10 @@
       "sixty_day_rule": true,
       "sixty_day_rule_note": "60 days presence in Cyprus can establish tax residency for those not tax resident elsewhere",
       "residency_days_required": 60,
-      "special_regimes": ["cyprus_non_dom", "cyprus_60_day"],
+      "special_regimes": [
+        "cyprus_non_dom",
+        "cyprus_60_day"
+      ],
       "tax_treaties": 65,
       "eu_passport": true,
       "banking_ease": "good",
@@ -219,33 +353,73 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 7703, "rate": 0.1325},
-        {"min": 7704, "max": 11623, "rate": 0.18},
-        {"min": 11624, "max": 16472, "rate": 0.23},
-        {"min": 16473, "max": 21321, "rate": 0.26},
-        {"min": 21322, "max": 27146, "rate": 0.3275},
-        {"min": 27147, "max": 39791, "rate": 0.37},
-        {"min": 39792, "max": 51997, "rate": 0.435},
-        {"min": 51998, "max": 81199, "rate": 0.45},
-        {"min": 81200, "max": null, "rate": 0.48}
+        {
+          "min": 0,
+          "max": 7703,
+          "rate": 0.1325
+        },
+        {
+          "min": 7704,
+          "max": 11623,
+          "rate": 0.18
+        },
+        {
+          "min": 11624,
+          "max": 16472,
+          "rate": 0.23
+        },
+        {
+          "min": 16473,
+          "max": 21321,
+          "rate": 0.26
+        },
+        {
+          "min": 21322,
+          "max": 27146,
+          "rate": 0.3275
+        },
+        {
+          "min": 27147,
+          "max": 39791,
+          "rate": 0.37
+        },
+        {
+          "min": 39792,
+          "max": 51997,
+          "rate": 0.435
+        },
+        {
+          "min": 51998,
+          "max": 81199,
+          "rate": 0.45
+        },
+        {
+          "min": 81200,
+          "max": null,
+          "rate": 0.48
+        }
       ],
       "personal_income_tax_top": 0.48,
       "capital_gains_tax": 0.28,
       "dividend_tax": 0.28,
       "corporate_tax": 0.21,
       "vat": 0.23,
-      "inheritance_tax": 0.10,
+      "inheritance_tax": 0.1,
       "inheritance_tax_note": "10% stamp duty on inheritance (exemptions for direct family)",
       "wealth_tax": 0,
       "non_dom_regime": true,
       "nhr_status": "replaced",
       "nhr_replacement": "IFICI",
-      "ifici_rate": 0.20,
+      "ifici_rate": 0.2,
       "ifici_duration_years": 10,
       "ifici_eligible": "new_residents_not_resident_5_years",
       "ifici_note": "Incentivo Fiscal à Capitalização e ao Investimento - 20% flat rate on eligible income",
       "residency_days_required": 183,
-      "special_regimes": ["portugal_ifici", "portugal_golden_visa", "portugal_d7_visa"],
+      "special_regimes": [
+        "portugal_ifici",
+        "portugal_golden_visa",
+        "portugal_d7_visa"
+      ],
       "tax_treaties": 79,
       "eu_passport": true,
       "banking_ease": "good",
@@ -259,10 +433,18 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 40000, "rate": 0.20},
-        {"min": 40001, "max": null, "rate": 0.40}
+        {
+          "min": 0,
+          "max": 40000,
+          "rate": 0.2
+        },
+        {
+          "min": 40001,
+          "max": null,
+          "rate": 0.4
+        }
       ],
-      "personal_income_tax_top": 0.40,
+      "personal_income_tax_top": 0.4,
       "usc_rates": "0.5-8% Universal Social Charge",
       "prsi": 0.04,
       "effective_top_rate": 0.52,
@@ -277,7 +459,10 @@
       "non_dom_note": "Irish non-doms taxed on Irish source income and foreign remittances only",
       "remittance_basis": true,
       "residency_days_required": 183,
-      "special_regimes": ["ireland_non_dom", "sarp_relief"],
+      "special_regimes": [
+        "ireland_non_dom",
+        "sarp_relief"
+      ],
       "tax_treaties": 74,
       "eu_passport": true,
       "banking_ease": "excellent",
@@ -290,18 +475,34 @@
       "region": "Europe",
       "currency": "GBP",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 12570, "rate": 0},
-        {"min": 12571, "max": 50270, "rate": 0.20},
-        {"min": 50271, "max": 125140, "rate": 0.40},
-        {"min": 125141, "max": null, "rate": 0.45}
+        {
+          "min": 0,
+          "max": 12570,
+          "rate": 0
+        },
+        {
+          "min": 12571,
+          "max": 50270,
+          "rate": 0.2
+        },
+        {
+          "min": 50271,
+          "max": 125140,
+          "rate": 0.4
+        },
+        {
+          "min": 125141,
+          "max": null,
+          "rate": 0.45
+        }
       ],
       "personal_income_tax_top": 0.45,
       "capital_gains_tax": 0.24,
       "capital_gains_tax_note": "18-24% on property, 10-24% on other assets from Oct 2024",
       "dividend_tax": 0.335,
       "corporate_tax": 0.25,
-      "vat": 0.20,
-      "inheritance_tax": 0.40,
+      "vat": 0.2,
+      "inheritance_tax": 0.4,
       "inheritance_tax_note": "40% on estates above £325k (or £500k with main residence relief)",
       "wealth_tax": 0,
       "non_dom_regime": false,
@@ -322,10 +523,26 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 11604, "rate": 0},
-        {"min": 11605, "max": 66760, "rate": 0.14},
-        {"min": 66761, "max": 277825, "rate": 0.42},
-        {"min": 277826, "max": null, "rate": 0.45}
+        {
+          "min": 0,
+          "max": 11604,
+          "rate": 0
+        },
+        {
+          "min": 11605,
+          "max": 66760,
+          "rate": 0.14
+        },
+        {
+          "min": 66761,
+          "max": 277825,
+          "rate": 0.42
+        },
+        {
+          "min": 277826,
+          "max": null,
+          "rate": 0.45
+        }
       ],
       "personal_income_tax_top": 0.45,
       "solidarity_surcharge": 0.055,
@@ -335,10 +552,10 @@
       "crypto_holding_period": 365,
       "crypto_holding_note": "Crypto held >1 year is tax-free (per old rules, still applies to old holdings)",
       "dividend_tax": 0.26375,
-      "corporate_tax": 0.30,
+      "corporate_tax": 0.3,
       "corporate_tax_note": "~30% combined (corporate + trade tax)",
       "vat": 0.19,
-      "inheritance_tax": 0.30,
+      "inheritance_tax": 0.3,
       "wealth_tax": 0,
       "exit_tax": true,
       "exit_tax_note": "Exit tax on shares in companies >1% ownership held >7 years",
@@ -355,21 +572,41 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 11294, "rate": 0},
-        {"min": 11295, "max": 28797, "rate": 0.11},
-        {"min": 28798, "max": 82341, "rate": 0.30},
-        {"min": 82342, "max": 177106, "rate": 0.41},
-        {"min": 177107, "max": null, "rate": 0.45}
+        {
+          "min": 0,
+          "max": 11294,
+          "rate": 0
+        },
+        {
+          "min": 11295,
+          "max": 28797,
+          "rate": 0.11
+        },
+        {
+          "min": 28798,
+          "max": 82341,
+          "rate": 0.3
+        },
+        {
+          "min": 82342,
+          "max": 177106,
+          "rate": 0.41
+        },
+        {
+          "min": 177107,
+          "max": null,
+          "rate": 0.45
+        }
       ],
       "personal_income_tax_top": 0.45,
       "social_contributions": 0.172,
       "effective_top_rate": 0.622,
       "capital_gains_tax": 0.172,
       "capital_gains_tax_note": "30% flat (12.8% tax + 17.2% social) or progressive scale",
-      "dividend_tax": 0.30,
+      "dividend_tax": 0.3,
       "dividend_tax_note": "30% flat tax (PFU)",
       "corporate_tax": 0.25,
-      "vat": 0.20,
+      "vat": 0.2,
       "inheritance_tax": 0.45,
       "wealth_tax": 0.015,
       "wealth_tax_note": "IFI (Impôt sur la Fortune Immobilière) - on real estate assets >EUR 1.3M",
@@ -387,9 +624,21 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 28000, "rate": 0.23},
-        {"min": 28001, "max": 50000, "rate": 0.35},
-        {"min": 50001, "max": null, "rate": 0.43}
+        {
+          "min": 0,
+          "max": 28000,
+          "rate": 0.23
+        },
+        {
+          "min": 28001,
+          "max": 50000,
+          "rate": 0.35
+        },
+        {
+          "min": 50001,
+          "max": null,
+          "rate": 0.43
+        }
       ],
       "personal_income_tax_top": 0.43,
       "regional_tax": 0.023,
@@ -406,7 +655,10 @@
       "flat_tax_7pct_south": true,
       "flat_tax_7pct_south_note": "7% flat tax on foreign income for retirees settling in southern Italian municipalities <20k inhabitants",
       "new_residents_flat_tax": 200000,
-      "special_regimes": ["italy_100k_flat_tax", "italy_7pct_south"],
+      "special_regimes": [
+        "italy_100k_flat_tax",
+        "italy_7pct_south"
+      ],
       "residency_days_required": 183,
       "tax_treaties": 100,
       "banking_ease": "moderate",
@@ -428,7 +680,7 @@
         "Obwalden": 0.24,
         "Glarus": 0.26,
         "Geneva": 0.44,
-        "Zurich": 0.40,
+        "Zurich": 0.4,
         "Basel": 0.42
       },
       "capital_gains_tax": 0,
@@ -444,7 +696,10 @@
       "wealth_tax_note": "0.3-1% annually in most cantons on worldwide assets for residents",
       "lump_sum_taxation": true,
       "lump_sum_note": "Expenditure-based taxation for wealthy non-working foreigners. Min CHF 400k/year typically",
-      "special_regimes": ["swiss_lump_sum", "swiss_holding_company"],
+      "special_regimes": [
+        "swiss_lump_sum",
+        "swiss_holding_company"
+      ],
       "residency_days_required": 183,
       "tax_treaties": 102,
       "banking_ease": "excellent",
@@ -458,8 +713,16 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 75518, "rate": 0.3697},
-        {"min": 75519, "max": null, "rate": 0.495}
+        {
+          "min": 0,
+          "max": 75518,
+          "rate": 0.3697
+        },
+        {
+          "min": 75519,
+          "max": null,
+          "rate": 0.495
+        }
       ],
       "personal_income_tax_top": 0.495,
       "box_1_note": "Employment/business income",
@@ -472,12 +735,14 @@
       "corporate_tax": 0.258,
       "corporate_tax_note": "25.8% above EUR 395k, 19% below",
       "vat": 0.21,
-      "inheritance_tax": 0.40,
+      "inheritance_tax": 0.4,
       "wealth_tax": 0.0217,
       "wealth_tax_note": "Box 3 deemed return system effectively ~2.17% annual wealth tax",
       "thirty_pct_ruling": true,
       "thirty_pct_ruling_note": "Expats can exclude 30% of salary from tax for 5 years (for qualifying workers)",
-      "special_regimes": ["netherlands_30pct_ruling"],
+      "special_regimes": [
+        "netherlands_30pct_ruling"
+      ],
       "residency_days_required": 183,
       "tax_treaties": 95,
       "banking_ease": "excellent",
@@ -490,13 +755,41 @@
       "region": "North America",
       "currency": "USD",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 11600, "rate": 0.10},
-        {"min": 11601, "max": 47150, "rate": 0.12},
-        {"min": 47151, "max": 100525, "rate": 0.22},
-        {"min": 100526, "max": 191950, "rate": 0.24},
-        {"min": 191951, "max": 243725, "rate": 0.32},
-        {"min": 243726, "max": 609350, "rate": 0.35},
-        {"min": 609351, "max": null, "rate": 0.37}
+        {
+          "min": 0,
+          "max": 11600,
+          "rate": 0.1
+        },
+        {
+          "min": 11601,
+          "max": 47150,
+          "rate": 0.12
+        },
+        {
+          "min": 47151,
+          "max": 100525,
+          "rate": 0.22
+        },
+        {
+          "min": 100526,
+          "max": 191950,
+          "rate": 0.24
+        },
+        {
+          "min": 191951,
+          "max": 243725,
+          "rate": 0.32
+        },
+        {
+          "min": 243726,
+          "max": 609350,
+          "rate": 0.35
+        },
+        {
+          "min": 609351,
+          "max": null,
+          "rate": 0.37
+        }
       ],
       "personal_income_tax_top": 0.37,
       "state_tax_note": "State income tax varies: 0% (TX, FL, NV, WA) to 13.3% (CA)",
@@ -507,7 +800,7 @@
       "corporate_tax_note": "21% federal + state",
       "vat": 0,
       "sales_tax": "varies",
-      "inheritance_tax": 0.40,
+      "inheritance_tax": 0.4,
       "inheritance_tax_note": "40% federal estate tax on estates >$13.61M (2024). Some states have lower thresholds",
       "wealth_tax": 0,
       "worldwide_taxation": true,
@@ -518,7 +811,11 @@
       "exit_tax": true,
       "exit_tax_note": "Expatriation tax on unrealized gains upon renunciation. Mark-to-market on assets",
       "puerto_rico_act60": true,
-      "special_regimes": ["us_feie", "puerto_rico_act60", "opportunity_zones"],
+      "special_regimes": [
+        "us_feie",
+        "puerto_rico_act60",
+        "opportunity_zones"
+      ],
       "residency_days_required": 183,
       "tax_treaties": 68,
       "banking_ease": "excellent",
@@ -556,18 +853,38 @@
       "region": "Oceania",
       "currency": "AUD",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 18200, "rate": 0},
-        {"min": 18201, "max": 45000, "rate": 0.19},
-        {"min": 45001, "max": 120000, "rate": 0.325},
-        {"min": 120001, "max": 180000, "rate": 0.37},
-        {"min": 180001, "max": null, "rate": 0.45}
+        {
+          "min": 0,
+          "max": 18200,
+          "rate": 0
+        },
+        {
+          "min": 18201,
+          "max": 45000,
+          "rate": 0.19
+        },
+        {
+          "min": 45001,
+          "max": 120000,
+          "rate": 0.325
+        },
+        {
+          "min": 120001,
+          "max": 180000,
+          "rate": 0.37
+        },
+        {
+          "min": 180001,
+          "max": null,
+          "rate": 0.45
+        }
       ],
       "personal_income_tax_top": 0.45,
       "medicare_levy": 0.02,
       "capital_gains_tax": 0.235,
       "capital_gains_tax_note": "50% discount for assets held >1 year. Effective 23.5% at top rate",
-      "corporate_tax": 0.30,
-      "gst": 0.10,
+      "corporate_tax": 0.3,
+      "gst": 0.1,
       "inheritance_tax": 0,
       "superannuation_note": "Compulsory 11% pension contribution (superannuation)",
       "temporary_resident_regime": true,
@@ -584,15 +901,43 @@
       "region": "Middle East",
       "currency": "ILS",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 81480, "rate": 0.10},
-        {"min": 81481, "max": 116760, "rate": 0.14},
-        {"min": 116761, "max": 187440, "rate": 0.20},
-        {"min": 187441, "max": 260520, "rate": 0.31},
-        {"min": 260521, "max": 542160, "rate": 0.35},
-        {"min": 542161, "max": 698280, "rate": 0.47},
-        {"min": 698281, "max": null, "rate": 0.50}
+        {
+          "min": 0,
+          "max": 81480,
+          "rate": 0.1
+        },
+        {
+          "min": 81481,
+          "max": 116760,
+          "rate": 0.14
+        },
+        {
+          "min": 116761,
+          "max": 187440,
+          "rate": 0.2
+        },
+        {
+          "min": 187441,
+          "max": 260520,
+          "rate": 0.31
+        },
+        {
+          "min": 260521,
+          "max": 542160,
+          "rate": 0.35
+        },
+        {
+          "min": 542161,
+          "max": 698280,
+          "rate": 0.47
+        },
+        {
+          "min": 698281,
+          "max": null,
+          "rate": 0.5
+        }
       ],
-      "personal_income_tax_top": 0.50,
+      "personal_income_tax_top": 0.5,
       "capital_gains_tax": 0.25,
       "capital_gains_tax_note": "25% on financial assets, 28% for >10% shareholders",
       "corporate_tax": 0.23,
@@ -600,7 +945,9 @@
       "new_immigrant_exemption": true,
       "new_immigrant_note": "OLEH CHADASH: 10-year exemption on ALL foreign income for new immigrants and returning residents after 10+ years abroad",
       "new_immigrant_no_reporting": true,
-      "special_regimes": ["israel_oleh_exemption"],
+      "special_regimes": [
+        "israel_oleh_exemption"
+      ],
       "tax_treaties": 54,
       "banking_ease": "good",
       "lifestyle_score": 7,
@@ -611,8 +958,8 @@
       "name": "Georgia (Country)",
       "region": "Caucasus",
       "currency": "GEL",
-      "personal_income_tax": 0.20,
-      "capital_gains_tax": 0.20,
+      "personal_income_tax": 0.2,
+      "capital_gains_tax": 0.2,
       "dividend_tax": 0.05,
       "corporate_tax": 0.15,
       "corporate_tax_note": "15% on distributed profits only (Estonian model)",
@@ -624,7 +971,10 @@
       "high_net_worth_individual": true,
       "hnwi_note": "HNWI status (income >200k GEL): flat 20% on Georgian source, territorial on foreign",
       "territorial_for_hnwi": true,
-      "special_regimes": ["georgia_virtual_zone", "georgia_hnwi"],
+      "special_regimes": [
+        "georgia_virtual_zone",
+        "georgia_hnwi"
+      ],
       "residency_days_required": 183,
       "tax_treaties": 56,
       "banking_ease": "good",
@@ -650,7 +1000,9 @@
       "investment_account_note": "Gains within investment account not taxed until withdrawal",
       "e_residency": true,
       "e_residency_note": "E-residency does NOT create tax residency. No tax benefits for non-residents",
-      "special_regimes": ["estonia_investment_account"],
+      "special_regimes": [
+        "estonia_investment_account"
+      ],
       "residency_days_required": 183,
       "tax_treaties": 61,
       "eu_passport": true,
@@ -663,12 +1015,12 @@
       "name": "Paraguay",
       "region": "South America",
       "currency": "PYG",
-      "personal_income_tax": 0.10,
+      "personal_income_tax": 0.1,
       "personal_income_tax_note": "10% flat rate - one of world's lowest",
-      "capital_gains_tax": 0.10,
+      "capital_gains_tax": 0.1,
       "dividend_tax": 0.08,
-      "corporate_tax": 0.10,
-      "vat": 0.10,
+      "corporate_tax": 0.1,
+      "vat": 0.1,
       "inheritance_tax": 0,
       "wealth_tax": 0,
       "territorial_system": true,
@@ -676,7 +1028,9 @@
       "residency_investment_note": "Residency possible with small investment (~$5,000). Citizenship after 3 years",
       "residency_days_required": 1,
       "residency_days_note": "No minimum days requirement once permanent residency granted",
-      "special_regimes": ["paraguay_residency"],
+      "special_regimes": [
+        "paraguay_residency"
+      ],
       "tax_treaties": 12,
       "banking_ease": "moderate",
       "lifestyle_score": 6,
@@ -688,29 +1042,63 @@
       "region": "Asia",
       "currency": "THB",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 150000, "rate": 0},
-        {"min": 150001, "max": 300000, "rate": 0.05},
-        {"min": 300001, "max": 500000, "rate": 0.10},
-        {"min": 500001, "max": 750000, "rate": 0.15},
-        {"min": 750001, "max": 1000000, "rate": 0.20},
-        {"min": 1000001, "max": 2000000, "rate": 0.25},
-        {"min": 2000001, "max": 5000000, "rate": 0.30},
-        {"min": 5000001, "max": null, "rate": 0.35}
+        {
+          "min": 0,
+          "max": 150000,
+          "rate": 0
+        },
+        {
+          "min": 150001,
+          "max": 300000,
+          "rate": 0.05
+        },
+        {
+          "min": 300001,
+          "max": 500000,
+          "rate": 0.1
+        },
+        {
+          "min": 500001,
+          "max": 750000,
+          "rate": 0.15
+        },
+        {
+          "min": 750001,
+          "max": 1000000,
+          "rate": 0.2
+        },
+        {
+          "min": 1000001,
+          "max": 2000000,
+          "rate": 0.25
+        },
+        {
+          "min": 2000001,
+          "max": 5000000,
+          "rate": 0.3
+        },
+        {
+          "min": 5000001,
+          "max": null,
+          "rate": 0.35
+        }
       ],
       "personal_income_tax_top": 0.35,
       "capital_gains_tax": 0,
       "capital_gains_tax_note": "No CGT on securities. Property gains taxed",
-      "dividend_tax": 0.10,
-      "corporate_tax": 0.20,
+      "dividend_tax": 0.1,
+      "corporate_tax": 0.2,
       "vat": 0.07,
-      "inheritance_tax": 0.10,
+      "inheritance_tax": 0.1,
       "inheritance_tax_note": "10% on inheritances above THB 100M",
       "wealth_tax": 0,
       "territorial_system": true,
       "territorial_note": "Foreign income only taxable if remitted to Thailand in same tax year (changing from 2024)",
       "ltv_visa": true,
       "ltv_visa_note": "Long-Term Resident Visa: 0.17% flat tax on foreign income or flat fees",
-      "special_regimes": ["thailand_ltv"],
+      "special_regimes": [
+        "thailand_ltv"
+      ],
       "residency_days_required": 180,
       "tax_treaties": 61,
       "banking_ease": "moderate",
@@ -723,13 +1111,25 @@
       "region": "Central America",
       "currency": "USD",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 11000, "rate": 0},
-        {"min": 11001, "max": 50000, "rate": 0.15},
-        {"min": 50001, "max": null, "rate": 0.25}
+        {
+          "min": 0,
+          "max": 11000,
+          "rate": 0
+        },
+        {
+          "min": 11001,
+          "max": 50000,
+          "rate": 0.15
+        },
+        {
+          "min": 50001,
+          "max": null,
+          "rate": 0.25
+        }
       ],
       "personal_income_tax_top": 0.25,
-      "capital_gains_tax": 0.10,
-      "dividend_tax": 0.10,
+      "capital_gains_tax": 0.1,
+      "dividend_tax": 0.1,
       "corporate_tax": 0.25,
       "vat": 0.07,
       "inheritance_tax": 0,
@@ -737,7 +1137,10 @@
       "territorial_note": "Only Panama-sourced income taxed. Foreign income completely exempt",
       "pensionado_program": true,
       "friendly_nations_visa": true,
-      "special_regimes": ["panama_territorial", "panama_pensionado"],
+      "special_regimes": [
+        "panama_territorial",
+        "panama_pensionado"
+      ],
       "residency_days_required": 0,
       "tax_treaties": 16,
       "banking_ease": "moderate",
@@ -749,7 +1152,7 @@
       "name": "Malaysia",
       "region": "Asia",
       "currency": "MYR",
-      "personal_income_tax_top": 0.30,
+      "personal_income_tax_top": 0.3,
       "capital_gains_tax": 0,
       "capital_gains_tax_note": "Except RPGT on property (10-30%)",
       "dividend_tax": 0,
@@ -758,7 +1161,9 @@
       "territorial_system": true,
       "mm2h_program": true,
       "mm2h_note": "Malaysia My Second Home visa - minimum conditions required",
-      "special_regimes": ["malaysia_mm2h"],
+      "special_regimes": [
+        "malaysia_mm2h"
+      ],
       "residency_days_required": 182,
       "tax_treaties": 74,
       "banking_ease": "good",
@@ -775,11 +1180,15 @@
       "capital_gains_tax": 0.15,
       "corporate_tax": 0.22,
       "vat": 0.24,
-      "inheritance_tax": 0.10,
+      "inheritance_tax": 0.1,
       "flat_tax_100k": true,
       "flat_tax_100k_note": "EUR 100,000 flat tax on ALL foreign income for HNWIs who invest EUR 500k+ in Greece",
       "golden_visa": true,
-      "special_regimes": ["greece_100k_flat_tax", "greece_golden_visa", "greece_retiree_regime"],
+      "special_regimes": [
+        "greece_100k_flat_tax",
+        "greece_golden_visa",
+        "greece_retiree_regime"
+      ],
       "residency_days_required": 183,
       "tax_treaties": 57,
       "eu_passport": true,
@@ -794,12 +1203,36 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 12450, "rate": 0.19},
-        {"min": 12451, "max": 20200, "rate": 0.24},
-        {"min": 20201, "max": 35200, "rate": 0.30},
-        {"min": 35201, "max": 60000, "rate": 0.37},
-        {"min": 60001, "max": 300000, "rate": 0.45},
-        {"min": 300001, "max": null, "rate": 0.47}
+        {
+          "min": 0,
+          "max": 12450,
+          "rate": 0.19
+        },
+        {
+          "min": 12451,
+          "max": 20200,
+          "rate": 0.24
+        },
+        {
+          "min": 20201,
+          "max": 35200,
+          "rate": 0.3
+        },
+        {
+          "min": 35201,
+          "max": 60000,
+          "rate": 0.37
+        },
+        {
+          "min": 60001,
+          "max": 300000,
+          "rate": 0.45
+        },
+        {
+          "min": 300001,
+          "max": null,
+          "rate": 0.47
+        }
       ],
       "personal_income_tax_top": 0.47,
       "capital_gains_tax": 0.28,
@@ -817,7 +1250,10 @@
       "beckham_law_duration_years": 6,
       "beckham_law_note": "24% flat tax on Spanish income up to €600k (47% above). Foreign income exempt for 6 years. Available to new residents not resident last 5 years",
       "residency_days_required": 183,
-      "special_regimes": ["spain_beckham_law", "spain_beckham_startups"],
+      "special_regimes": [
+        "spain_beckham_law",
+        "spain_beckham_startups"
+      ],
       "tax_treaties": 102,
       "eu_passport": true,
       "banking_ease": "good",
@@ -832,22 +1268,24 @@
       "region": "Europe",
       "currency": "BGN",
       "eu_member": true,
-      "personal_income_tax": 0.10,
+      "personal_income_tax": 0.1,
       "personal_income_tax_note": "10% flat rate on all personal income - lowest in EU",
-      "capital_gains_tax": 0.10,
+      "capital_gains_tax": 0.1,
       "capital_gains_tax_note": "Gains taxed as income at 10% flat rate",
       "dividend_tax": 0.05,
       "dividend_tax_note": "5% withholding on dividends (very low)",
-      "corporate_tax": 0.10,
+      "corporate_tax": 0.1,
       "corporate_tax_note": "10% flat - among lowest in EU",
-      "vat": 0.20,
+      "vat": 0.2,
       "inheritance_tax": 0,
       "inheritance_tax_note": "0% for direct family, small rates for others",
       "wealth_tax": 0,
       "social_security_employee": 0.1378,
       "social_security_employer": 0.1972,
       "residency_days_required": 183,
-      "special_regimes": ["bulgaria_flat_tax"],
+      "special_regimes": [
+        "bulgaria_flat_tax"
+      ],
       "tax_treaties": 68,
       "eu_passport": true,
       "banking_ease": "good",
@@ -865,9 +1303,9 @@
       "region": "Europe",
       "currency": "RON",
       "eu_member": true,
-      "personal_income_tax": 0.10,
+      "personal_income_tax": 0.1,
       "personal_income_tax_note": "10% flat rate on income. Plus social security ~35% total (employee+employer)",
-      "capital_gains_tax": 0.10,
+      "capital_gains_tax": 0.1,
       "capital_gains_tax_note": "10% on most gains. 1% on shares held over 1 year (special rate)",
       "dividend_tax": 0.08,
       "dividend_tax_note": "8% withholding on dividends from 2023",
@@ -879,7 +1317,10 @@
       "wealth_tax": 0,
       "digital_nomad_visa": true,
       "residency_days_required": 183,
-      "special_regimes": ["romania_micro_company", "romania_digital_nomad"],
+      "special_regimes": [
+        "romania_micro_company",
+        "romania_digital_nomad"
+      ],
       "tax_treaties": 87,
       "eu_passport": true,
       "eu_freedom_of_movement": true,
@@ -910,7 +1351,9 @@
       "wealth_tax": 0,
       "social_security_employee": 0.185,
       "residency_days_required": 183,
-      "special_regimes": ["hungary_flat_tax"],
+      "special_regimes": [
+        "hungary_flat_tax"
+      ],
       "tax_treaties": 80,
       "eu_passport": true,
       "banking_ease": "good",
@@ -925,19 +1368,22 @@
       "region": "Europe",
       "currency": "RSD",
       "eu_member": false,
-      "personal_income_tax": 0.10,
+      "personal_income_tax": 0.1,
       "personal_income_tax_note": "10% flat rate. Additional 15% surtax on income above ~RSD 4.4M",
       "capital_gains_tax": 0.15,
       "dividend_tax": 0.15,
       "corporate_tax": 0.15,
-      "vat": 0.20,
+      "vat": 0.2,
       "inheritance_tax": 0,
       "inheritance_tax_note": "0% for direct family and siblings",
       "wealth_tax": 0,
       "digital_nomad_visa": true,
       "digital_nomad_visa_note": "Easy residency permits for digital nomads and remote workers",
       "residency_days_required": 183,
-      "special_regimes": ["serbia_flat_tax", "serbia_digital_nomad"],
+      "special_regimes": [
+        "serbia_flat_tax",
+        "serbia_digital_nomad"
+      ],
       "tax_treaties": 58,
       "treaty_with_israel": true,
       "banking_ease": "moderate",
@@ -951,11 +1397,31 @@
       "region": "Oceania",
       "currency": "NZD",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 14000, "rate": 0.105},
-        {"min": 14001, "max": 48000, "rate": 0.175},
-        {"min": 48001, "max": 70000, "rate": 0.30},
-        {"min": 70001, "max": 180000, "rate": 0.33},
-        {"min": 180001, "max": null, "rate": 0.39}
+        {
+          "min": 0,
+          "max": 14000,
+          "rate": 0.105
+        },
+        {
+          "min": 14001,
+          "max": 48000,
+          "rate": 0.175
+        },
+        {
+          "min": 48001,
+          "max": 70000,
+          "rate": 0.3
+        },
+        {
+          "min": 70001,
+          "max": 180000,
+          "rate": 0.33
+        },
+        {
+          "min": 180001,
+          "max": null,
+          "rate": 0.39
+        }
       ],
       "personal_income_tax_top": 0.39,
       "capital_gains_tax": 0,
@@ -969,7 +1435,9 @@
       "transitional_resident_years": 4,
       "transitional_resident_note": "New residents exempt from NZ tax on most foreign income for 4 years. Applies to new migrants not resident in NZ last 10 years",
       "residency_days_required": 183,
-      "special_regimes": ["nz_transitional_resident"],
+      "special_regimes": [
+        "nz_transitional_resident"
+      ],
       "tax_treaties": 40,
       "treaty_with_israel": false,
       "banking_ease": "excellent",
@@ -983,12 +1451,36 @@
       "region": "South America",
       "currency": "UYU",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 7000, "rate": 0},
-        {"min": 7001, "max": 14400, "rate": 0.10},
-        {"min": 14401, "max": 24000, "rate": 0.15},
-        {"min": 24001, "max": 48000, "rate": 0.24},
-        {"min": 48001, "max": 96000, "rate": 0.25},
-        {"min": 96001, "max": null, "rate": 0.36}
+        {
+          "min": 0,
+          "max": 7000,
+          "rate": 0
+        },
+        {
+          "min": 7001,
+          "max": 14400,
+          "rate": 0.1
+        },
+        {
+          "min": 14401,
+          "max": 24000,
+          "rate": 0.15
+        },
+        {
+          "min": 24001,
+          "max": 48000,
+          "rate": 0.24
+        },
+        {
+          "min": 48001,
+          "max": 96000,
+          "rate": 0.25
+        },
+        {
+          "min": 96001,
+          "max": null,
+          "rate": 0.36
+        }
       ],
       "personal_income_tax_top": 0.36,
       "personal_income_tax_note": "Brackets in USD equivalent. Foreign income 0% for 10 years (territorial option)",
@@ -1003,7 +1495,9 @@
       "wealth_tax": 0,
       "residency_days_required": 183,
       "residency_notes": "Or purchase property > $380k USD or invest > $1.7M USD",
-      "special_regimes": ["uruguay_territorial_10yr"],
+      "special_regimes": [
+        "uruguay_territorial_10yr"
+      ],
       "tax_treaties": 13,
       "treaty_with_israel": false,
       "banking_ease": "good",
@@ -1019,28 +1513,62 @@
       "region": "North America",
       "currency": "MXN",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 8000, "rate": 0.0192},
-        {"min": 8001, "max": 18000, "rate": 0.064},
-        {"min": 18001, "max": 31000, "rate": 0.1088},
-        {"min": 31001, "max": 43000, "rate": 0.16},
-        {"min": 43001, "max": 70000, "rate": 0.1792},
-        {"min": 70001, "max": 90000, "rate": 0.2136},
-        {"min": 90001, "max": 125000, "rate": 0.2352},
-        {"min": 125001, "max": null, "rate": 0.35}
+        {
+          "min": 0,
+          "max": 8000,
+          "rate": 0.0192
+        },
+        {
+          "min": 8001,
+          "max": 18000,
+          "rate": 0.064
+        },
+        {
+          "min": 18001,
+          "max": 31000,
+          "rate": 0.1088
+        },
+        {
+          "min": 31001,
+          "max": 43000,
+          "rate": 0.16
+        },
+        {
+          "min": 43001,
+          "max": 70000,
+          "rate": 0.1792
+        },
+        {
+          "min": 70001,
+          "max": 90000,
+          "rate": 0.2136
+        },
+        {
+          "min": 90001,
+          "max": 125000,
+          "rate": 0.2352
+        },
+        {
+          "min": 125001,
+          "max": null,
+          "rate": 0.35
+        }
       ],
       "personal_income_tax_top": 0.35,
       "personal_income_tax_note": "Brackets in USD equivalent. Only Mexican-source income taxed for residents (territorial in practice for foreign income)",
       "capital_gains_tax": 0.35,
       "capital_gains_tax_note": "Foreign capital gains generally not taxable for residents (territorial). Mexican securities 10%",
-      "dividend_tax": 0.10,
-      "corporate_tax": 0.30,
+      "dividend_tax": 0.1,
+      "corporate_tax": 0.3,
       "vat": 0.16,
       "inheritance_tax": 0,
       "wealth_tax": 0,
       "territorial_in_practice": true,
       "territorial_note": "Mexico taxes residents on Mexican-source income. Foreign-source income generally untaxed for individuals. Very favorable for digital income",
       "residency_days_required": 183,
-      "special_regimes": ["mexico_territorial"],
+      "special_regimes": [
+        "mexico_territorial"
+      ],
       "tax_treaties": 75,
       "treaty_with_israel": true,
       "banking_ease": "good",
@@ -1055,22 +1583,37 @@
       "currency": "EUR",
       "eu_member": false,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 24000, "rate": 0},
-        {"min": 24001, "max": 40000, "rate": 0.05},
-        {"min": 40001, "max": null, "rate": 0.10}
+        {
+          "min": 0,
+          "max": 24000,
+          "rate": 0
+        },
+        {
+          "min": 24001,
+          "max": 40000,
+          "rate": 0.05
+        },
+        {
+          "min": 40001,
+          "max": null,
+          "rate": 0.1
+        }
       ],
-      "personal_income_tax_top": 0.10,
+      "personal_income_tax_top": 0.1,
       "capital_gains_tax": 0,
       "capital_gains_tax_note": "No CGT on securities. Property held >10 years also exempt",
       "dividend_tax": 0,
-      "corporate_tax": 0.10,
+      "corporate_tax": 0.1,
       "vat": 0.045,
       "inheritance_tax": 0,
       "wealth_tax": 0,
       "crypto_tax": 0,
       "residency_days_required": 183,
       "residency_notes": "Must spend 183+ days/year. Must show economic ties. Passive residency requires €400k real estate investment",
-      "special_regimes": ["andorra_active_residency", "andorra_passive_residency"],
+      "special_regimes": [
+        "andorra_active_residency",
+        "andorra_passive_residency"
+      ],
       "tax_treaties": 6,
       "treaty_with_israel": false,
       "banking_ease": "excellent",
@@ -1091,13 +1634,15 @@
       "dividend_tax": 0,
       "corporate_tax": 0,
       "corporate_tax_note": "0% for most businesses. Oil/gas companies subject to different rules",
-      "vat": 0.10,
+      "vat": 0.1,
       "inheritance_tax": 0,
       "wealth_tax": 0,
       "social_insurance_employee": 0.07,
       "residency_days_required": 0,
       "residency_notes": "Golden Residency Visa available. Various investor visas. No minimum stay required",
-      "special_regimes": ["bahrain_golden_visa"],
+      "special_regimes": [
+        "bahrain_golden_visa"
+      ],
       "tax_treaties": 42,
       "treaty_with_israel": false,
       "abraham_accords": false,
@@ -1114,29 +1659,59 @@
       "region": "Asia",
       "currency": "JPY",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 1950000, "rate": 0.05},
-        {"min": 1950001, "max": 3300000, "rate": 0.10},
-        {"min": 3300001, "max": 6950000, "rate": 0.20},
-        {"min": 6950001, "max": 9000000, "rate": 0.23},
-        {"min": 9000001, "max": 18000000, "rate": 0.33},
-        {"min": 18000001, "max": 40000000, "rate": 0.40},
-        {"min": 40000001, "max": null, "rate": 0.45}
+        {
+          "min": 0,
+          "max": 1950000,
+          "rate": 0.05
+        },
+        {
+          "min": 1950001,
+          "max": 3300000,
+          "rate": 0.1
+        },
+        {
+          "min": 3300001,
+          "max": 6950000,
+          "rate": 0.2
+        },
+        {
+          "min": 6950001,
+          "max": 9000000,
+          "rate": 0.23
+        },
+        {
+          "min": 9000001,
+          "max": 18000000,
+          "rate": 0.33
+        },
+        {
+          "min": 18000001,
+          "max": 40000000,
+          "rate": 0.4
+        },
+        {
+          "min": 40000001,
+          "max": null,
+          "rate": 0.45
+        }
       ],
       "personal_income_tax_top": 0.45,
-      "local_tax": 0.10,
+      "local_tax": 0.1,
       "effective_top_rate": 0.55,
       "capital_gains_tax": 0.20315,
       "capital_gains_tax_note": "20.315% (15.315% national + 5% local) on stocks",
       "dividend_tax": 0.20315,
       "corporate_tax": 0.234,
-      "vat": 0.10,
+      "vat": 0.1,
       "inheritance_tax": 0.55,
       "wealth_tax": 0,
       "non_permanent_resident_regime": true,
       "non_permanent_resident_years": 5,
       "non_permanent_resident_note": "For first 5 years: foreign income only taxed if remitted to Japan. After 5 years: worldwide taxation kicks in. Excellent for entrepreneurs with offshore income",
       "residency_days_required": 183,
-      "special_regimes": ["japan_non_permanent_resident"],
+      "special_regimes": [
+        "japan_non_permanent_resident"
+      ],
       "tax_treaties": 78,
       "treaty_with_israel": true,
       "banking_ease": "moderate",
@@ -1151,25 +1726,55 @@
       "currency": "EUR",
       "eu_member": true,
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 12816, "rate": 0},
-        {"min": 12817, "max": 20818, "rate": 0.20},
-        {"min": 20819, "max": 34513, "rate": 0.30},
-        {"min": 34514, "max": 66612, "rate": 0.40},
-        {"min": 66613, "max": 99266, "rate": 0.48},
-        {"min": 99267, "max": 1000000, "rate": 0.50},
-        {"min": 1000001, "max": null, "rate": 0.55}
+        {
+          "min": 0,
+          "max": 12816,
+          "rate": 0
+        },
+        {
+          "min": 12817,
+          "max": 20818,
+          "rate": 0.2
+        },
+        {
+          "min": 20819,
+          "max": 34513,
+          "rate": 0.3
+        },
+        {
+          "min": 34514,
+          "max": 66612,
+          "rate": 0.4
+        },
+        {
+          "min": 66613,
+          "max": 99266,
+          "rate": 0.48
+        },
+        {
+          "min": 99267,
+          "max": 1000000,
+          "rate": 0.5
+        },
+        {
+          "min": 1000001,
+          "max": null,
+          "rate": 0.55
+        }
       ],
       "personal_income_tax_top": 0.55,
       "capital_gains_tax": 0.275,
       "capital_gains_tax_note": "27.5% Kapitalertragsteuer (KESt) on investment income - flat rate",
       "dividend_tax": 0.275,
       "corporate_tax": 0.25,
-      "vat": 0.20,
+      "vat": 0.2,
       "inheritance_tax": 0,
       "inheritance_tax_note": "No inheritance/estate tax. However, gifts over €50k must be reported",
       "wealth_tax": 0,
       "residency_days_required": 183,
-      "special_regimes": ["austria_lump_sum_foreigners"],
+      "special_regimes": [
+        "austria_lump_sum_foreigners"
+      ],
       "tax_treaties": 90,
       "eu_passport": true,
       "treaty_with_israel": true,
@@ -1185,17 +1790,33 @@
       "region": "Central America",
       "currency": "CRC",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 10000, "rate": 0},
-        {"min": 10001, "max": 16000, "rate": 0.10},
-        {"min": 16001, "max": 26000, "rate": 0.15},
-        {"min": 26001, "max": null, "rate": 0.25}
+        {
+          "min": 0,
+          "max": 10000,
+          "rate": 0
+        },
+        {
+          "min": 10001,
+          "max": 16000,
+          "rate": 0.1
+        },
+        {
+          "min": 16001,
+          "max": 26000,
+          "rate": 0.15
+        },
+        {
+          "min": 26001,
+          "max": null,
+          "rate": 0.25
+        }
       ],
       "personal_income_tax_top": 0.25,
       "personal_income_tax_note": "Only Costa Rica-source income taxed",
       "capital_gains_tax": 0.15,
       "capital_gains_tax_note": "15% on capital gains if business activity. Occasional gains often untaxed",
       "dividend_tax": 0.15,
-      "corporate_tax": 0.30,
+      "corporate_tax": 0.3,
       "vat": 0.13,
       "inheritance_tax": 0,
       "wealth_tax": 0,
@@ -1205,7 +1826,10 @@
       "rentista_visa": true,
       "residency_days_required": 0,
       "residency_notes": "No minimum stay required. Pensionado visa: $1,000/month pension income. Rentista: $2,500/month income",
-      "special_regimes": ["costa_rica_territorial", "costa_rica_pensionado"],
+      "special_regimes": [
+        "costa_rica_territorial",
+        "costa_rica_pensionado"
+      ],
       "tax_treaties": 7,
       "treaty_with_israel": false,
       "banking_ease": "moderate",
@@ -1219,11 +1843,31 @@
       "region": "South America",
       "currency": "BRL",
       "personal_income_tax_brackets": [
-        {"min": 0, "max": 2259, "rate": 0},
-        {"min": 2260, "max": 2826, "rate": 0.075},
-        {"min": 2827, "max": 3751, "rate": 0.15},
-        {"min": 3752, "max": 4664, "rate": 0.225},
-        {"min": 4665, "max": null, "rate": 0.275}
+        {
+          "min": 0,
+          "max": 2259,
+          "rate": 0
+        },
+        {
+          "min": 2260,
+          "max": 2826,
+          "rate": 0.075
+        },
+        {
+          "min": 2827,
+          "max": 3751,
+          "rate": 0.15
+        },
+        {
+          "min": 3752,
+          "max": 4664,
+          "rate": 0.225
+        },
+        {
+          "min": 4665,
+          "max": null,
+          "rate": 0.275
+        }
       ],
       "personal_income_tax_top": 0.275,
       "personal_income_tax_note": "Brackets in USD/month equivalent. Residents taxed on worldwide income. NON-RESIDENTS taxed only on Brazilian-source income",
@@ -1239,7 +1883,9 @@
       "inheritance_tax_note": "ITCMD varies by state: up to 8%",
       "wealth_tax": 0,
       "residency_days_required": 183,
-      "special_regimes": ["brazil_simples_nacional"],
+      "special_regimes": [
+        "brazil_simples_nacional"
+      ],
       "tax_treaties": 35,
       "treaty_with_israel": false,
       "banking_ease": "moderate",
@@ -1252,6 +1898,172 @@
       "mercosur_note": "Brazilian passport gives Mercosur freedom of movement: Argentina, Uruguay, Paraguay, Bolivia, Chile, Colombia, Ecuador, Peru, Guyana, Suriname - all without visa",
       "eu_access_note": "Brazil-EU visa-free travel. Brazilian passport accepted in 170+ countries",
       "notable_for": "Citizenship NOT citizenship-based tax (unlike USA). Brazilian citizens abroad pay 0 Brazilian tax. Large Israeli community. Mercosur freedom of movement. Uruguay residency easy for Brazilians"
+    },
+    "ARGENTINA": {
+      "name": "Argentina",
+      "region": "South America",
+      "currency": "ARS",
+      "personal_income_tax_top": 0.35,
+      "personal_income_tax_note": "Progressive 5-35%. Residents taxed on worldwide income. Major inflation skews brackets — update annually",
+      "capital_gains_tax": 0.15,
+      "capital_gains_tax_note": "15% on shares + real estate (residents). Non-residents withheld at higher rates",
+      "dividend_tax": 0.07,
+      "dividend_tax_note": "7% on dividends from Argentine companies",
+      "corporate_tax": 0.35,
+      "corporate_tax_note": "25-35% progressive. CABA province adds gross receipts tax",
+      "vat": 0.21,
+      "inheritance_tax": 0,
+      "wealth_tax": 0.015,
+      "wealth_tax_note": "Bienes Personales: 0.5-1.5% on worldwide assets above ~$50K USD. Triggered for residents",
+      "territorial_system": false,
+      "worldwide_taxation": true,
+      "residency_days_required": 183,
+      "special_regimes": [],
+      "tax_treaties": 22,
+      "treaty_with_israel": false,
+      "banking_ease": "difficult",
+      "lifestyle_score": 7,
+      "cost_of_living": "moderate",
+      "israeli_community": "large",
+      "citizenship_taxation": false,
+      "notable_for": "Volatile currency (ARS). Strong wealth tax. Bienes Personales catches expats with Argentine assets. Mercosur access (with Brazilian/Uruguayan passport). Major Israeli community in Buenos Aires"
+    },
+    "CHILE": {
+      "name": "Chile",
+      "region": "South America",
+      "currency": "CLP",
+      "personal_income_tax_top": 0.4,
+      "personal_income_tax_note": "Progressive 0-40%. Residents taxed worldwide after 3 years (3-year initial exemption on foreign-source income)",
+      "capital_gains_tax": 0.1,
+      "capital_gains_tax_note": "10% flat or marginal rate; primary residence largely exempt",
+      "dividend_tax": 0.35,
+      "dividend_tax_note": "Final tax at shareholder level — integrated system with credit for corporate tax paid",
+      "corporate_tax": 0.27,
+      "vat": 0.19,
+      "inheritance_tax": 0.25,
+      "inheritance_tax_note": "Progressive up to 25% based on relationship + amount",
+      "wealth_tax": 0,
+      "territorial_system": false,
+      "worldwide_taxation": true,
+      "residency_days_required": 183,
+      "special_regimes": [
+        "chile_first_3_years"
+      ],
+      "tax_treaties": 33,
+      "treaty_with_israel": false,
+      "banking_ease": "moderate",
+      "lifestyle_score": 8,
+      "cost_of_living": "moderate",
+      "notable_for": "First 3 years: foreign-source income exempt (rare benefit). Stable economy. Easy temporary residence via Chilean ancestry or work contract"
+    },
+    "COLOMBIA": {
+      "name": "Colombia",
+      "region": "South America",
+      "currency": "COP",
+      "personal_income_tax_top": 0.39,
+      "personal_income_tax_note": "Progressive 0-39% (35% income + 4% solidarity surcharge for high earners)",
+      "capital_gains_tax": 0.15,
+      "capital_gains_tax_note": "15% flat for assets held >2 years; otherwise treated as ordinary income",
+      "dividend_tax": 0.2,
+      "dividend_tax_note": "10% for residents + 20% for non-residents",
+      "corporate_tax": 0.35,
+      "vat": 0.19,
+      "inheritance_tax": 0.1,
+      "wealth_tax": 0.01,
+      "wealth_tax_note": "0.5-1.5% on net worth above ~$1M USD",
+      "territorial_system": false,
+      "worldwide_taxation": true,
+      "residency_days_required": 183,
+      "special_regimes": [],
+      "tax_treaties": 12,
+      "treaty_with_israel": false,
+      "banking_ease": "difficult",
+      "lifestyle_score": 7,
+      "cost_of_living": "low",
+      "notable_for": "Wealth tax kicks in at moderate net worth. Digital nomad visa launched 2023 (2 years renewable)"
+    },
+    "SOUTH_AFRICA": {
+      "name": "South Africa",
+      "region": "Africa",
+      "currency": "ZAR",
+      "personal_income_tax_top": 0.45,
+      "personal_income_tax_note": "Progressive 18-45%",
+      "capital_gains_tax": 0.18,
+      "capital_gains_tax_note": "Inclusion rate 40%: max effective 18% (40% of 45% top rate)",
+      "dividend_tax": 0.2,
+      "corporate_tax": 0.27,
+      "vat": 0.15,
+      "inheritance_tax": 0.2,
+      "wealth_tax": 0,
+      "territorial_system": false,
+      "worldwide_taxation": true,
+      "residency_days_required": 183,
+      "special_regimes": [
+        "sa_emigration_exit_tax"
+      ],
+      "tax_treaties": 79,
+      "treaty_with_israel": true,
+      "banking_ease": "moderate",
+      "lifestyle_score": 7,
+      "cost_of_living": "low",
+      "israeli_community": "large",
+      "notable_for": "Major Jewish/Israeli emigration source. EXIT TAX on emigration: 18% CGT on worldwide assets when ceasing tax residency. ZAR currency weakness historically"
+    },
+    "TURKEY": {
+      "name": "Turkey",
+      "region": "Europe / Middle East",
+      "currency": "TRY",
+      "personal_income_tax_top": 0.4,
+      "personal_income_tax_note": "Progressive 15-40%. High inflation skews brackets",
+      "capital_gains_tax": 0.2,
+      "capital_gains_tax_note": "Real estate held 5+ years: exempt for individuals. Shares: 15% withholding",
+      "dividend_tax": 0.1,
+      "corporate_tax": 0.25,
+      "vat": 0.2,
+      "inheritance_tax": 0.1,
+      "wealth_tax": 0,
+      "territorial_system": false,
+      "worldwide_taxation": true,
+      "residency_days_required": 183,
+      "special_regimes": [
+        "turkey_citizenship_by_investment"
+      ],
+      "tax_treaties": 90,
+      "treaty_with_israel": false,
+      "banking_ease": "moderate",
+      "lifestyle_score": 7,
+      "cost_of_living": "low",
+      "notable_for": "Citizenship by investment ($400K real estate, 3-year hold). Currency volatility — TRY lost 80%+ to USD since 2020. Strategic location"
+    },
+    "INDIA": {
+      "name": "India",
+      "region": "Asia",
+      "currency": "INR",
+      "personal_income_tax_top": 0.3,
+      "personal_income_tax_note": "New regime: 0-30% + surcharge up to 25% on income >₹50M. Old regime allows deductions",
+      "capital_gains_tax": 0.2,
+      "capital_gains_tax_note": "Long-term (>2 years for real estate): 20% with indexation. Short-term: slab rate",
+      "dividend_tax": 0.3,
+      "dividend_tax_note": "Taxed as ordinary income at shareholder level since 2020",
+      "corporate_tax": 0.25,
+      "vat": 0.18,
+      "vat_note": "GST: 5/12/18/28% based on goods category",
+      "inheritance_tax": 0,
+      "inheritance_tax_note": "No inheritance tax (since 1985)",
+      "wealth_tax": 0,
+      "territorial_system": false,
+      "worldwide_taxation": true,
+      "residency_days_required": 182,
+      "special_regimes": [
+        "india_nri_status",
+        "india_gift_tax_exemption"
+      ],
+      "tax_treaties": 90,
+      "treaty_with_israel": true,
+      "banking_ease": "moderate",
+      "lifestyle_score": 7,
+      "cost_of_living": "very_low",
+      "notable_for": "NRI (Non-Resident Indian) status: foreign income exempt. Treaty with Israel. NO inheritance tax. RBI restrictions on outbound remittance ($250K/yr)"
     }
   }
 }
