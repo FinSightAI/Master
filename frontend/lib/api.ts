@@ -110,7 +110,15 @@ export async function* streamChat(
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    const msg = err?.detail?.message_he || err?.detail?.message || `Server error: ${response.status}`;
+    const lang2 = (typeof window !== 'undefined' ? localStorage.getItem('wl_lang') : null) || 'he';
+    const fallback: Record<string, string> = {
+      he: '⏳ השרת עדיין מתחמם — נסה שוב בעוד 30 שניות',
+      en: '⏳ The server is warming up — try again in 30 seconds',
+      pt: '⏳ O servidor está iniciando — tente novamente em 30 segundos',
+      es: '⏳ El servidor está iniciando — intenta de nuevo en 30 segundos',
+    };
+    const msg = err?.detail?.message_he || err?.detail?.message
+      || ([502, 503, 504].includes(response.status) ? (fallback[lang2] || fallback.en) : `Server error: ${response.status}`);
     yield { type: 'error', message: msg };
     return;
   }
