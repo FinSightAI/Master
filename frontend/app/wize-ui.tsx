@@ -320,7 +320,7 @@ export function WizeBar() {
     return () => obs.disconnect();
   }, []);
 
-  const [allTools, setAllTools] = useState('← כל הכלים');
+  const [allTools, setAllTools] = useState('← WizeLife');
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [sso, setSso] = useState<{ nick?: string; email?: string; plan?: string } | null>(null);
@@ -328,10 +328,10 @@ export function WizeBar() {
   useEffect(() => {
     const l = localStorage.getItem('wl_lang') || 'he';
     const labels: Record<string, string> = {
-      he: '← כל הכלים', en: '← All Tools',
-      pt: '← Todas as ferramentas', es: '← Todas las herramientas',
+      he: '← WizeLife', en: '← WizeLife',
+      pt: '← WizeLife', es: '← WizeLife',
     };
-    setAllTools(labels[l] || '← All Tools');
+    setAllTools(labels[l] || '← WizeLife');
     const unsub = onAuth((u) => { setUser(u); setAuthReady(true); });
 
     try {
