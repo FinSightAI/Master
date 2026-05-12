@@ -320,18 +320,11 @@ export function WizeBar() {
     return () => obs.disconnect();
   }, []);
 
-  const [allTools, setAllTools] = useState('← WizeLife');
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [sso, setSso] = useState<{ nick?: string; email?: string; plan?: string } | null>(null);
 
   useEffect(() => {
-    const l = localStorage.getItem('wl_lang') || 'he';
-    const labels: Record<string, string> = {
-      he: '← WizeLife', en: '← WizeLife',
-      pt: '← WizeLife', es: '← WizeLife',
-    };
-    setAllTools(labels[l] || '← WizeLife');
     const unsub = onAuth((u) => { setUser(u); setAuthReady(true); });
 
     try {
@@ -425,9 +418,7 @@ export function WizeBar() {
           <a href="https://wizelife.ai/auth.html" style={{...btnStyle,background:'rgba(245,158,11,0.15)',color:'#f59e0b',border:'1px solid rgba(245,158,11,0.3)',textDecoration:'none',display:'inline-flex',alignItems:'center'}}>
             Sign in
           </a>
-        )}
-        <a href="https://finsightai.github.io/wizelife/dashboard.html" style={{fontSize:12,color:'#7b88ad',textDecoration:'none',fontWeight:500,whiteSpace:'nowrap'}}>{allTools}</a>
-      </div>
+        )}      </div>
     </div>
   );
 }
