@@ -99,12 +99,11 @@ export async function* streamChat(
         es: '⏳ Un momento, preparando la respuesta…' } as Record<string, string>
     )[lang] || '⏳ One moment…';
     yield { type: 'status', message: msg };
-    try { await fetch(`${API_BASE}/health`, { cache: 'no-store' }); } catch {}
-    await new Promise(r => setTimeout(r, 8000));
-    response = await _sendChat(message, profile, conversationHistory, provider);
-    if (response.status === 502 || response.status === 503 || response.status === 504) {
-      await new Promise(r => setTimeout(r, 12000));
+    // Poll every 3 s — Render typically wakes in 10-20 s, so we succeed by attempt 4-7.
+    for (let attempt = 0; attempt < 12; attempt++) {
+      await new Promise(r => setTimeout(r, 3000));
       response = await _sendChat(message, profile, conversationHistory, provider);
+      if (response.status !== 502 && response.status !== 503 && response.status !== 504) break;
     }
   }
 

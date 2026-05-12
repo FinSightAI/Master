@@ -9655,6 +9655,7 @@ function RealEstateAbroadPanel({ lang, onClose }: { lang: Lang; onClose: () => v
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function AdvisorPage() {
   const [mounted, setMounted] = useState(false);
+  const [serverWarm, setServerWarm] = useState(true);
   const [lang, setLang] = useState<Lang>('he');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -9757,6 +9758,26 @@ export default function AdvisorPage() {
 
     if (savedHistory) { try { setSavedSessions(JSON.parse(savedHistory)); } catch {} }
     setMounted(true);
+  }, []);
+
+  // Pre-warm Render backend immediately on page load.
+  // By the time the user finishes typing, the server is already awake.
+  useEffect(() => {
+    let cancelled = false;
+    const warmTimer = setTimeout(() => { if (!cancelled) setServerWarm(false); }, 2500);
+    const poll = async () => {
+      for (let i = 0; i < 12; i++) {
+        try {
+          const r = await fetch('/api/health', { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+          if (r.ok && !cancelled) { clearTimeout(warmTimer); setServerWarm(true); return; }
+        } catch {}
+        if (i === 0) { /* first fail — show warming banner */ }
+        await new Promise(res => setTimeout(res, 3000));
+      }
+      if (!cancelled) setServerWarm(true); // give up showing banner after ~36s
+    };
+    poll();
+    return () => { cancelled = true; clearTimeout(warmTimer); };
   }, []);
 
   const persistSessions = (sessions: SavedSession[]) => {
@@ -10081,6 +10102,12 @@ export default function AdvisorPage() {
 
   return (
     <>
+    {!serverWarm && (
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999, background: 'rgba(251,191,36,0.12)', borderBottom: '1px solid rgba(251,191,36,0.4)', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>
+        <span style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }}>⏳</span>
+        <span style={{ color: '#fbbf24' }}>{lang === 'he' ? 'השרת מתחמם — תשובה ראשונה תיקח ~15 שניות' : lang === 'pt' ? 'Servidor iniciando — primeira resposta em ~15s' : lang === 'es' ? 'Servidor iniciando — primera respuesta en ~15s' : 'Server waking up — first reply may take ~15 seconds'}</span>
+      </div>
+    )}
     <div dir={dir} style={{ position: 'fixed', top: 36, bottom: 0, left: 0, right: 0, display: 'flex', background: 'var(--background)' }}>
       {/* ── Sidebar ── */}
       <div className={`wt-sidebar${mobileSidebarOpen ? ' open' : ''}`} style={{ width: '240px', flexShrink: 0, display: 'flex', flexDirection: 'column', background: 'var(--surface)', borderRight: '1px solid var(--border)', overflowX: 'hidden', overflowY: 'auto' }}>

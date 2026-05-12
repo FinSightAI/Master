@@ -1,8 +1,8 @@
-name: Keep Render Warm (A)
+name: Keep Render Warm (B — offset)
 
 on:
   schedule:
-    - cron: '0,14,28,42,56 * * * *'
+    - cron: '7,21,35,49 * * * *'
   workflow_dispatch: {}
 
 jobs:
