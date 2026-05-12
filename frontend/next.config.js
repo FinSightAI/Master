@@ -15,11 +15,11 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://www.clarity.ms https://*.clarity.ms",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://wizelife.ai https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://www.clarity.ms https://*.clarity.ms https://apis.google.com https://*.firebaseapp.com https://www.gstatic.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https:",
-      "connect-src 'self' https://*.vercel.app https://mastermove.vercel.app https://api.groq.com https://generativelanguage.googleapis.com https://openrouter.ai https://*.clarity.ms https://www.clarity.ms",
+      "connect-src 'self' https://wizelife.ai https://*.vercel.app https://mastermove.vercel.app https://api.groq.com https://generativelanguage.googleapis.com https://openrouter.ai https://*.clarity.ms https://www.clarity.ms https://*.googleapis.com https://*.firebaseio.com https://master-backend-79jx.onrender.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
