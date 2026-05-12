@@ -88,6 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script src="/wize-bottom-nav.js" strategy="afterInteractive" />
         <Script src="/wize-onboarding.js" strategy="afterInteractive" />
         <Script src="/wize-hamburger.js" strategy="afterInteractive" />
+        <Script src="/payslip-extractor.js" strategy="afterInteractive" />
       </body>
     </html>
   );

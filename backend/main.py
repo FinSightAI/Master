@@ -342,6 +342,102 @@ def bracket_tax(income_usd: float, brackets: list, usd_to_local: float) -> float
     return tax_local / usd_to_local
 
 
+
+# ─── Line-item breakdown helper (added 2026-05-12) ──────────────────────────
+# Splits the country total tax estimate into payslip-comparable items:
+# income_tax / social_security / health_tax / pension_required / net_estimate
+# Plus maps each country's pension equivalent products vs Israeli ones.
+
+COUNTRY_PENSION_PRODUCTS = {
+    "ISRAEL":      {"pension": "Keren Pansiya", "study_fund": "Keren Hishtalmut (UNIQUE — no equivalent elsewhere)", "tax_advantaged": "Kupat Gemel + Bituach Menahalim"},
+    "USA":         {"pension": "401(k) + IRA", "study_fund": "HSA (health) — closest concept", "tax_advantaged": "Roth IRA, 529 (education)"},
+    "GERMANY":     {"pension": "Rentenversicherung (state) + Riester/Rürup (private)", "study_fund": "None — vocational training subsidized via employer", "tax_advantaged": "Betriebliche Altersvorsorge (BAV)"},
+    "UK":          {"pension": "Workplace Pension + SIPP", "study_fund": "None — Lifetime ISA (LISA) for 1st home/retirement", "tax_advantaged": "ISA (£20K/yr tax-free)"},
+    "PORTUGAL":    {"pension": "Segurança Social + PPR private", "study_fund": "None", "tax_advantaged": "PPR (tax-deductible long-term savings)"},
+    "CYPRUS":      {"pension": "GHS social + private provident funds", "study_fund": "None", "tax_advantaged": "Provident Fund (employer-based)"},
+    "UAE":         {"pension": "None — End-of-Service Gratuity at termination (~21 days/yr)", "study_fund": "None", "tax_advantaged": "None (0% tax anyway)"},
+    "SPAIN":       {"pension": "Seguridad Social + Planes de Pensiones (private)", "study_fund": "None", "tax_advantaged": "Plan de Pensiones (€1.5K/yr deduction)"},
+    "ITALY":       {"pension": "INPS + TFR (severance) + Fondi Pensione", "study_fund": "None", "tax_advantaged": "Fondo Pensione (5K€/yr deductible)"},
+    "FRANCE":      {"pension": "Régime général + complémentaire (AGIRC-ARRCO)", "study_fund": "CPF — Compte Personnel de Formation (training credits)", "tax_advantaged": "PER (Plan d\'Épargne Retraite)"},
+    "CANADA":      {"pension": "CPP/QPP + RRSP", "study_fund": "RESP (kids) — closest concept", "tax_advantaged": "TFSA + RRSP"},
+    "AUSTRALIA":   {"pension": "Superannuation (11.5% employer-mandated)", "study_fund": "None", "tax_advantaged": "Super salary-sacrifice"},
+    "NETHERLANDS": {"pension": "AOW state + pension fund (often industry-wide)", "study_fund": "None", "tax_advantaged": "Lijfrente (annuity)"},
+    "SWITZERLAND": {"pension": "AHV + Pillar 2 (mandatory) + Pillar 3a", "study_fund": "None", "tax_advantaged": "Pillar 3a (~CHF 7K/yr)"},
+    "GEORGIA":     {"pension": "Mandatory accumulative pension (2% employer + 2% employee)", "study_fund": "None", "tax_advantaged": "None"},
+    "ESTONIA":     {"pension": "Three-pillar: state + funded II + voluntary III", "study_fund": "None", "tax_advantaged": "Pillar III (tax-deductible)"},
+    "URUGUAY":     {"pension": "BPS + AFAP (private fund)", "study_fund": "None", "tax_advantaged": "AFAP voluntary contributions"},
+    "MALTA":       {"pension": "Two-thirds Pension Scheme + private", "study_fund": "None", "tax_advantaged": "Personal Retirement Scheme (PRS)"},
+    "SINGAPORE":   {"pension": "CPF — Central Provident Fund (mandatory 20%+17%)", "study_fund": "None", "tax_advantaged": "SRS (Supplementary Retirement Scheme)"},
+    "PARAGUAY":    {"pension": "IPS (mandatory) — modest", "study_fund": "None", "tax_advantaged": "None"},
+    "ANDORRA":     {"pension": "CASS social + private plans", "study_fund": "None", "tax_advantaged": "Private retirement insurance"},
+    "NEW_ZEALAND": {"pension": "NZ Super (universal) + KiwiSaver", "study_fund": "None — KiwiSaver allows 1st home withdrawal", "tax_advantaged": "KiwiSaver (3%+3%+government top-up)"},
+    "BULGARIA":    {"pension": "NSSI + supplementary mandatory + voluntary", "study_fund": "None", "tax_advantaged": "Voluntary pension funds"},
+    "ROMANIA":     {"pension": "CNPP state + Pillar II (mandatory) + III (voluntary)", "study_fund": "None", "tax_advantaged": "Pillar III voluntary pension"},
+    "HUNGARY":     {"pension": "TB (state) + voluntary pension funds", "study_fund": "None", "tax_advantaged": "Voluntary pension fund (NYESZ-R)"},
+    "PANAMA":      {"pension": "CSS — modest social security", "study_fund": "None", "tax_advantaged": "None"},
+    "MONACO":      {"pension": "CCSS (French-aligned)", "study_fund": "None", "tax_advantaged": "None"},
+}
+
+
+def compute_breakdown(code: str, cdata: dict, earned: float, passive: float, profile: dict) -> dict:
+    """Returns line-item tax breakdown for payslip-style comparison.
+
+    Output (USD/year):
+      gross, income_tax, social_security, health_tax, pension_required (employee side),
+      net_estimate, pension_products (descriptive)
+    """
+    if not cdata:
+        return {}
+
+    # Estimate top-bracket income tax (rough — uses PIT top rate × earned with 30% discount for brackets)
+    pit_rate = float(cdata.get("personal_income_tax_top", cdata.get("personal_income_tax", 0)) or 0)
+    # Apply a bracket discount: top rate × ~70% (most taxpayers don't hit top)
+    income_tax = round(earned * pit_rate * 0.70) if earned > 0 else 0
+
+    # Capital-gains / dividend tax on passive
+    cg_rate = float(cdata.get("capital_gains_tax", 0) or 0)
+    div_rate = float(cdata.get("dividend_tax", 0) or 0)
+    passive_tax = round(passive * max(cg_rate, div_rate)) if passive > 0 else 0
+    income_tax += passive_tax
+
+    # Social security (uses our SOCIAL_SECURITY table)
+    social_security = 0
+    health_tax = 0
+    ss_info = SOCIAL_SECURITY.get(code.upper())
+    if ss_info:
+        ss_rate = ss_info.get("rate", 0)
+        ss_cap = ss_info.get("cap_usd")
+        ss_base = min(earned, ss_cap) if ss_cap else earned
+        social_security = round(ss_base * ss_rate)
+
+    # Israel special-case: split health out (3.1-5% mas briut included in BL rate above for Israel)
+    if code.upper() == "ISRAEL":
+        health_tax = round(earned * 0.05)  # 5% mas briut (top rate)
+        social_security = round(earned * 0.07)  # 7% BL (top, capped)
+
+    # Pension required (employee side) — Israel mandates ~6%, similar in many countries
+    pension_required = 0
+    if code.upper() == "ISRAEL":
+        pension_required = round(earned * 0.06)
+    elif code.upper() == "AUSTRALIA":
+        pension_required = round(earned * 0)  # employer-paid only
+    elif code.upper() == "SINGAPORE":
+        pension_required = round(earned * 0.20)  # CPF employee
+    elif code.upper() in ("UK", "USA", "CANADA"):
+        pension_required = round(earned * 0)  # voluntary
+
+    net_estimate = round(earned + passive - income_tax - social_security - health_tax - pension_required)
+
+    return {
+        "gross_annual_usd": round(earned + passive),
+        "income_tax": income_tax,
+        "social_security": social_security,
+        "health_tax": health_tax,
+        "pension_required": pension_required,
+        "net_estimate": net_estimate,
+        "pension_products": COUNTRY_PENSION_PRODUCTS.get(code.upper(), {}),
+    }
+
 def estimate_tax(code: str, cdata: dict, income: dict, profile: dict) -> float:
     """Full tax estimate for one country using brackets, SS, special regimes, and crypto rules."""
     emp = float(income.get("employment", 0) or 0)
@@ -1531,12 +1627,17 @@ async def israel_analysis(request: IsraelReq, req: Request):
         annual_savings = (israel_annual_tax - annual_tax) if annual_tax is not None else None
 
         extras = ISRAEL_COUNTRY_EXTRA_DATA.get(c["code"], {})
+        # Compute payslip-style line-item breakdown for side-by-side comparison
+        earned_for_breakdown = float(income.get("employment", 0) or 0) + float(income.get("business", 0) or 0)
+        passive_for_breakdown = float(income.get("capital_gains", 0) or 0) + float(income.get("dividends", 0) or 0)
+        breakdown = compute_breakdown(c["code"], cdata, earned_for_breakdown, passive_for_breakdown, p) if cdata else {}
         scored_countries.append({
             **c,
             **extras,
             "adjusted_score": score,
             "annual_tax_estimate": round(annual_tax) if annual_tax is not None else None,
             "annual_savings_vs_israel": round(annual_savings) if annual_savings is not None else None,
+            "breakdown": breakdown,
         })
 
     scored_countries.sort(key=lambda x: x["adjusted_score"], reverse=True)
@@ -1625,6 +1726,7 @@ async def israel_analysis(request: IsraelReq, req: Request):
         "residency_rules": ISRAEL_RESIDENCY_RULES,
         "section_100a": ISRAEL_SECTION_100A,
         "israel_annual_tax": round(israel_annual_tax),
+        "israel_breakdown": compute_breakdown("ISRAEL", israel_data, float(income.get("employment", 0) or 0) + float(income.get("business", 0) or 0), float(income.get("capital_gains", 0) or 0) + float(income.get("dividends", 0) or 0), p) if israel_data else {},
         "total_income_usd": round(total_income),
         "bituach_leumi": bituach_leumi_analysis,
     }

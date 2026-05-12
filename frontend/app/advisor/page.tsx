@@ -1597,9 +1597,47 @@ function IsraelExitWizard({
         {step === 0 && (
           <div className="space-y-4">
             <div className="rounded-xl p-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-              <h3 className="font-semibold text-sm mb-3">
-                {tr.israelFinancialProducts}
-              </h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-sm">
+                  {tr.israelFinancialProducts}
+                </h3>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const PE = (window as unknown as { PayslipExtractor?: { pickAndExtract: (cb?: (p: number) => void) => Promise<Record<string, number>> } }).PayslipExtractor;
+                    if (!PE) { alert('OCR not loaded yet — refresh the page.'); return; }
+                    const btn = document.activeElement as HTMLButtonElement;
+                    const orig = btn ? btn.textContent : '';
+                    if (btn) { btn.textContent = '⏳ 0%'; btn.disabled = true; }
+                    try {
+                      const data = await PE.pickAndExtract((pct) => { if (btn) btn.textContent = `⏳ ${pct}%`; });
+                      // Map extracted fields onto IsraelProfile + UserProfile
+                      const updates: Partial<IsraelProfile> = {};
+                      if (data.keren_hishtalmut) updates.keren_hishtalmut_value = data.keren_hishtalmut;
+                      if (data.bituach_menahalim) updates.bituach_menahalim_value = data.bituach_menahalim;
+                      if (data.pension_employee) updates.keren_pansiya_value = data.pension_employee;
+                      if (data.gemel) updates.kupat_gemel_value = data.gemel;
+                      if (Object.keys(updates).length) {
+                        setIp(prev => ({ ...prev, ...updates }));
+                      }
+                      // Show what was found
+                      const found = Object.entries(data)
+                        .filter(([k, v]) => typeof v === 'number' && k !== 'confidence')
+                        .map(([k, v]) => `${k}: ${v}`)
+                        .join(', ');
+                      alert(`✅ Extracted ${data.confidence}/10 fields\n\n${found || '(none)'}`);
+                    } catch (e) {
+                      alert('❌ ' + (e as Error).message);
+                    } finally {
+                      if (btn) { btn.textContent = orig; btn.disabled = false; }
+                    }
+                  }}
+                  className="text-xs px-3 py-1.5 rounded-lg font-semibold"
+                  style={{ background: 'var(--accent)', color: '#fff', border: 'none', cursor: 'pointer' }}
+                  title="Upload an Israeli payslip — OCR will fill the fields below">
+                  📎 {lang === 'he' ? 'העלה תלוש' : lang === 'pt' ? 'Carregar contracheque' : lang === 'es' ? 'Subir nómina' : 'Upload payslip'}
+                </button>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {([
                   ['keren_hishtalmut_value', tr.israelKHValue],
