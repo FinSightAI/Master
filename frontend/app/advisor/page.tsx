@@ -9944,7 +9944,11 @@ export default function AdvisorPage() {
           setMessages(prev => {
             const upd = [...prev];
             const last = upd[upd.length - 1];
-            if (last.role === 'assistant') upd[upd.length - 1] = { ...last, content: last.content + event.text };
+            if (last.role === 'assistant') {
+              // Clear warming-up placeholder before first real content
+              const base = last.content.startsWith('⏳') ? '' : last.content;
+              upd[upd.length - 1] = { ...last, content: base + event.text };
+            }
             return upd;
           });
         } else if (event.type === 'tool_start' || event.type === 'tool_result') {
@@ -9954,11 +9958,18 @@ export default function AdvisorPage() {
             if (last.role === 'assistant') upd[upd.length - 1] = { ...last, tools: [...(last.tools || []), event as ToolEvent] };
             return upd;
           });
+        } else if (event.type === 'status') {
+          setMessages(prev => {
+            const upd = [...prev];
+            const last = upd[upd.length - 1];
+            if (last.role === 'assistant') upd[upd.length - 1] = { ...last, content: event.message };
+            return upd;
+          });
         } else if (event.type === 'error') {
           setMessages(prev => {
             const upd = [...prev];
             const last = upd[upd.length - 1];
-            if (last.role === 'assistant') upd[upd.length - 1] = { ...last, content: `❌ Error: ${event.message}` };
+            if (last.role === 'assistant') upd[upd.length - 1] = { ...last, content: `❌ ${event.message}` };
             return upd;
           });
         }

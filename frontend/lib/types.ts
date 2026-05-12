@@ -50,7 +50,8 @@ export type StreamEvent =
   | { type: 'tool_start'; tool: string; input: Record<string, unknown> }
   | { type: 'tool_result'; tool: string; result_preview: string }
   | { type: 'done' }
-  | { type: 'error'; message: string };
+  | { type: 'error'; message: string }
+  | { type: 'status'; message: string };
 
 export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   web_search: 'Web Search',

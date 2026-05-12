@@ -98,7 +98,7 @@ export async function* streamChat(
         pt: '⏳ Um momento, preparando a resposta…',
         es: '⏳ Un momento, preparando la respuesta…' } as Record<string, string>
     )[lang] || '⏳ One moment…';
-    yield { type: 'error', message: msg };
+    yield { type: 'status', message: msg };
     try { await fetch(`${API_BASE}/health`, { cache: 'no-store' }); } catch {}
     await new Promise(r => setTimeout(r, 8000));
     response = await _sendChat(message, profile, conversationHistory, provider);
@@ -119,7 +119,7 @@ export async function* streamChat(
     };
     const msg = err?.detail?.message_he || err?.detail?.message
       || ([502, 503, 504].includes(response.status) ? (fallback[lang2] || fallback.en) : `Server error: ${response.status}`);
-    yield { type: 'error', message: msg };
+    yield { type: 'status', message: msg };
     return;
   }
 
