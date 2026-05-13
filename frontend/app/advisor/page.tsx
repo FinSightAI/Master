@@ -15,6 +15,19 @@ import { streamChat, fetchSavings, fetchCountry, analyzeDocument, fetchIsraelAna
 import { UserProfile, ChatMessage, ToolEvent, DEFAULT_PROFILE, TOOL_DISPLAY_NAMES, TOOL_ICONS, SavingsAnalysis, SavedSession, IsraelProfile, DEFAULT_ISRAEL_PROFILE, IsraelAnalysis, CompanyAnalysis, TaxUpdate, Scenario } from '../../lib/types';
 import { Lang, useTranslation } from '../../lib/i18n';
 
+// Render free tier sleeps after 15 min idle. When the FastAPI backend is cold,
+// the very first request can fail with a TypeError ("Failed to fetch") before
+// the 502/503/504 retry path in streamChat ever runs. In that case we want to
+// surface a friendly "warming up" status rather than the generic ❌ error —
+// otherwise users blame the app for what is really just a 30-second nap.
+const warmingMsg = (lang: string): string =>
+  (({
+    he: '⏳ השרת מתחמם, רגע אחד…',
+    en: '⏳ Warming up the server, one moment…',
+    pt: '⏳ Aquecendo o servidor, um momento…',
+    es: '⏳ Calentando el servidor, un momento…',
+  } as Record<string, string>)[lang]) || '⏳ Warming up the server, one moment…';
+
 // ─── Country Comparison Panel ────────────────────────────────────────────────
 const COUNTRIES = [
   { code: 'UAE', name: 'UAE 🇦🇪', flag: '🇦🇪' },
@@ -9864,10 +9877,15 @@ export default function AdvisorPage() {
       for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
       const b64 = btoa(binary);
       const result = await analyzeDocument(file.name, b64, file.type || 'application/pdf', lang);
-      const text = result.analysis || (result.error ? `❌ ${result.error}` : '❌ Error');
+      let text: string;
+      if (result.analysis) text = result.analysis;
+      else if (result.error && /502|503|504|gateway|warming|timeout|cold/i.test(result.error)) text = warmingMsg(lang);
+      else text = result.error ? `❌ ${result.error}` : '❌ Error';
       setMessages(prev => { const u = [...prev]; u[u.length - 1] = { ...u[u.length - 1], content: text }; return u; });
-    } catch {
-      setMessages(prev => { const u = [...prev]; u[u.length - 1] = { ...u[u.length - 1], content: '❌ Upload failed.' }; return u; });
+    } catch (err) {
+      // Cold-start network failures throw TypeError("Failed to fetch") before any HTTP status comes back.
+      const isColdStart = err instanceof TypeError || /fetch|network|aborted|cors/i.test(String(err));
+      setMessages(prev => { const u = [...prev]; u[u.length - 1] = { ...u[u.length - 1], content: isColdStart ? warmingMsg(lang) : '❌ Upload failed.' }; return u; });
     } finally {
       setIsLoading(false);
     }
@@ -10050,11 +10068,17 @@ export default function AdvisorPage() {
         }
         return prev;
       });
-    } catch {
+    } catch (err) {
+      // Cold-start network failures throw TypeError("Failed to fetch") before any
+      // HTTP status comes back, so the streamChat 502/503/504 retry path never runs.
+      // Treat them as a warming-up status, not a hard ❌ error.
+      const isColdStart = err instanceof TypeError || /fetch|network|aborted|cors/i.test(String(err));
       setMessages(prev => {
         const upd = [...prev];
         const last = upd[upd.length - 1];
-        if (last.role === 'assistant') upd[upd.length - 1] = { ...last, content: '❌ Connection error. Please try again.' };
+        if (last.role === 'assistant') {
+          upd[upd.length - 1] = { ...last, content: isColdStart ? warmingMsg(lang) : '❌ Connection error. Please try again.' };
+        }
         return upd;
       });
     } finally {
