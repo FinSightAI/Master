@@ -394,6 +394,20 @@ export function WizeBar() {
         <span style={{fontSize:11,fontWeight:600,color:'#f59e0b',background:'rgba(245,158,11,0.12)',padding:'2px 8px',borderRadius:99,lineHeight:1.4}}>WizeTax</span>
       </a>
       <div style={{display:'flex',alignItems:'center',gap:10}}>
+        <div style={{display:'flex',gap:2,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.12)',borderRadius:8,padding:3}}>
+          {(['HE','EN','PT','ES'] as const).map(L => {
+            const v = L.toLowerCase();
+            const active = (typeof window !== 'undefined' && (localStorage.getItem('wl_lang') || 'he') === v);
+            return (
+              <button key={L} data-wl-lang={v}
+                onClick={() => { localStorage.setItem('wl_lang', v); location.reload(); }}
+                style={{background:active?'rgba(99,102,241,0.18)':'none',border:'none',color:active?'#a5b4fc':'#7b88ad',padding:'3px 8px',borderRadius:6,fontSize:11,fontWeight:700,cursor:'pointer',letterSpacing:.4}}>
+                {L}
+              </button>
+            );
+          })}
+        </div>
+
         
         {authReady && isConnected && (
           <div style={{display:'flex',alignItems:'center',gap:6}}>
