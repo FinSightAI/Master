@@ -11086,19 +11086,19 @@ export default function AdvisorPage() {
           </div>
           {(lang === 'he' ? [
             'בדוק תושבות מס לפני מעבר',
-            'OECD Tax Database עודכן ב-2024',
+            'OECD Tax Database עודכן ב-2025',
             'אמנת מס יכולה לחסוך עד 20%',
           ] : lang === 'pt' ? [
             'Verifique residência fiscal antes de mudar',
-            'OECD Tax Database atualizado em 2024',
+            'OECD Tax Database atualizado em 2025',
             'Tratados podem economizar até 20%',
           ] : lang === 'es' ? [
             'Verifica residencia fiscal antes de mudarte',
-            'Base OECD actualizada en 2024',
+            'Base OECD actualizada en 2025',
             'Tratados pueden ahorrar hasta 20%',
           ] : [
             'Check tax residency before relocating',
-            'OECD Tax Database updated 2024',
+            'OECD Tax Database updated 2025',
             'Tax treaties can save up to 20%',
           ]).map((tip, i) => (
             <div key={i} style={{

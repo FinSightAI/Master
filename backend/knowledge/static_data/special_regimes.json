@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-01-01",
+  "last_updated": "2025-12-31",
   "regimes": {
     "portugal_ifici": {
       "name": "Portugal IFICI (ex-NHR)",
@@ -7,9 +7,14 @@
       "country": "Portugal",
       "status": "active",
       "replaced": "NHR (Non-Habitual Resident) - ended Dec 31, 2023",
-      "flat_rate": 0.20,
+      "flat_rate": 0.2,
       "duration_years": 10,
-      "eligible_income_types": ["employment", "self_employment", "business", "professional_services"],
+      "eligible_income_types": [
+        "employment",
+        "self_employment",
+        "business",
+        "professional_services"
+      ],
       "foreign_income_treatment": "exempt in most cases",
       "eligible_activities": [
         "Highly qualified professionals (list of qualifying activities)",
@@ -30,8 +35,14 @@
         "Less generous than old NHR for passive income",
         "Must have qualifying employment/activity"
       ],
-      "compatible_with": ["Portugal Golden Visa"],
-      "best_for": ["Tech professionals", "Scientists", "Startup founders relocating to Portugal"]
+      "compatible_with": [
+        "Portugal Golden Visa"
+      ],
+      "best_for": [
+        "Tech professionals",
+        "Scientists",
+        "Startup founders relocating to Portugal"
+      ]
     },
     "uae_golden_visa": {
       "name": "UAE Golden Visa",
@@ -59,7 +70,13 @@
         "Live, work, study in UAE"
       ],
       "banking_access": "excellent",
-      "best_for": ["HNWI", "Entrepreneurs", "Real estate investors", "Remote workers", "Crypto investors"]
+      "best_for": [
+        "HNWI",
+        "Entrepreneurs",
+        "Real estate investors",
+        "Remote workers",
+        "Crypto investors"
+      ]
     },
     "cyprus_non_dom": {
       "name": "Cyprus Non-Domicile Regime",
@@ -93,7 +110,12 @@
         "Low 12.5% corporate tax",
         "EU member state"
       ],
-      "best_for": ["Investors with dividend income", "Crypto holders", "Entrepreneurs", "Fund managers"]
+      "best_for": [
+        "Investors with dividend income",
+        "Crypto holders",
+        "Entrepreneurs",
+        "Fund managers"
+      ]
     },
     "malta_non_dom": {
       "name": "Malta Non-Dom Regime",
@@ -113,7 +135,10 @@
         "Min EUR 5,000 tax regardless",
         "Must be careful about remittance"
       ],
-      "best_for": ["HNWI with foreign investments", "Those wanting EU base without high tax"]
+      "best_for": [
+        "HNWI with foreign investments",
+        "Those wanting EU base without high tax"
+      ]
     },
     "malta_hnwi": {
       "name": "Malta HNWI Programme",
@@ -127,7 +152,9 @@
         "Must own/rent property in Malta",
         "Must not be in employment in Malta"
       ],
-      "best_for": ["High income individuals wanting EU residence with low flat rate"]
+      "best_for": [
+        "High income individuals wanting EU residence with low flat rate"
+      ]
     },
     "italy_flat_tax_100k": {
       "name": "Italy Foreign Income Flat Tax",
@@ -155,7 +182,11 @@
         "Crypto: complex treatment if bought in Italy",
         "High cost if foreign income is small"
       ],
-      "best_for": ["HNWI with large foreign income", "Billionaires", "Foreign retirees with pensions"]
+      "best_for": [
+        "HNWI with large foreign income",
+        "Billionaires",
+        "Foreign retirees with pensions"
+      ]
     },
     "italy_7pct_south": {
       "name": "Italy 7% Southern Regime",
@@ -163,7 +194,16 @@
       "status": "active",
       "flat_rate": 0.07,
       "duration_years": 10,
-      "eligible_regions": ["Sicily", "Sardinia", "Calabria", "Campania", "Basilicata", "Abruzzo", "Molise", "Puglia"],
+      "eligible_regions": [
+        "Sicily",
+        "Sardinia",
+        "Calabria",
+        "Campania",
+        "Basilicata",
+        "Abruzzo",
+        "Molise",
+        "Puglia"
+      ],
       "municipality_size": "under 20,000 inhabitants",
       "eligibility": [
         "Foreign retiree with pension from abroad",
@@ -171,7 +211,9 @@
         "Must buy/rent in qualifying municipality"
       ],
       "covers": "All foreign pension income",
-      "best_for": ["Foreign retirees seeking EU lifestyle at very low tax"]
+      "best_for": [
+        "Foreign retirees seeking EU lifestyle at very low tax"
+      ]
     },
     "swiss_lump_sum": {
       "name": "Switzerland Lump-Sum Taxation",
@@ -202,7 +244,10 @@
         "Some cantons have abolished it (Zurich, Bern, Basel)",
         "High minimum in some cantons"
       ],
-      "best_for": ["Ultra-HNWI with large foreign income", "Retirees seeking stability and security"]
+      "best_for": [
+        "Ultra-HNWI with large foreign income",
+        "Retirees seeking stability and security"
+      ]
     },
     "israel_oleh_exemption": {
       "name": "Israel New Immigrant (Oleh) Exemption",
@@ -235,7 +280,10 @@
         "High cost of living in major cities",
         "Military service obligations"
       ],
-      "best_for": ["Jewish individuals with large foreign income", "Entrepreneurs selling companies abroad"]
+      "best_for": [
+        "Jewish individuals with large foreign income",
+        "Entrepreneurs selling companies abroad"
+      ]
     },
     "singapore_global_investor": {
       "name": "Singapore Global Investor Programme",
@@ -256,7 +304,10 @@
         "0% dividend tax",
         "Global financial hub"
       ],
-      "best_for": ["Entrepreneurs", "Investors seeking Asian base"]
+      "best_for": [
+        "Entrepreneurs",
+        "Investors seeking Asian base"
+      ]
     },
     "greece_100k_flat_tax": {
       "name": "Greece Alternative Taxation for Foreign Income",
@@ -278,7 +329,9 @@
         "Golden Visa if investment is real estate (EUR 250k+)",
         "EU residence"
       ],
-      "best_for": ["HNWI wanting Mediterranean EU lifestyle"]
+      "best_for": [
+        "HNWI wanting Mediterranean EU lifestyle"
+      ]
     },
     "uae_freezone": {
       "name": "UAE Free Zone Company",
@@ -301,7 +354,12 @@
       ],
       "substance_required": true,
       "substance_note": "Must have real economic substance for 0% rate",
-      "best_for": ["Entrepreneurs", "Service businesses", "Digital businesses", "Traders"]
+      "best_for": [
+        "Entrepreneurs",
+        "Service businesses",
+        "Digital businesses",
+        "Traders"
+      ]
     },
     "georgia_virtual_zone": {
       "name": "Georgia Virtual Zone",
@@ -310,10 +368,16 @@
       "corporate_tax": 0,
       "corporate_tax_note": "0% on IT services delivered outside Georgia",
       "personal_dividend_tax": 0.05,
-      "eligibility": ["IT companies providing services outside Georgia"],
+      "eligibility": [
+        "IT companies providing services outside Georgia"
+      ],
       "registration_time": "1-2 weeks",
       "annual_cost": "low",
-      "best_for": ["IT companies", "Software developers", "Tech startups"]
+      "best_for": [
+        "IT companies",
+        "Software developers",
+        "Tech startups"
+      ]
     },
     "portugal_golden_visa": {
       "name": "Portugal Golden Visa",
@@ -335,7 +399,9 @@
         "Travel freedom across EU/Schengen",
         "Can combine with IFICI regime"
       ],
-      "best_for": ["Those seeking EU citizenship with minimal residency"]
+      "best_for": [
+        "Those seeking EU citizenship with minimal residency"
+      ]
     },
     "cyprus_60_day": {
       "name": "Cyprus 60-Day Rule",
@@ -350,14 +416,18 @@
       ],
       "enables": "Full Cyprus tax residency and non-dom status",
       "benefits": "0% dividend, 0% interest, low corporate tax, no CGT on securities",
-      "best_for": ["Digital nomads", "Investors with flexible location", "Those with foreign company dividends"]
+      "best_for": [
+        "Digital nomads",
+        "Investors with flexible location",
+        "Those with foreign company dividends"
+      ]
     },
     "netherlands_30pct": {
       "name": "Netherlands 30% Ruling",
       "country": "Netherlands",
       "status": "modified",
       "status_note": "Duration reduced from 5 to max 5 years (with evaluation)",
-      "discount": 0.30,
+      "discount": 0.3,
       "discount_note": "30% of gross salary can be paid tax-free as expense allowance",
       "eligibility": [
         "Recruited from abroad",
@@ -365,7 +435,9 @@
         "Specific salary threshold required"
       ],
       "effective_reduction": "Reduces effective tax rate significantly on qualifying salary",
-      "best_for": ["Expat employees transferring to Netherlands"]
+      "best_for": [
+        "Expat employees transferring to Netherlands"
+      ]
     }
   }
 }
