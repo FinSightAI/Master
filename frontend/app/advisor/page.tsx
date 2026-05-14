@@ -1,4 +1,4 @@
-'use client';
+'use client'; // build: 1778787601
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';

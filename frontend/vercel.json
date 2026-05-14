@@ -49,6 +49,5 @@
       "path": "/api/keepalive",
       "schedule": "0 * * * *"
     }
-  ],
-  "_lastDeployNudge": "1778787494"
+  ]
 }
