@@ -41,7 +41,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="sw-register" strategy="afterInteractive">{`
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-              navigator.serviceWorker.register('/sw.js').then(reg => {
+              // updateViaCache:'none' bypasses Cloudflare's 4-hour edge cache on sw.js
+              navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(reg => {
                 reg.addEventListener('updatefound', () => {
                   const sw = reg.installing;
                   if (!sw) return;
