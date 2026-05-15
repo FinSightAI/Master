@@ -10903,27 +10903,9 @@ export default function AdvisorPage() {
                     </div>
                   )}
 
-                  {/* Israeli quick-start actions */}
-                  {lang === 'he' && (
-                    <div className="max-w-2xl mx-auto mb-4">
-                      <div className="text-xs font-semibold mb-2 px-1" style={{ color: 'var(--text-muted)' }}>🇮🇱 כלים לישראלים</div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        {[
-                          { icon: '📊', label: 'כמה אחסוך בחו"ל?', action: () => setShowSavings(true) },
-                          { icon: '🇮🇱', label: 'תכנון עזיבת ישראל', action: () => setShowIsraelWizard(true) },
-                          { icon: '⚖️', label: 'מחשבון מס יציאה', action: () => setShowExitTax(true) },
-                          { icon: '🔍', label: 'בדוק תוכנית מס', action: () => setPlanMode(true) },
-                        ].map((card, i) => (
-                          <button key={i} onClick={card.action}
-                            className="rounded-xl p-3 text-center transition-all hover:opacity-80"
-                            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                            <div className="text-2xl mb-1">{card.icon}</div>
-                            <div className="text-xs font-medium">{card.label}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  {/* Israeli quick-start actions moved out of the hero — the same 4 tools
+                      (Savings / Israel Wizard / Exit Tax / Plan Mode) live in the sidebar
+                      'ישראל — מס יציאה' section so users always have one obvious entry. */}
 
                   <div className="max-w-2xl mx-auto">
                     <div className="text-xs font-semibold mb-2 px-1" style={{ color: 'var(--text-muted)' }}>{tr.quickQuestions}</div>
