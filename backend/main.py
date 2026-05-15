@@ -23,6 +23,41 @@ app = FastAPI(title="Tax Master AI", version="1.0.0")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+
+# ── PII redaction for logs ────────────────────────────────────────────────────
+# Every log line that mentions a sensitive key gets its value masked. This
+# protects us if a dict accidentally lands in a log statement — e.g. a future
+# print(profile) or logger.info(payload) call. uvicorn's default access log
+# already omits bodies, but this guards everything else.
+import logging
+import re as _re
+
+_SENSITIVE_PATTERNS = [
+    # JSON-style: "field":"value"  →  "field":"***"
+    _re.compile(r'("(?:password|api_?key|access_?token|authorization|secret|bearer|email|wl_token|id_token)"\s*:\s*)"[^"]*"', _re.IGNORECASE),
+    # k=v style:  password=value  →  password=***
+    _re.compile(r'\b(password|api_?key|access_?token|authorization|secret|bearer|email|wl_token|id_token)=([^&\s]+)', _re.IGNORECASE),
+    # Bare bearer / sk- / AIza patterns
+    _re.compile(r'\b(sk-[A-Za-z0-9]{10,}|AIza[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._\-]+)'),
+]
+
+class _PiiRedactFilter(logging.Filter):
+    def filter(self, record):
+        try:
+            msg = record.getMessage()
+            for pat in _SENSITIVE_PATTERNS:
+                msg = pat.sub(lambda m: (m.group(1) + '"***"' if m.group(0).startswith('"') else m.group(1) + '=***') if m.lastindex and m.lastindex > 0 else '***', msg)
+            record.msg = msg
+            record.args = ()
+        except Exception:
+            pass
+        return True
+
+# Attach to every common logger (root + uvicorn + ours)
+_redactor = _PiiRedactFilter()
+for _logger_name in ('', 'uvicorn', 'uvicorn.access', 'uvicorn.error', 'fastapi'):
+    logging.getLogger(_logger_name).addFilter(_redactor)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", os.getenv("FRONTEND_URL", "")],
