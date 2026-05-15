@@ -29,13 +29,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
  <body style={{ margin: 0, padding: 0, paddingTop: 36, overflow: 'hidden' }} suppressHydrationWarning>
  <WizeBar />
  <WizeOnboarding />
- <Script src="https://www.googletagmanager.com/gtag/js?id=G-3W9ZZ0008E" strategy="afterInteractive" />
- <Script id="ga-init" strategy="afterInteractive">{`
- window.dataLayer = window.dataLayer || [];
- function gtag(){dataLayer.push(arguments);}
- gtag('js', new Date());
- gtag('config', 'G-3W9ZZ0008E');
- `}</Script>
  {children}
  <ThemeToggle />
  <Script id="sw-register" strategy="afterInteractive">{`
