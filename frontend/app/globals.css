@@ -2,6 +2,20 @@
 html { scroll-behavior: smooth; }
 body { transition: background 200ms ease; }
 
+/* Mobile: the shared 56px bottom-nav covers the bottom of the viewport.
+   The advisor main container is fixed top:36 bottom:0 — without this rule
+   the last screenful of scrollable content sits BEHIND the bottom-nav and
+   users can't reach it. Lift the container by 56px + safe-area on mobile. */
+@media (max-width: 820px) {
+  body > div[style*="position: fixed"][style*="top: 36"][style*="bottom: 0"] {
+    bottom: calc(56px + env(safe-area-inset-bottom)) !important;
+  }
+  /* Same rescue for any scrollable inner panes — give them headroom. */
+  body div[style*="overflowY"][style*="auto"] {
+    scroll-padding-bottom: 24px;
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
