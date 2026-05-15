@@ -9892,7 +9892,12 @@ export default function AdvisorPage() {
   };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Only auto-scroll-to-bottom when there's an actual conversation in flight.
+    // Firing scrollIntoView() on an empty messages list (initial render) was
+    // pulling the chat container down on RTL/Hebrew first-paint and hiding
+    // the hero above the fold — user had to drag the page down to see it.
+    if (messages.length === 0) return;
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [messages]);
 
   const saveProfile = () => {
