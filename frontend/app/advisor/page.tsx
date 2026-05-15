@@ -10609,12 +10609,6 @@ export default function AdvisorPage() {
             Spacer keeps the footer pinned to the bottom of the panel. */}
         <div className="flex-1"></div>
 
-        <div className="p-3 border-t text-xs" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
-          <div className="flex items-center gap-1">
-            <Zap size={10} className="text-yellow-400" />
-            {tr.modelInfo}
-          </div>
-        </div>
       </div>
 
       {/* ── Sidebar overlay (mobile) ── */}
