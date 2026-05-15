@@ -1,5 +1,6 @@
 import { UserProfile, StreamEvent, SavingsAnalysis, IsraelProfile, IsraelAnalysis, CompanyAnalysis, TaxUpdate } from './types';
 import { getIdToken } from './firebase';
+import { stripIdentity } from './pii';
 
 const API_BASE = '/api';
 
@@ -36,7 +37,7 @@ export async function fetchSavings(profile: UserProfile, signal?: AbortSignal): 
   const res = await fetch(`${API_BASE}/savings`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ profile }),
+    body: JSON.stringify({ profile: stripIdentity(profile) }),
     signal,
   });
   if (!res.ok) throw new Error('Failed to fetch savings data');
@@ -47,7 +48,10 @@ export async function fetchIsraelAnalysis(profile: UserProfile | null, israelPro
   const res = await fetch(`${API_BASE}/israel`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ profile: profile || {}, israel_profile: israelProfile }),
+    body: JSON.stringify({
+      profile: stripIdentity(profile || {}),
+      israel_profile: stripIdentity(israelProfile),
+    }),
     signal,
   });
   if (!res.ok) throw new Error('Failed to fetch Israel analysis');
@@ -78,8 +82,12 @@ async function _sendChat(message: string, profile: UserProfile | null, conversat
     method: 'POST',
     headers: await authHeaders(),
     body: JSON.stringify({
+      // user message is whatever they typed — we don't rewrite it, but the
+      // pii helper's scrubString does run over any objects we pass.
       message,
-      profile,
+      // strip name/email/phone/IDs from the profile context BEFORE the AI
+      // provider sees it. Numbers (income, balances) kept for answer accuracy.
+      profile: profile ? stripIdentity(profile) : null,
       conversation_history: conversationHistory,
       provider: provider ?? null,
     }),
