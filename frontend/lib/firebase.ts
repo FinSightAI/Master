@@ -28,16 +28,20 @@ const firebaseConfig = {
 const app  = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Token passed via URL from WizeLife dashboard (?wl_token=xxx)
+// Token passed via URL from WizeLife dashboard (#wl_token=xxx, query fallback)
 let _urlToken: string | null = null;
 if (typeof window !== 'undefined') {
   const params = new URLSearchParams(window.location.search);
-  const t = params.get('wl_token');
+  const hashParams = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+  const t = hashParams.get('wl_token') || params.get('wl_token');
   if (t) {
     _urlToken = t;
-    // Remove token from URL bar (clean up)
+    // Remove token from URL bar (clean up — both query and fragment)
     params.delete('wl_token');
-    const clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    hashParams.delete('wl_token');
+    const queryStr = params.toString();
+    const hashStr = hashParams.toString();
+    const clean = window.location.pathname + (queryStr ? '?' + queryStr : '') + (hashStr ? '#' + hashStr : '');
     window.history.replaceState({}, '', clean);
   }
 }

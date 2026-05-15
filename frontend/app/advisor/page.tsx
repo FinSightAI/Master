@@ -10175,7 +10175,7 @@ export default function AdvisorPage() {
   return (
     <>
     {!serverWarm && (
-      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999, background: 'rgba(251,191,36,0.12)', borderBottom: '1px solid rgba(251,191,36,0.4)', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>
+      <div style={{ position: 'fixed', top: 36, left: 0, right: 0, zIndex: 9999, background: 'rgba(251,191,36,0.12)', borderBottom: '1px solid rgba(251,191,36,0.4)', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>
         <span style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }}>⏳</span>
         <span style={{ color: '#fbbf24' }}>{lang === 'he' ? 'השרת מתחמם — תשובה ראשונה תיקח ~15 שניות' : lang === 'pt' ? 'Servidor iniciando — primeira resposta em ~15s' : lang === 'es' ? 'Servidor iniciando — primera respuesta en ~15s' : 'Server waking up — first reply may take ~15 seconds'}</span>
       </div>

@@ -59,7 +59,7 @@ export function WizeOnboarding() {
         }
       }}
       style={{
-        position: 'fixed', bottom: 20, right: 20, zIndex: 9997,
+        position: 'fixed', bottom: 'calc(20px + 56px + env(safe-area-inset-bottom))', right: 20, zIndex: 9997,
         width: 32, height: 32, borderRadius: '50%',
         background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)',
         color: COLOR, fontSize: 14, fontWeight: 700, cursor: 'pointer',
@@ -104,21 +104,29 @@ export function WizeBar() {
     const unsub = onAuth((u) => { setUser(u); setAuthReady(true); });
 
     try {
-      const p = new URLSearchParams(window.location.search);
-      const t = p.get('wl_token');
-        const planParam = p.get('wl_plan');
+      const p  = new URLSearchParams(window.location.search);
+      const hp = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+      const t = hp.get('wl_token') || p.get('wl_token');
+        const planParam = hp.get('wl_plan') || p.get('wl_plan');
         if (planParam && ['pro','yolo','free'].includes(planParam)) {
           localStorage.setItem('wl_plan', planParam);
         }
-      const n = p.get('wl_nick');
+      const n = hp.get('wl_nick') || p.get('wl_nick');
       if (t || n) {
         const stored: Record<string,string> = JSON.parse(localStorage.getItem('wl_sso') || '{}');
         if (t) { stored.token = t; const d = decodeWlToken(t); if (d?.email) stored.email = d.email; }
         if (n) stored.nick = decodeURIComponent(n);
         localStorage.setItem('wl_sso', JSON.stringify(stored));
         const url = new URL(window.location.href);
-        url.searchParams.delete('wl_token'); url.searchParams.delete('wl_nick');
-        window.history.replaceState({}, '', url.toString());
+        url.searchParams.delete('wl_token'); url.searchParams.delete('wl_nick'); url.searchParams.delete('wl_plan');
+        let newHash = '';
+        if (url.hash) {
+          const hs = new URLSearchParams(url.hash.replace(/^#/, ''));
+          hs.delete('wl_token'); hs.delete('wl_nick'); hs.delete('wl_plan');
+          const hstr = hs.toString();
+          if (hstr) newHash = '#' + hstr;
+        }
+        window.history.replaceState({}, '', url.pathname + (url.search || '') + newHash);
       }
       const s: Record<string,string> = JSON.parse(localStorage.getItem('wl_sso') || '{}');
       if (s.token) {
