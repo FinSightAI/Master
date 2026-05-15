@@ -10,17 +10,20 @@ async function authHeaders(): Promise<Record<string, string>> {
     : { 'Content-Type': 'application/json' };
 }
 
-export async function fetchCountry(code: string): Promise<{ code: string; data: Record<string, unknown>; exit_tax: Record<string, unknown> }> {
-  const res = await fetch(`${API_BASE}/country/${code}`);
+export async function fetchCountry(code: string, signal?: AbortSignal): Promise<{ code: string; data: Record<string, unknown>; exit_tax: Record<string, unknown> }> {
+  // Country tax tables only change when PwC publishes the next year's data —
+  // safe to cache for an hour. Next.js dedups concurrent calls automatically.
+  const res = await fetch(`${API_BASE}/country/${code}`, { signal, next: { revalidate: 3600 } });
   if (!res.ok) throw new Error('Failed to fetch country data');
   return res.json();
 }
 
-export async function analyzeDocument(filename: string, contentBase64: string, mediaType: string, language: string): Promise<{ analysis?: string; error?: string }> {
+export async function analyzeDocument(filename: string, contentBase64: string, mediaType: string, language: string, signal?: AbortSignal): Promise<{ analysis?: string; error?: string }> {
   const res = await fetch(`${API_BASE}/analyze`, {
     method: 'POST',
     headers: await authHeaders(),
     body: JSON.stringify({ filename, content_base64: contentBase64, media_type: mediaType, language }),
+    signal,
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -29,38 +32,43 @@ export async function analyzeDocument(filename: string, contentBase64: string, m
   return res.json();
 }
 
-export async function fetchSavings(profile: UserProfile): Promise<SavingsAnalysis> {
+export async function fetchSavings(profile: UserProfile, signal?: AbortSignal): Promise<SavingsAnalysis> {
   const res = await fetch(`${API_BASE}/savings`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ profile }),
+    signal,
   });
   if (!res.ok) throw new Error('Failed to fetch savings data');
   return res.json();
 }
 
-export async function fetchIsraelAnalysis(profile: UserProfile | null, israelProfile: IsraelProfile): Promise<IsraelAnalysis> {
+export async function fetchIsraelAnalysis(profile: UserProfile | null, israelProfile: IsraelProfile, signal?: AbortSignal): Promise<IsraelAnalysis> {
   const res = await fetch(`${API_BASE}/israel`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ profile: profile || {}, israel_profile: israelProfile }),
+    signal,
   });
   if (!res.ok) throw new Error('Failed to fetch Israel analysis');
   return res.json();
 }
 
-export async function fetchCompanyAnalysis(profit: number, isNondom: boolean, preferEu: boolean): Promise<CompanyAnalysis> {
+export async function fetchCompanyAnalysis(profit: number, isNondom: boolean, preferEu: boolean, signal?: AbortSignal): Promise<CompanyAnalysis> {
   const res = await fetch(`${API_BASE}/company`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ profit, is_nondom: isNondom, prefer_eu: preferEu }),
+    signal,
   });
   if (!res.ok) throw new Error('Failed to fetch company analysis');
   return res.json();
 }
 
-export async function fetchTaxUpdates(): Promise<TaxUpdate[]> {
-  const res = await fetch(`${API_BASE}/tax-updates`);
+export async function fetchTaxUpdates(signal?: AbortSignal): Promise<TaxUpdate[]> {
+  // Tax-update feed refreshes at most daily. 30-min Next.js cache cuts the
+  // weekly fetch volume by ~50× while keeping the feed reasonably fresh.
+  const res = await fetch(`${API_BASE}/tax-updates`, { signal, next: { revalidate: 1800 } });
   if (!res.ok) throw new Error('Failed to fetch tax updates');
   return res.json();
 }

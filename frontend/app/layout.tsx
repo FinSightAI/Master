@@ -90,6 +90,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script src="/wize-onboarding.js" strategy="afterInteractive" />
         <Script src="/wize-hamburger.js" strategy="afterInteractive" />
         <Script src="/payslip-extractor.js" strategy="afterInteractive" />
+        {/* Warm the Render backend whenever the user returns to the tab so the
+            first chat doesn't pay a 15–25s cold-start penalty. cron-job.org
+            already pings every 5 min as the steady-state heartbeat; this is
+            just an opportunistic top-up on user intent. */}
+        <Script id="backend-warmup-on-visible" strategy="afterInteractive">{`
+          (function(){
+            var last = 0;
+            function ping(){
+              var now = Date.now();
+              if (now - last < 60000) return; // throttle: 1/min max
+              last = now;
+              try {
+                fetch('/api/health', { cache: 'no-store', keepalive: true })
+                  .catch(function(){});
+              } catch(e){}
+            }
+            document.addEventListener('visibilitychange', function(){
+              if (document.visibilityState === 'visible') ping();
+            });
+            window.addEventListener('focus', ping);
+          })();
+        `}</Script>
       </body>
     </html>
   );
