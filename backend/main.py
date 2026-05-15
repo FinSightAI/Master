@@ -191,7 +191,10 @@ async def ai_proxy(request: Request, body: AIProxyRequest):
                     })
             return {"text": text, "sources": sources, "searchUsed": bool(search_data)}
     except Exception as e:
-        return {"error": f"{type(e).__name__}: {str(e)[:200]}"}
+        # Log server-side; never leak exception class or message to client.
+        import logging, traceback
+        logging.exception("ai-proxy error: %s", traceback.format_exc())
+        return {"error": "Service error — please try again."}
 
 
 @app.post("/api/chat")

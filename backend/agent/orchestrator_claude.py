@@ -133,4 +133,7 @@ async def run_agent_claude(
         yield {"type": "done"}
 
     except Exception as e:
-        yield {"type": "error", "message": f"Claude error: {str(e)}"}
+        # Log server-side, do not leak exception details to the client.
+        import logging, traceback
+        logging.exception("claude orchestrator error: %s", traceback.format_exc())
+        yield {"type": "error", "message": "Service error — please try again."}

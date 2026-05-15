@@ -197,4 +197,9 @@ async def run_agent(
         yield {"type": "done"}
 
     except Exception as e:
-        yield {"type": "error", "message": f"Error: {str(e)}"}
+        # Log the real error server-side, return a generic message to the client.
+        # Leaking str(e) / type(e).__name__ exposes internal paths, library names,
+        # API key prefixes that appeared in upstream errors, etc.
+        import logging, traceback
+        logging.exception("orchestrator error: %s", traceback.format_exc())
+        yield {"type": "error", "message": "Service error — please try again."}
