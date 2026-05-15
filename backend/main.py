@@ -153,7 +153,24 @@ async def ai_proxy(request: Request, body: AIProxyRequest):
     If body.search=True, runs a Tavily web search first and injects fresh
     sources into the system prompt — gives the answer real-time grounding
     without paying for a frontier model.
+
+    Requires a valid Firebase ID token in Authorization: Bearer <token> unless
+    AI_PROXY_REQUIRE_AUTH=0 is set explicitly (escape hatch for local dev).
     """
+    # ── Auth gate ─────────────────────────────────────────────────────────
+    if os.getenv("AI_PROXY_REQUIRE_AUTH", "1") != "0":
+        h = request.headers.get("Authorization", "")
+        if not h.startswith("Bearer "):
+            return {"error": "unauthorized"}
+        try:
+            from plan_guard import _firebase_ready
+            if not _firebase_ready:
+                return {"error": "auth_unavailable"}
+            from firebase_admin import auth as _fb_auth
+            _fb_auth.verify_id_token(h[7:])
+        except Exception:
+            return {"error": "unauthorized"}
+
     import httpx
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
