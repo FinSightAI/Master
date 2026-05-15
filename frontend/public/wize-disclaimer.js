@@ -300,18 +300,32 @@
     };
     const tr = (TR[opts.app] && (TR[opts.app][lang] || TR[opts.app].en)) || '';
     if (!tr) return;
+    /* Honour a 7-day dismissal so users aren't nagged every visit. */
+    try {
+      var dismKey = 'wl_pro_disclaimer_dismissed_' + opts.app;
+      var dismAt = parseInt(localStorage.getItem(dismKey) || '0', 10);
+      if (dismAt && (Date.now() - dismAt) < 7 * 24 * 60 * 60 * 1000) return;
+    } catch (e) {}
     const bar = document.createElement('div');
     bar.id = 'wl-pro-disclaimer';
+    /* Position fixed right BELOW the WizeBar (top:36px). Slim profile +
+       dismissible X so it doesn't fight the page title for attention. */
     bar.style.cssText = [
-      'background:linear-gradient(90deg,#fef3c7,#fde68a)','color:#78350f',
-      'font:600 11.5px Inter,-apple-system,sans-serif','padding:6px 14px','text-align:center',
-      'letter-spacing:0.1px','line-height:1.45','position:relative','z-index:99997',
-      'border-bottom:1px solid #f59e0b55',
+      'position:fixed','top:36px','left:0','right:0','z-index:99996',
+      'background:linear-gradient(90deg,rgba(254,243,199,0.96),rgba(253,230,138,0.96))',
+      'color:#78350f','font:600 10.5px Inter,-apple-system,sans-serif',
+      'padding:4px 36px 4px 14px','text-align:center','line-height:1.4',
+      'border-bottom:1px solid rgba(245,158,11,0.35)','backdrop-filter:blur(6px)',
     ].join(';');
-    bar.innerHTML = tr;
-    /* Insert just BELOW the WizeBar (top 36px). The WizeBar itself uses
-       z-index 99999, so this banner stays in normal flow underneath it. */
-    document.body.insertBefore(bar, document.body.firstChild);
+    bar.innerHTML = tr +
+      '<button aria-label="dismiss" style="position:absolute;top:50%;inset-inline-end:8px;transform:translateY(-50%);background:transparent;border:0;color:#78350f;font-size:14px;cursor:pointer;padding:2px 6px;line-height:1;font-family:inherit;opacity:.7;" onclick="(function(b){try{localStorage.setItem(\'wl_pro_disclaimer_dismissed_' + opts.app + '\',String(Date.now()));}catch(e){}b.remove();document.body.style.paddingTop=\'36px\';})(this.parentNode)">✕</button>';
+    document.body.appendChild(bar);
+    /* Push page content down so the disclaimer doesn't sit on top of the title.
+       Measure actual rendered height (varies with line-wrap). */
+    requestAnimationFrame(function () {
+      var h = bar.offsetHeight || 24;
+      document.body.style.paddingTop = (36 + h) + 'px';
+    });
   }
 
   root.WizeDisclaimer = { gate, showEmergencyBanner, showProfessionalDisclaimer, TOS_VERSION };
