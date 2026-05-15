@@ -17,8 +17,12 @@ def _get_client():
 
 
 def _build_claude_tools():
-    """Tool definitions are already in Anthropic format."""
-    return [
+    """Tool definitions are already in Anthropic format. We attach a
+    cache_control marker to the LAST tool so Anthropic caches the entire
+    tools block (≈4–6KB) for 5 minutes — every follow-up turn within that
+    window pays ~10% of the original tokens for tools.
+    """
+    tools = [
         {
             "name": t["name"],
             "description": t["description"],
@@ -26,6 +30,9 @@ def _build_claude_tools():
         }
         for t in TOOL_DEFINITIONS
     ]
+    if tools:
+        tools[-1] = {**tools[-1], "cache_control": {"type": "ephemeral"}}
+    return tools
 
 
 def _convert_history(history: list) -> list:
@@ -61,13 +68,23 @@ async def run_agent_claude(
         messages = _convert_history(conversation_history)
         messages.append({"role": "user", "content": full_message})
 
+        # System prompt is ~12KB and identical across every call — caching it
+        # cuts input cost ≈90% on every follow-up turn within the 5-min TTL.
+        cached_system = [
+            {
+                "type": "text",
+                "text": SYSTEM_PROMPT,
+                "cache_control": {"type": "ephemeral"},
+            }
+        ]
+
         for iteration in range(10):
             # Run sync call in thread to avoid blocking
             response = await asyncio.to_thread(
                 client.messages.create,
                 model=model,
                 max_tokens=4096,
-                system=SYSTEM_PROMPT,
+                system=cached_system,
                 tools=tools,
                 messages=messages,
             )

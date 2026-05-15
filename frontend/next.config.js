@@ -28,6 +28,13 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  // Tree-shake heavier 3rd-party imports more aggressively. recharts in
+  // particular pulls a full set of named exports — this lets Next.js drop
+  // the unused chart types (Pie, Radar, Scatter, etc. we never render).
+  // lucide-react also benefits since we use 20-ish icons out of ~1000.
+  experimental: {
+    optimizePackageImports: ['recharts', 'lucide-react', 'react-markdown'],
+  },
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }];
   },
