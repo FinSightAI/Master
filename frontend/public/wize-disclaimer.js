@@ -300,32 +300,51 @@
     };
     const tr = (TR[opts.app] && (TR[opts.app][lang] || TR[opts.app].en)) || '';
     if (!tr) return;
-    /* Honour a 7-day dismissal so users aren't nagged every visit. */
-    try {
-      var dismKey = 'wl_pro_disclaimer_dismissed_' + opts.app;
-      var dismAt = parseInt(localStorage.getItem(dismKey) || '0', 10);
-      if (dismAt && (Date.now() - dismAt) < 7 * 24 * 60 * 60 * 1000) return;
-    } catch (e) {}
-    const bar = document.createElement('div');
-    bar.id = 'wl-pro-disclaimer';
-    /* Position fixed right BELOW the WizeBar (top:36px). Slim profile +
-       dismissible X so it doesn't fight the page title for attention. */
-    bar.style.cssText = [
-      'position:fixed','top:36px','left:0','right:0','z-index:99996',
-      'background:linear-gradient(90deg,rgba(254,243,199,0.96),rgba(253,230,138,0.96))',
-      'color:#78350f','font:600 10.5px Inter,-apple-system,sans-serif',
-      'padding:4px 36px 4px 14px','text-align:center','line-height:1.4',
-      'border-bottom:1px solid rgba(245,158,11,0.35)','backdrop-filter:blur(6px)',
+    /* 7-day dismissal: only the full banner re-shows; the tiny chip is permanent. */
+    var dismKey = 'wl_pro_disclaimer_dismissed_' + opts.app;
+    function dismissed() {
+      try {
+        var t = parseInt(localStorage.getItem(dismKey) || '0', 10);
+        return t && (Date.now() - t) < 7 * 24 * 60 * 60 * 1000;
+      } catch (e) { return false; }
+    }
+    /* Floating "ℹ️" chip in the corner — small, non-intrusive. Click expands
+       into the full amber banner positioned just below the WizeBar. */
+    var chip = document.createElement('button');
+    chip.id = 'wl-pro-disclaimer-chip';
+    chip.type = 'button';
+    chip.setAttribute('aria-label', 'AI disclaimer');
+    chip.innerHTML = 'ℹ️';
+    chip.style.cssText = [
+      'position:fixed','top:46px','inset-inline-end:12px','z-index:99996',
+      'width:24px','height:24px','border-radius:50%','border:1px solid rgba(245,158,11,0.55)',
+      'background:rgba(254,243,199,0.92)','color:#78350f',
+      'font:600 12px Inter,-apple-system,sans-serif','cursor:pointer',
+      'display:flex','align-items:center','justify-content:center',
+      'box-shadow:0 2px 8px rgba(0,0,0,0.15)','backdrop-filter:blur(8px)',
+      'opacity:.85','transition:opacity .15s',
     ].join(';');
-    bar.innerHTML = tr +
-      '<button aria-label="dismiss" style="position:absolute;top:50%;inset-inline-end:8px;transform:translateY(-50%);background:transparent;border:0;color:#78350f;font-size:14px;cursor:pointer;padding:2px 6px;line-height:1;font-family:inherit;opacity:.7;" onclick="(function(b){try{localStorage.setItem(\'wl_pro_disclaimer_dismissed_' + opts.app + '\',String(Date.now()));}catch(e){}b.remove();document.body.style.paddingTop=\'36px\';})(this.parentNode)">✕</button>';
-    document.body.appendChild(bar);
-    /* Push page content down so the disclaimer doesn't sit on top of the title.
-       Measure actual rendered height (varies with line-wrap). */
-    requestAnimationFrame(function () {
-      var h = bar.offsetHeight || 24;
-      document.body.style.paddingTop = (36 + h) + 'px';
-    });
+    chip.onmouseover = function(){ chip.style.opacity = '1'; };
+    chip.onmouseout  = function(){ chip.style.opacity = '.85'; };
+    chip.onclick = function () {
+      if (document.getElementById('wl-pro-disclaimer')) return;
+      var bar = document.createElement('div');
+      bar.id = 'wl-pro-disclaimer';
+      bar.style.cssText = [
+        'position:fixed','top:36px','left:0','right:0','z-index:99996',
+        'background:linear-gradient(90deg,rgba(254,243,199,0.97),rgba(253,230,138,0.97))',
+        'color:#78350f','font:600 11px Inter,-apple-system,sans-serif',
+        'padding:6px 36px 6px 14px','text-align:center','line-height:1.45',
+        'border-bottom:1px solid rgba(245,158,11,0.35)','backdrop-filter:blur(8px)',
+      ].join(';');
+      bar.innerHTML = tr +
+        '<button aria-label="dismiss" style="position:absolute;top:50%;inset-inline-end:8px;transform:translateY(-50%);background:transparent;border:0;color:#78350f;font-size:14px;cursor:pointer;padding:2px 6px;line-height:1;font-family:inherit;opacity:.7;" onclick="(function(b){try{localStorage.setItem(\'' + dismKey + '\',String(Date.now()));}catch(e){}b.remove();})(this.parentNode)">✕</button>';
+      document.body.appendChild(bar);
+    };
+    document.body.appendChild(chip);
+    /* Show the full banner ONCE on first visit (until user dismisses or 7 days),
+       then collapse to chip-only behaviour. */
+    if (!dismissed()) chip.click();
   }
 
   root.WizeDisclaimer = { gate, showEmergencyBanner, showProfessionalDisclaimer, TOS_VERSION };
