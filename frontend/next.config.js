@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+const { withSentryConfig } = require('@sentry/nextjs');
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://master-backend-79jx.onrender.com';
 
 const securityHeaders = [
@@ -19,7 +20,7 @@ const securityHeaders = [
  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
  "font-src 'self' https://fonts.gstatic.com",
  "img-src 'self' data: blob: https:",
- "connect-src 'self' https://wizelife.ai https://*.vercel.app https://mastermove.vercel.app https://api.groq.com https://generativelanguage.googleapis.com https://openrouter.ai https://*.googleapis.com https://*.firebaseio.com https://master-backend-79jx.onrender.com",
+ "connect-src 'self' https://wizelife.ai https://*.vercel.app https://mastermove.vercel.app https://api.groq.com https://generativelanguage.googleapis.com https://openrouter.ai https://*.googleapis.com https://*.firebaseio.com https://master-backend-79jx.onrender.com https://*.sentry.io https://*.ingest.sentry.io",
  "frame-ancestors 'none'",
  "base-uri 'self'",
  "form-action 'self'",
@@ -48,4 +49,13 @@ const nextConfig = {
  },
 };
 
-module.exports = nextConfig;
+const sentryWebpackPluginOptions = {
+ org: process.env.SENTRY_ORG,
+ project: process.env.SENTRY_PROJECT,
+ authToken: process.env.SENTRY_AUTH_TOKEN,
+ silent: true,
+ disableServerWebpackPlugin: !process.env.SENTRY_AUTH_TOKEN,
+ disableClientWebpackPlugin: !process.env.SENTRY_AUTH_TOKEN,
+};
+
+module.exports = withSentryConfig(nextConfig, sentryWebpackPluginOptions);

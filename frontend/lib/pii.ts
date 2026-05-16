@@ -1,8 +1,8 @@
 /**
  * PII-stripping helper for AI requests. Removes identity fields BEFORE the
- * profile/context object is shipped to a third-party model (Gemini, Claude,
- * OpenRouter, Tavily). Numerical state — income, balances, medical values,
- * holdings — is kept so AI answers stay accurate.
+ * deal/profile object is shipped to a third-party model (Gemini, Claude,
+ * OpenRouter, Tavily). Numerical state — prices, square metres, ROI,
+ * exchange rates — is kept so AI answers stay accurate.
  *
  * Mirrors the canonical JS at https://wizelife.ai/js/wize-pii.js so the
  * stripping rules stay identical across vanilla-JS apps and Next.js apps.
@@ -10,17 +10,16 @@
  * --- CONTEXTUAL STRIPPING (added 2026-05-15) ---
  *
  * The original version stripped EVERY key named `name`, `displayName`,
- * `firstName`, etc. That was too aggressive: financial labels like
- * `goal.name = "Mortgage Tel Aviv"` or `fund.name = "Pension Plus"` are
- * NOT PII — they are labels needed for the AI to give a good answer.
+ * `firstName`, etc. That was too aggressive: domain labels like
+ * `deal.name = "Apartment Botafogo R$ 980k"` or `property.name` are NOT
+ * PII — they are labels needed for the AI to give a useful answer.
  *
  * Behaviour for the "ambiguous identity" keys (name / displayName /
  * firstName / lastName / fullname / nick / nickname):
  *
- *   1. SAFE_KEYS (goalName, fundName, label, title, description, etc.)
- *      → ALWAYS KEEP. These are never person names.
- *   2. Otherwise inspect VALUE — KEEP if it contains a digit, a currency
- *      symbol, a "label hint" word, or is >60 chars.
+ *   1. SAFE_KEYS (label, title, description, category, etc.) → ALWAYS KEEP.
+ *   2. Otherwise inspect VALUE — KEEP if it contains a digit, currency
+ *      symbol, "label hint" word, or is >60 chars.
  *   3. Otherwise (2–4 short tokens, no digits, no hint) → STRIP.
  *
  * Hard-strip keys (email/phone/address/IDs/IBAN/card numbers) remain
@@ -68,17 +67,67 @@ const CURRENCY_RE = /[₪$€£¥]|R\$/;
 
 // String-content patterns that look like identifiers even when the key is
 // unrelated (e.g. user typed their ID into a free-text "notes" field).
-const VALUE_PATTERNS: RegExp[] = [
-  /\b\d{9}\b/g,                     // Israeli ת.ז
-  /\b\d{3}-\d{2}-\d{4}\b/g,         // US SSN
-  /\b\d{11}\b/g,                    // Brazilian CPF
-  /\b[\w.-]+@[\w.-]+\.\w{2,}\b/g,   // Email anywhere
+//
+// Each entry is [regex, replacement, guarded?]. Ordered MOST specific → LEAST
+// specific. `guarded: true` patterns are skipped when a currency token sits
+// adjacent (so financial amounts like "150000000 ש\"ח" are NOT redacted).
+const CURRENCY_GUARD_BEFORE = /(?:[₪$€£¥]|R\$|NIS|USD|EUR|GBP|BRL|ILS|JPY|CNY)\s*$/i;
+const CURRENCY_GUARD_AFTER  = /^\s*(?:[₪$€£¥]|R\$|NIS|USD|EUR|GBP|BRL|ILS|JPY|CNY|ש["׳]ח|שח|שקל|שקלים|reais|euros?|dollars?|pounds?|[.,]0{2}\b)/i;
+
+function guardedReplace(str: string, regex: RegExp, replacement: string): string {
+  return str.replace(regex, (match: string, ...rest: unknown[]) => {
+    const offset = rest[rest.length - 2] as number;
+    const full = rest[rest.length - 1] as string;
+    const before = full.slice(Math.max(0, offset - 8), offset);
+    const after  = full.slice(offset + match.length, offset + match.length + 12);
+    if (CURRENCY_GUARD_BEFORE.test(before)) return match;
+    if (CURRENCY_GUARD_AFTER.test(after)) return match;
+    return replacement;
+  });
+}
+
+const VALUE_PATTERNS: Array<[RegExp, string, boolean]> = [
+  // 1. Email
+  [/\b[\w.-]+@[\w.-]+\.\w{2,}\b/g, '[redacted-email]', false],
+  // 2. GPS coordinates
+  [/\b-?\d{1,3}\.\d{4,}\s*,\s*-?\d{1,3}\.\d{4,}\b/g, '[redacted-gps]', false],
+  // 3. IBAN
+  [/\b[A-Z]{2}\d{2}[A-Z0-9]{10,30}\b/g, '[redacted-iban]', false],
+  // 4. Formatted credit card (separators required)
+  [/\b\d{4}[\s-]\d{4}[\s-]\d{4}[\s-]\d{4}\b/g, '[redacted-cc]', false],
+  // 5. Brazilian RG
+  [/\b\d{2}\.\d{3}\.\d{3}-[\dxX]\b/g, '[redacted-id]', false],
+  // 6. Israeli bank account
+  [/\b\d{2}-\d{3,4}-\d{6,9}\b/g, '[redacted-acct]', false],
+  // 7. US SSN
+  [/\b\d{3}-\d{2}-\d{4}\b/g, '[redacted-ssn]', false],
+  // 8. Spanish DNI
+  [/\b\d{8}[A-HJ-NP-TV-Z]\b/g, '[redacted-id]', false],
+  // 9. International phone (with leading +)
+  [/\+\d{1,3}[\s.\-]?\(?\d{2,4}\)?[\s.\-]?\d{3,4}[\s.\-]?\d{3,4}\b/g, '[redacted-phone]', false],
+  // 10. Israeli mobile (05X with separator)
+  [/\b0?5\d[\s\-]\d{3}[\s\-]?\d{4}\b/g, '[redacted-phone]', false],
+  // 11. Hebrew address
+  [/(רחוב|רח['׳]|שדרות|שד['׳]|דרך|סמטת|כביש)\s+[א-ת]+(?:\s+[א-ת]+){0,4}\s+\d{1,4}\b/g, '[redacted-address]', false],
+  // 12. English address
+  [/\b\d{1,5}\s+[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){0,3}\s+(?:Street|St\.?|Avenue|Ave\.?|Road|Rd\.?|Boulevard|Blvd\.?|Drive|Dr\.?|Lane|Ln\.?|Way|Court|Ct\.?|Place|Pl\.?)\b/g, '[redacted-address]', false],
+  // 13. Portuguese address (BR)
+  [/\b(?:Rua|Av\.?|Avenida|Praça|Travessa|Alameda|Estrada)\s+[A-Za-zÀ-ÿ]+(?:\s+[A-Za-zÀ-ÿ]+){0,4},?\s+\d{1,5}\b/g, '[redacted-address]', false],
+  // 14. Spanish address
+  [/\b(?:Calle|Avda\.?|Avenida|Plaza|Paseo|Carretera)\s+[A-Za-zÀ-ÿ]+(?:\s+[A-Za-zÀ-ÿ]+){0,4},?\s+\d{1,5}\b/g, '[redacted-address]', false],
+  // 15. CPF (11 bare digits) — guarded against currency
+  [/\b\d{11}\b/g, '[redacted-id]', true],
+  // 16. Israeli ת.ז / Portuguese NIF (9 bare digits) — guarded against currency
+  [/\b\d{9}\b/g, '[redacted-id]', true],
 ];
 
 function scrubString(s: string): string {
   if (typeof s !== 'string' || s.length < 5) return s;
   let out = s;
-  for (const pat of VALUE_PATTERNS) out = out.replace(pat, '[redacted]');
+  for (const [pat, repl, guarded] of VALUE_PATTERNS) {
+    pat.lastIndex = 0;
+    out = guarded ? guardedReplace(out, pat, repl) : out.replace(pat, repl);
+  }
   return out;
 }
 
@@ -88,15 +137,11 @@ function scrubString(s: string): string {
  */
 function looksLikeLabel(v: unknown): boolean {
   if (v === null || v === undefined) return false;
-  if (typeof v !== 'string') {
-    // Non-strings under name keys are weird; keep them (the recursive
-    // walker will still strip identity inside any nested object).
-    return true;
-  }
-  if (v.length > 60) return true;       // person names aren't this long
-  if (/\d/.test(v)) return true;         // any digit → label
-  if (CURRENCY_RE.test(v)) return true;  // currency symbol → label
-  if (LABEL_HINT_RE.test(v)) return true; // financial keyword → label
+  if (typeof v !== 'string') return true;
+  if (v.length > 60) return true;
+  if (/\d/.test(v)) return true;
+  if (CURRENCY_RE.test(v)) return true;
+  if (LABEL_HINT_RE.test(v)) return true;
   return false;
 }
 
@@ -110,23 +155,18 @@ export function stripIdentity<T>(obj: T): T {
     const out: Record<string, unknown> = {};
     for (const k of Object.keys(obj as Record<string, unknown>)) {
       const lk = k.toLowerCase();
-      // Hard-strip categories: always remove.
       if (HARD_STRIP_KEYS.has(lk)) continue;
-      // Domain-label allowlist: always keep, recurse for nested PII.
       if (SAFE_KEYS.has(lk)) {
         out[k] = stripIdentity((obj as Record<string, unknown>)[k]);
         continue;
       }
-      // Ambiguous keys: decide by value shape.
       if (AMBIGUOUS_KEYS.has(lk)) {
         const v = (obj as Record<string, unknown>)[k];
         if (looksLikeLabel(v)) {
           out[k] = stripIdentity(v);
         }
-        // else: looks like a person name → strip (skip).
         continue;
       }
-      // Everything else: keep, recurse.
       out[k] = stripIdentity((obj as Record<string, unknown>)[k]);
     }
     return out as unknown as T;

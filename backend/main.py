@@ -60,8 +60,23 @@ for _logger_name in ('', 'uvicorn', 'uvicorn.access', 'uvicorn.error', 'fastapi'
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", os.getenv("FRONTEND_URL", "")],
-    allow_origin_regex=r"https://(.*\.vercel\.app|.*\.github\.io|.*\.wizelife\.ai|wizelife\.ai)",
+    # CORS pinned 2026-05-16 — wildcard regex (*.vercel.app, *.github.io)
+    # dropped. Third-party Vercel/GitHub-Pages projects can no longer call this
+    # API and burn the Gemini quota. Explicit list of trusted origins only.
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://wizelife.ai",
+        "https://finsightai.github.io",
+        "https://mastermove.vercel.app",
+        "https://check-deal.vercel.app",
+        "https://travel.wizelife.ai",
+        "https://health.wizelife.ai",
+        os.getenv("FRONTEND_URL", ""),
+    ],
+    # Allow only first-party wizelife.ai subdomains via regex (not arbitrary
+    # vercel.app / github.io anymore).
+    allow_origin_regex=r"https://[a-z0-9-]+\.wizelife\.ai",
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
