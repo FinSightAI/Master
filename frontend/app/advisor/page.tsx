@@ -10623,6 +10623,7 @@ export default function AdvisorPage() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0, minHeight: 0 }}>
         {/* Mobile hamburger */}
         <button className="wt-hamburger" onClick={() => setMobileSidebarOpen(o => !o)}
+          aria-label="Open menu"
           style={{ position: 'fixed', top: 8, zIndex: 201, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 10px', fontSize: 18, color: 'var(--text)', cursor: 'pointer', [dir === 'rtl' ? 'right' : 'left']: 8 }}>
           ☰
         </button>
@@ -10908,7 +10909,7 @@ export default function AdvisorPage() {
                       'ישראל — מס יציאה' section so users always have one obvious entry. */}
 
                   <div className="max-w-2xl mx-auto">
-                    <div className="text-xs font-semibold mb-2 px-1" style={{ color: 'var(--text-muted)' }}>{tr.quickQuestions}</div>
+                    <h2 className="text-xs font-semibold mb-2 px-1" style={{ color: 'var(--text-muted)', fontWeight: 600, margin: '0 0 8px', textTransform: 'none' }}>{tr.quickQuestions}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {tr.sampleQuestions.map((q, i) => (
                         <button key={i} onClick={() => sendMessage(q)}
@@ -11011,15 +11012,18 @@ export default function AdvisorPage() {
             <div className="flex gap-2 items-end rounded-2xl p-2"
               style={{ background: 'var(--surface-2)', border: `1px solid ${planMode ? 'var(--accent)' : 'var(--border)'}` }}>
               <input ref={fileInputRef} type="file" accept=".pdf,.txt,.png,.jpg,.jpeg" className="hidden"
+                aria-label="File upload"
                 onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(f); e.target.value = ''; }} />
               <button onClick={() => fileInputRef.current?.click()} disabled={isLoading}
                 title={tr.uploadDoc}
+                aria-label={tr.uploadDoc}
                 className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all hover:opacity-70 disabled:opacity-30"
                 style={{ color: 'var(--text-muted)' }}>
                 <FileText size={15} />
               </button>
               <button onClick={() => window.print()}
                 title={tr.exportPdf}
+                aria-label={tr.exportPdf}
                 className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all hover:opacity-70"
                 style={{ color: 'var(--text-muted)' }}>
                 <Printer size={15} />
@@ -11038,6 +11042,8 @@ export default function AdvisorPage() {
               </button>
               <button onClick={() => setPlanMode(p => !p)} disabled={isLoading}
                 title={tr.checkPlan}
+                aria-label={tr.checkPlan}
+                aria-pressed={planMode}
                 className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all hover:opacity-70"
                 style={{ color: planMode ? 'var(--accent)' : 'var(--text-muted)', background: planMode ? 'rgba(99,102,241,0.12)' : 'transparent' }}>
                 <ClipboardCheck size={15} />
@@ -11058,6 +11064,7 @@ export default function AdvisorPage() {
                 onKeyDown={handleKeyDown} disabled={isLoading}
                 placeholder={planMode ? tr.checkPlanPlaceholder : tr.inputPlaceholder} rows={1}
                 dir={lang === 'he' ? 'rtl' : 'ltr'}
+                aria-label="Message input"
                 className="wt-chat-input flex-1 bg-transparent outline-none resize-none text-sm px-2 py-1"
                 style={{ color: 'var(--text)', minHeight: '36px', maxHeight: '120px' }}
                 onInput={e => {
@@ -11066,6 +11073,7 @@ export default function AdvisorPage() {
                   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
                 }} />
               <button onClick={() => sendMessage()} disabled={!input.trim() || isLoading}
+                aria-label="Send message"
                 className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all hover:opacity-80 disabled:opacity-40"
                 style={{ background: 'var(--accent)', color: 'white' }}>
                 <Send size={16} />
