@@ -75,6 +75,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
  `}</Script>
  <Script src="/wize-bottom-nav.js" strategy="afterInteractive" />
  <Script src="/wize-onboarding.js" strategy="afterInteractive" />
+ <Script id="wize-quickstart-app" strategy="afterInteractive">{`window.WIZE_APP='tax';`}</Script>
+ <Script src="/wize-quickstart.js" strategy="afterInteractive" />
+ <Script src="/wize-share.js" strategy="afterInteractive" />
  <Script src="/wize-hamburger.js" strategy="afterInteractive" />
  <Script src="/payslip-extractor.js" strategy="afterInteractive" />
  {/* Warm the Render backend whenever the user returns to the tab so the
