@@ -37,6 +37,16 @@ type Country = {
   col: number;
   /** Estimated monthly out-of-pocket health insurance (USD) */
   healthCostUSD: number;
+  /** Israel social-security totalization treaty — do your Israeli Bituach Leumi years count toward this country's pension eligibility? */
+  treaty: 'yes' | 'eu' | 'no';
+  /** Quality of Life Index — Numbeo 2025 (0-200, higher = better) */
+  qol: number;
+  /** Safety Index — Numbeo 2025 (0-100, higher = safer) */
+  safety: number;
+  /** Healthcare Index — Numbeo 2025 (0-100, higher = better) */
+  healthcareQual: number;
+  /** Long-term pension expectation as % of final salary (rough estimate, for lifetime-value calc) */
+  pensionPctFinalSalary: number;
   notes: Record<Lang, string>;
   source: string;
 };
@@ -58,6 +68,7 @@ const COUNTRIES: Country[] = [
     socialPct: 12.0, socialCeil: 591_000,
     healthPct: 5.0,
     fxFromILS: 1, col: 100, healthCostUSD: 0,
+    treaty: 'yes', qol: 152, safety: 70, healthcareQual: 80, pensionPctFinalSalary: 25,
     notes: {
       he: 'מס שולי מקסימלי 50%, ביטוח לאומי 12%, בריאות אוניברסלית כלולה.',
       en: 'Top marginal 50%, Bituach Leumi 12%, universal healthcare included.',
@@ -83,6 +94,7 @@ const COUNTRIES: Country[] = [
     credit: 0,
     socialPct: 11.0, socialCeil: null, healthPct: 0,
     fxFromILS: 0.249, col: 65, healthCostUSD: 0,
+    treaty: 'yes', qol: 167, safety: 75, healthcareQual: 73, pensionPctFinalSalary: 55,
     notes: {
       he: 'NHR (Non-Habitual Resident) — 10 שנות מס מופחת לעולים. Seg. Social 11% חל גם בלי NHR.',
       en: 'NHR (Non-Habitual Resident) — 10 years reduced tax for new residents. 11% Seg. Social applies regardless.',
@@ -104,6 +116,7 @@ const COUNTRIES: Country[] = [
     credit: 0,
     socialPct: 8.8, socialCeil: 66_612, healthPct: 2.65,
     fxFromILS: 0.249, col: 70, healthCostUSD: 0,
+    treaty: 'eu', qol: 176, safety: 77, healthcareQual: 60, pensionPctFinalSalary: 60,
     notes: {
       he: 'Non-Dom: 50% פטור ל-17 שנה (>€55K). GHS (2.65%) חל על הכל. אזרחות EU = גישה מלאה לאירופה.',
       en: 'Non-Dom: 50% exemption for 17 years (>€55K). GHS (2.65%) applies always. EU citizenship = full EU access.',
@@ -123,6 +136,7 @@ const COUNTRIES: Country[] = [
     credit: 1_955,
     socialPct: 9.49, socialCeil: 119_650, healthPct: 0,
     fxFromILS: 0.249, col: 80, healthCostUSD: 0,
+    treaty: 'yes', qol: 135, safety: 55, healthcareQual: 67, pensionPctFinalSalary: 65,
     notes: {
       he: '"Lavoratori Impatriati" — פטור 50-70% ממס הכנסה ל-5 שנים לעולים חדשים. INPS חייב.',
       en: '"Lavoratori Impatriati" — 50-70% income tax exemption for 5 years for new residents. INPS still owed.',
@@ -138,6 +152,7 @@ const COUNTRIES: Country[] = [
     credit: 0,
     socialPct: 0, socialCeil: null, healthPct: 0,
     fxFromILS: 1, col: 105, healthCostUSD: 350,
+    treaty: 'no', qol: 180, safety: 84, healthcareQual: 72, pensionPctFinalSalary: 0,
     notes: {
       he: '0% מס הכנסה, 0% מס חברתי. אך גם 0 פנסיה ציבורית, אין safety net. ביטוח בריאות פרטי חובה ~$200-400/חודש.',
       en: '0% income tax, 0% social. But also 0 public pension, no safety net. Private health insurance mandatory ~$200-400/mo.',
@@ -161,6 +176,7 @@ const COUNTRIES: Country[] = [
     credit: 14_600,
     socialPct: 7.65, socialCeil: 168_600, healthPct: 0,
     fxFromILS: 0.27, col: 130, healthCostUSD: 600,
+    treaty: 'no', qol: 153, safety: 49, healthcareQual: 70, pensionPctFinalSalary: 40,
     notes: {
       he: 'מס פדרלי בלבד — state tax מוסיף 0-13% (CA, NY). אין אמנת ביטוח לאומי עם ישראל. בריאות פרטית ~$500-1500/חודש לפני 65.',
       en: 'Federal only — state tax adds 0-13% (CA, NY). No SS treaty with Israel. Private health ~$500-1500/mo before 65.',
@@ -182,6 +198,7 @@ const COUNTRIES: Country[] = [
     credit: 0,
     socialPct: 20, socialCeil: 87_600, healthPct: 0,
     fxFromILS: 0.249, col: 85, healthCostUSD: 0,
+    treaty: 'yes', qol: 163, safety: 60, healthcareQual: 75, pensionPctFinalSalary: 48,
     notes: {
       he: 'Sozialversicherung 20% כולל בריאות אוניברסלית + פנסיה + אבטלה + סיעוד. תקרה €8,050/חודש.',
       en: 'Sozialversicherung 20% includes universal health + pension + unemployment + long-term care. €8,050/mo ceiling.',
@@ -202,6 +219,7 @@ const COUNTRIES: Country[] = [
     credit: 0,
     socialPct: 8, socialCeil: 50_270, healthPct: 0,
     fxFromILS: 0.214, col: 115, healthCostUSD: 0,
+    treaty: 'yes', qol: 140, safety: 50, healthcareQual: 74, pensionPctFinalSalary: 30,
     notes: {
       he: 'NHS = בריאות חינמית אוניברסלית. אין מס בריאות נפרד. NI 8% מעל £242/שבוע.',
       en: 'NHS = universal free health. No separate health tax. NI 8% above £242/wk.',
@@ -258,6 +276,26 @@ const TR = {
     bestPick: 'הבחירה המיטבית לפי כוח קנייה',
     bestPickSub: 'מבוסס על נטו + COL בלבד. לא כולל שיקולי חיים, פנסיה ארוכת-טווח, מס יציאה, אזרחות.',
     foot: 'נתוני 2025. WizeTax לא ייעוץ מס מורשה. מספרים סבירים-לא-מדויקים — לפני החלטה אמיתית התייעץ עם רו"ח.',
+    th_treaty: 'אמנת ב״ל',
+    treatyYes: '✓ כן',
+    treatyEU: '✓ EU',
+    treatyNo: '✗ לא',
+    treatyHint: 'אמנה דו-צדדית = שנים שצברת בישראל נחשבות לפנסיה במדינה. ארה״ב + UAE = לא — איבוד מצטבר של 10-25 שנות הפקדות.',
+    th_qol: 'איכות חיים',
+    qolHint: 'Numbeo 2025: מדד 0-200 — בריאות, חינוך, בטיחות, זיהום, תחבורה',
+    qolBreakdownT: 'פירוט איכות חיים',
+    qolSafety: 'בטיחות',
+    qolHealth: 'בריאות',
+    qolOverall: 'כללי',
+    qolWinner: 'הכי גבוה',
+    pensionT: 'ערך פנסיה ארוך-טווח (ספקולטיבי)',
+    pensionSub: 'הערכה: % מהמשכורת האחרונה × 20 שנות גמלאות ממוצעות. תלוי במס חיים, שינויי חוקים, שנות הפקדה.',
+    pensionPct: 'אחוז מהשכר הסופי',
+    pensionLifetime: 'ערך מצטבר ב-20 שנות פרישה',
+    pensionDisclaimer: '⚠️ זה מודל מאוד גס. בפועל מס פנסיה משתנה לפי שכר אישי, צבירה, רפורמות. WizeTax לא תחזית ביטחונית.',
+    exitTaxT: '⚠️ אזהרת מס יציאה ישראלי',
+    exitTaxBody: 'אם יש לך נכסים מעל ₪3M בעת ניתוק תושבות, ייתכן מס חד-פעמי על רווח לא ממומש (סעיף 100A). נכסים בסיכון: ני״ע, נדל״ן, אופציות, קרן השתלמות חלקית. רוב המוצרים החינמיים לא לוקחים את זה בחשבון.',
+    exitTaxCTA: 'מחשבון מס יציאה אישי →',
   },
   en: {
     title: 'Full Relocation Analysis',
@@ -276,6 +314,26 @@ const TR = {
     bestPick: 'Best by purchasing power',
     bestPickSub: 'Based on net + COL only. Doesn\'t include lifestyle, long-term pension, exit tax, citizenship considerations.',
     foot: '2025 data. WizeTax is not licensed tax advice. Numbers are reasonable-not-exact — consult a CPA before any real decision.',
+    th_treaty: 'SS treaty',
+    treatyYes: '✓ yes',
+    treatyEU: '✓ EU',
+    treatyNo: '✗ no',
+    treatyHint: 'Bilateral totalization treaty — your Israeli Bituach Leumi years count toward this country\'s pension. US + UAE = NO: you lose 10-25 years of accumulated contributions on relocation.',
+    th_qol: 'Quality of life',
+    qolHint: 'Numbeo 2025 index 0-200: health, education, safety, pollution, transport',
+    qolBreakdownT: 'Quality-of-life breakdown',
+    qolSafety: 'Safety',
+    qolHealth: 'Healthcare',
+    qolOverall: 'Overall',
+    qolWinner: 'Highest',
+    pensionT: 'Long-term pension value (speculative)',
+    pensionSub: 'Estimate: % of final salary × 20 years of typical retirement. Depends on life expectancy, law changes, contribution years.',
+    pensionPct: '% of final salary',
+    pensionLifetime: 'Cumulative over 20 retirement years',
+    pensionDisclaimer: '⚠️ This is a very rough model. Actual pension depends on individual salary trajectory, accumulation, and reforms. WizeTax is not a guarantee.',
+    exitTaxT: '⚠️ Israeli Exit Tax warning',
+    exitTaxBody: 'If you have assets above ₪3M when terminating Israeli residency, you may owe a one-time tax on unrealized gains (Section 100A). At risk: securities, real estate, options, partial Keren Hishtalmut. Most free tools don\'t factor this in.',
+    exitTaxCTA: 'Personal exit-tax calculator →',
   },
   pt: {
     title: 'Análise de mudança internacional',
@@ -294,6 +352,26 @@ const TR = {
     bestPick: 'Melhor por poder de compra',
     bestPickSub: 'Apenas net + COL.',
     foot: '2025. WizeTax não é consultoria fiscal.',
+    th_treaty: 'Acordo SS',
+    treatyYes: '✓ sim',
+    treatyEU: '✓ UE',
+    treatyNo: '✗ não',
+    treatyHint: 'Acordo bilateral — seus anos de Bituach Leumi contam para a pensão. EUA + EAU = NÃO.',
+    th_qol: 'Qualidade de vida',
+    qolHint: 'Numbeo 2025.',
+    qolBreakdownT: 'Detalhes de qualidade de vida',
+    qolSafety: 'Segurança',
+    qolHealth: 'Saúde',
+    qolOverall: 'Geral',
+    qolWinner: 'Mais alto',
+    pensionT: 'Valor de pensão de longo prazo (especulativo)',
+    pensionSub: 'Estimativa: % do salário final × 20 anos.',
+    pensionPct: '% do salário final',
+    pensionLifetime: 'Acumulado em 20 anos',
+    pensionDisclaimer: '⚠️ Modelo muito aproximado.',
+    exitTaxT: '⚠️ Imposto de saída israelense',
+    exitTaxBody: 'Ativos acima de ₪3M podem gerar imposto único sobre ganhos não realizados.',
+    exitTaxCTA: 'Calculadora pessoal →',
   },
   es: {
     title: 'Análisis completo de mudanza',
@@ -312,6 +390,26 @@ const TR = {
     bestPick: 'Mejor por poder adquisitivo',
     bestPickSub: 'Solo net + COL.',
     foot: '2025. WizeTax no es asesoría fiscal.',
+    th_treaty: 'Acuerdo SS',
+    treatyYes: '✓ sí',
+    treatyEU: '✓ UE',
+    treatyNo: '✗ no',
+    treatyHint: 'Acuerdo bilateral — tus años de Bituach Leumi cuentan. EE.UU. + EAU = NO.',
+    th_qol: 'Calidad de vida',
+    qolHint: 'Numbeo 2025.',
+    qolBreakdownT: 'Detalle calidad de vida',
+    qolSafety: 'Seguridad',
+    qolHealth: 'Salud',
+    qolOverall: 'General',
+    qolWinner: 'Más alto',
+    pensionT: 'Valor de pensión a largo plazo (especulativo)',
+    pensionSub: 'Estimación: % salario final × 20 años.',
+    pensionPct: '% del salario final',
+    pensionLifetime: 'Acumulado en 20 años',
+    pensionDisclaimer: '⚠️ Modelo muy aproximado.',
+    exitTaxT: '⚠️ Impuesto de salida israelí',
+    exitTaxBody: 'Activos sobre ₪3M pueden generar impuesto único sobre ganancias no realizadas.',
+    exitTaxCTA: 'Calculadora personal →',
   },
 };
 
@@ -400,6 +498,8 @@ export default function RelocationAnalyzer() {
               <th style={th}>{t.colTitle}</th>
               <th style={th}>{t.h_real}<div style={subTh}>{t.realSub}</div></th>
               <th style={th}>{t.h_cf}<div style={subTh}>{t.cfSub}</div></th>
+              <th style={th}>{t.th_treaty}<div style={subTh}>{isRtl ? 'ב״ל ישראלי נחשב' : 'IL years count'}</div></th>
+              <th style={th}>{t.th_qol}<div style={subTh}>Numbeo 2025</div></th>
             </tr>
           </thead>
           <tbody>
@@ -407,6 +507,9 @@ export default function RelocationAnalyzer() {
               const isIL = r.code === 'IL';
               const ppDelta = r.realPP - ilRow.realPP;
               const ppDeltaColor = isIL ? '#9ca3af' : (ppDelta >= 0 ? '#6ee7b7' : '#fca5a5');
+              const treatyLabel = r.treaty === 'yes' ? t.treatyYes : r.treaty === 'eu' ? t.treatyEU : t.treatyNo;
+              const treatyColor = r.treaty === 'no' ? '#fca5a5' : '#6ee7b7';
+              const treatyBg    = r.treaty === 'no' ? 'rgba(239,68,68,0.12)' : 'rgba(16,185,129,0.12)';
               return (
                 <tr key={r.code} style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: isIL ? 'rgba(99,102,241,0.06)' : 'transparent' }}>
                   <td style={{ ...td, fontWeight: 800 }}>
@@ -428,11 +531,23 @@ export default function RelocationAnalyzer() {
                   <td style={{ ...td, fontFamily: 'JetBrains Mono,monospace', fontWeight: 700, fontSize: 13 }}>
                     {fmtUSD(r.cum10Real)}
                   </td>
+                  <td style={{ ...td, textAlign: 'center' }}>
+                    <div style={{ display: 'inline-block', background: treatyBg, color: treatyColor, padding: '3px 9px', borderRadius: 99, fontSize: 11, fontWeight: 700 }}>{treatyLabel}</div>
+                  </td>
+                  <td style={{ ...td, textAlign: 'center' }}>
+                    <div style={{ fontWeight: 800, fontSize: 15, color: '#a5b4fc' }}>{r.qol}</div>
+                    <div style={{ fontSize: 10, color: '#6b7280', marginTop: 2 }}>{r.safety}/100 safety</div>
+                  </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* Treaty + QoL explainer */}
+      <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.22)', borderRadius: 12, padding: 13, marginBottom: 14, fontSize: 12, color: '#cbd5e1', lineHeight: 1.55 }}>
+        <strong style={{ color: '#fca5a5' }}>{t.th_treaty}: </strong>{t.treatyHint}
       </div>
 
       {/* COL explainer */}
@@ -474,6 +589,63 @@ export default function RelocationAnalyzer() {
             </g>
           ))}
         </svg>
+      </div>
+
+      {/* Quality of Life breakdown */}
+      <div style={{ background: '#11142a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: 18, marginBottom: 18 }}>
+        <h3 style={{ margin: '0 0 12px', fontFamily: 'Plus Jakarta Sans,Inter,sans-serif', fontWeight: 800, fontSize: 14, color: '#a5b4fc' }}>{t.qolBreakdownT}</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))', gap: 10 }}>
+          {rows.slice(0, 8).map(r => {
+            const isIL = r.code === 'IL';
+            return (
+              <div key={'qol-' + r.code} style={{ background: isIL ? 'rgba(99,102,241,0.10)' : 'rgba(255,255,255,0.025)', border: '1px solid ' + (isIL ? 'rgba(99,102,241,0.35)' : 'rgba(255,255,255,0.08)'), borderRadius: 10, padding: '11px 13px' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 6 }}>
+                  <span style={{ fontSize: 18 }}>{r.flag}</span>
+                  <span style={{ fontWeight: 800, fontSize: 13 }}>{r.name[lang]}</span>
+                </div>
+                <div style={{ fontSize: 11, color: '#9ca3af', lineHeight: 1.7 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t.qolOverall}</span><strong style={{ color: '#a5b4fc' }}>{r.qol}/200</strong></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t.qolSafety}</span><strong style={{ color: r.safety >= 70 ? '#6ee7b7' : r.safety >= 55 ? '#fcd34d' : '#fca5a5' }}>{r.safety}/100</strong></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t.qolHealth}</span><strong style={{ color: r.healthcareQual >= 70 ? '#6ee7b7' : '#fcd34d' }}>{r.healthcareQual}/100</strong></div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ marginTop: 10, fontSize: 11, color: '#6b7280' }}>{t.qolHint}</div>
+      </div>
+
+      {/* Long-term pension value (speculative) */}
+      <div style={{ background: '#11142a', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 14, padding: 18, marginBottom: 18 }}>
+        <h3 style={{ margin: '0 0 4px', fontFamily: 'Plus Jakarta Sans,Inter,sans-serif', fontWeight: 800, fontSize: 14, color: '#fcd34d' }}>{t.pensionT}</h3>
+        <p style={{ margin: '0 0 12px', fontSize: 12, color: '#9ca3af', lineHeight: 1.55 }}>{t.pensionSub}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))', gap: 10 }}>
+          {rows.slice(0, 8).map(r => {
+            const isIL = r.code === 'IL';
+            // Rough: % of (current monthly net) × 20 years × 12 months
+            const lifetimeUSD = (r.netUSD * (r.pensionPctFinalSalary / 100)) * 12 * 20;
+            return (
+              <div key={'pen-' + r.code} style={{ background: isIL ? 'rgba(99,102,241,0.10)' : 'rgba(255,255,255,0.025)', border: '1px solid ' + (isIL ? 'rgba(99,102,241,0.35)' : 'rgba(255,255,255,0.08)'), borderRadius: 10, padding: '11px 13px' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 6 }}>
+                  <span style={{ fontSize: 18 }}>{r.flag}</span>
+                  <span style={{ fontWeight: 800, fontSize: 13 }}>{r.name[lang]}</span>
+                </div>
+                <div style={{ fontSize: 11, color: '#9ca3af', lineHeight: 1.7 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t.pensionPct}</span><strong>{r.pensionPctFinalSalary}%</strong></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t.pensionLifetime}</span><strong style={{ color: '#fcd34d', fontFamily: 'JetBrains Mono,monospace' }}>{fmtUSD(lifetimeUSD)}</strong></div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ marginTop: 10, fontSize: 11, color: '#fca5a5', lineHeight: 1.55 }}>{t.pensionDisclaimer}</div>
+      </div>
+
+      {/* Israeli Exit Tax warning + CTA */}
+      <div style={{ background: 'linear-gradient(135deg,rgba(239,68,68,0.10),rgba(245,158,11,0.06))', border: '1px solid rgba(239,68,68,0.35)', borderRadius: 14, padding: 18, marginBottom: 18 }}>
+        <h3 style={{ margin: '0 0 6px', fontFamily: 'Plus Jakarta Sans,Inter,sans-serif', fontWeight: 800, fontSize: 14, color: '#fca5a5' }}>{t.exitTaxT}</h3>
+        <p style={{ margin: '0 0 12px', fontSize: 12.5, color: '#cbd5e1', lineHeight: 1.55 }}>{t.exitTaxBody}</p>
+        <a href="/exit-tax-calculator" style={{ display: 'inline-block', background: 'linear-gradient(135deg,#dc2626,#f59e0b)', color: '#fff', textDecoration: 'none', padding: '9px 18px', borderRadius: 99, fontWeight: 800, fontSize: 12.5 }}>{t.exitTaxCTA}</a>
       </div>
 
       <p style={{ fontSize: 11.5, color: '#475569', textAlign: 'center', lineHeight: 1.55 }}>{t.foot}</p>
