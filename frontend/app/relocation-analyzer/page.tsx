@@ -381,6 +381,9 @@ const TR = {
     title: 'ניתוח הגירה מלא',
     sub: 'הזן ברוטו חודשי → ראה את התמונה האמיתית: מס + פנסיה + יוקר מחיה + תזרים 10 שנים',
     lblGross: 'משכורת ברוטו חודשית (₪)',
+    selectorT: 'מדינות להשוואה',
+    selectorHint: 'לחץ על דגל כדי להוסיף/להסיר. ישראל תמיד מסומנת.',
+    selectAll: 'כולן', selectDefault: 'ברירת מחדל', selectClear: 'נקה',
     h_net: 'נטו נטו (אחרי מס + סוציאלי + בריאות)',
     h_real: 'כוח קנייה אמיתי (אחרי COL)',
     h_cf: 'תזרים מצטבר ב-10 שנים',
@@ -419,6 +422,9 @@ const TR = {
     title: 'Full Relocation Analysis',
     sub: 'Enter monthly gross → see the real picture: tax + pension + cost-of-living + 10-year cashflow',
     lblGross: 'Monthly gross salary (₪)',
+    selectorT: 'Countries to compare',
+    selectorHint: 'Tap a flag to add/remove. Israel always selected.',
+    selectAll: 'All', selectDefault: 'Default', selectClear: 'Clear',
     h_net: 'Real net (after tax + social + health)',
     h_real: 'Real purchasing power (after COL)',
     h_cf: '10-year cumulative cashflow',
@@ -457,6 +463,9 @@ const TR = {
     title: 'Análise de mudança internacional',
     sub: 'Insira bruto mensal → veja o quadro real: imposto + pensão + custo de vida + fluxo 10 anos',
     lblGross: 'Salário bruto mensal (₪)',
+    selectorT: 'Países para comparar',
+    selectorHint: 'Toque numa bandeira para adicionar/remover. Israel sempre selecionado.',
+    selectAll: 'Todos', selectDefault: 'Padrão', selectClear: 'Limpar',
     h_net: 'Líquido real',
     h_real: 'Poder de compra real',
     h_cf: 'Fluxo acumulado 10 anos',
@@ -495,6 +504,9 @@ const TR = {
     title: 'Análisis completo de mudanza',
     sub: 'Ingresa bruto mensual → ve el cuadro real',
     lblGross: 'Salario bruto mensual (₪)',
+    selectorT: 'Países a comparar',
+    selectorHint: 'Toca una bandera para añadir/quitar. Israel siempre seleccionado.',
+    selectAll: 'Todos', selectDefault: 'Predeterminado', selectClear: 'Limpiar',
     h_net: 'Neto real',
     h_real: 'Poder adquisitivo real',
     h_cf: 'Flujo acumulado 10 años',
@@ -537,36 +549,71 @@ function fmtUSD(n: number): string {
   return '$' + Math.round(n);
 }
 
+// Default subset — top destinations actually considered by Israeli relocators.
+// Mirror of /p/salary-compare's DEFAULT_SELECTED, adjusted for Pro's 13 countries.
+const DEFAULT_SELECTED = new Set(['IL','PT','CY','IT','ES','AE','US','GB']);
+const ALL_CODES = COUNTRIES.map(c => c.code);
+
 export default function RelocationAnalyzer() {
   const [lang, setLang] = useState<Lang>('he');
   const [gross, setGross] = useState(25000);
   const [olim, setOlim] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(() => new Set(DEFAULT_SELECTED));
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem('wl_lang') as Lang | null;
       if (saved && ['he','en','pt','es'].includes(saved)) setLang(saved);
+      const sel = localStorage.getItem('wl_selected_countries_pro');
+      if (sel) {
+        const arr = JSON.parse(sel);
+        if (Array.isArray(arr) && arr.length > 0) {
+          const set = new Set<string>(arr);
+          set.add('IL'); // IL is locked-on
+          setSelected(set);
+        }
+      }
     } catch {}
   }, []);
+
+  // Persist selection (skip the initial load)
+  useEffect(() => {
+    try { localStorage.setItem('wl_selected_countries_pro', JSON.stringify(Array.from(selected))); } catch {}
+  }, [selected]);
+
+  function toggleCountry(code: string) {
+    if (code === 'IL') return; // locked
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(code)) next.delete(code);
+      else next.add(code);
+      return next;
+    });
+  }
+  function selectAll()     { setSelected(new Set(ALL_CODES)); }
+  function selectDefault() { const s = new Set(DEFAULT_SELECTED); s.add('IL'); setSelected(s); }
+  function selectClear()   { setSelected(new Set(['IL'])); }
 
   const t = TR[lang];
   const isRtl = lang === 'he';
 
   const rows = useMemo(() => {
-    const r = COUNTRIES.map(c => {
-      const calc = calcNet(c, gross, olim);
-      const realPP = (calc.netUSD / c.col) * 100;
-      const cum10 = calc.netUSD * 12 * 10;
-      const cum10Real = realPP * 12 * 10;
-      return { ...c, ...calc, realPP, cum10, cum10Real };
-    });
+    const r = COUNTRIES
+      .filter(c => selected.has(c.code) || c.code === 'IL')
+      .map(c => {
+        const calc = calcNet(c, gross, olim);
+        const realPP = (calc.netUSD / c.col) * 100;
+        const cum10 = calc.netUSD * 12 * 10;
+        const cum10Real = realPP * 12 * 10;
+        return { ...c, ...calc, realPP, cum10, cum10Real };
+      });
     r.sort((a, b) => {
       if (a.code === 'IL') return -1;
       if (b.code === 'IL') return 1;
       return b.realPP - a.realPP;
     });
     return r;
-  }, [gross, olim]);
+  }, [gross, olim, selected]);
 
   const ilRow = rows.find(r => r.code === 'IL')!;
   const best = rows.filter(r => r.code !== 'IL').reduce((m, x) => x.realPP > m.realPP ? x : m, rows[1]);
@@ -600,6 +647,47 @@ export default function RelocationAnalyzer() {
             <div style={{ font: '500 11.5px Inter,sans-serif', color: '#9ca3af', marginTop: 2 }}>{lang === 'he' ? 'החל משטרי מס: NHR (PT) · Non-Dom (CY) · Impatriati (IT) · ת״ח ותיק (IL)' : 'Apply special regimes: NHR (PT) · Non-Dom (CY) · Impatriati (IT) · Senior returning IL'}</div>
           </div>
         </label>
+      </div>
+
+      {/* Country selector chips */}
+      <div style={{ background: '#11142a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: 14, marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10, gap: 10, flexWrap: 'wrap' }}>
+          <div>
+            <div style={{ font: '700 13px Inter,sans-serif', color: '#eef2ff' }}>{t.selectorT}</div>
+            <div style={{ font: '500 11px Inter,sans-serif', color: '#9ca3af', marginTop: 2 }}>{t.selectorHint}</div>
+          </div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <button onClick={selectAll}     style={{ background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)', color: '#a5b4fc', font: '700 11px Inter,sans-serif', padding: '5px 11px', borderRadius: 7, cursor: 'pointer' }}>{t.selectAll}</button>
+            <button onClick={selectDefault} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', font: '700 11px Inter,sans-serif', padding: '5px 11px', borderRadius: 7, cursor: 'pointer' }}>{t.selectDefault}</button>
+            <button onClick={selectClear}   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', font: '700 11px Inter,sans-serif', padding: '5px 11px', borderRadius: 7, cursor: 'pointer' }}>{t.selectClear}</button>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {COUNTRIES.map(c => {
+            const on = selected.has(c.code);
+            const locked = c.code === 'IL';
+            const baseStyle: React.CSSProperties = {
+              display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 10px',
+              borderRadius: 99, font: '600 12px Inter,sans-serif',
+              cursor: locked ? 'default' : 'pointer', userSelect: 'none', transition: 'all .12s',
+            };
+            const stateStyle: React.CSSProperties = locked
+              ? { background: 'rgba(99,102,241,0.25)', border: '1px solid rgba(99,102,241,0.55)', color: '#eef2ff', opacity: 0.92 }
+              : on
+                ? { background: 'rgba(99,102,241,0.18)', border: '1px solid rgba(99,102,241,0.5)', color: '#eef2ff' }
+                : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af' };
+            return (
+              <span key={c.code}
+                    data-code={c.code}
+                    aria-disabled={locked || undefined}
+                    onClick={() => toggleCountry(c.code)}
+                    style={{ ...baseStyle, ...stateStyle }}>
+                <span style={{ fontSize: 14, lineHeight: 1 }}>{c.flag}</span>
+                <span>{c.name[lang]}</span>
+              </span>
+            );
+          })}
+        </div>
       </div>
 
       {/* Best pick callout */}
