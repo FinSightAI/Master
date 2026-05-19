@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-31",
+  "last_updated": "2026-05-19",
   "countries": {
     "UAE": {
       "name": "United Arab Emirates",
@@ -296,26 +296,26 @@
       "personal_income_tax_brackets": [
         {
           "min": 0,
-          "max": 19500,
+          "max": 22000,
           "rate": 0
         },
         {
-          "min": 19501,
-          "max": 28000,
+          "min": 22001,
+          "max": 32000,
           "rate": 0.2
         },
         {
-          "min": 28001,
-          "max": 36300,
+          "min": 32001,
+          "max": 42000,
           "rate": 0.25
         },
         {
-          "min": 36301,
-          "max": 60000,
+          "min": 42001,
+          "max": 72000,
           "rate": 0.3
         },
         {
-          "min": 60001,
+          "min": 72001,
           "max": null,
           "rate": 0.35
         }
@@ -355,46 +355,46 @@
       "personal_income_tax_brackets": [
         {
           "min": 0,
-          "max": 7703,
-          "rate": 0.1325
+          "max": 8342,
+          "rate": 0.125
         },
         {
-          "min": 7704,
-          "max": 11623,
-          "rate": 0.18
+          "min": 8343,
+          "max": 12587,
+          "rate": 0.157
         },
         {
-          "min": 11624,
-          "max": 16472,
-          "rate": 0.23
+          "min": 12588,
+          "max": 17838,
+          "rate": 0.212
         },
         {
-          "min": 16473,
-          "max": 21321,
-          "rate": 0.26
+          "min": 17839,
+          "max": 23089,
+          "rate": 0.241
         },
         {
-          "min": 21322,
-          "max": 27146,
-          "rate": 0.3275
+          "min": 23090,
+          "max": 29397,
+          "rate": 0.311
         },
         {
-          "min": 27147,
-          "max": 39791,
-          "rate": 0.37
+          "min": 29398,
+          "max": 43090,
+          "rate": 0.349
         },
         {
-          "min": 39792,
-          "max": 51997,
-          "rate": 0.435
+          "min": 43091,
+          "max": 46566,
+          "rate": 0.431
         },
         {
-          "min": 51998,
-          "max": 81199,
-          "rate": 0.45
+          "min": 46567,
+          "max": 86634,
+          "rate": 0.446
         },
         {
-          "min": 81200,
+          "min": 86635,
           "max": null,
           "rate": 0.48
         }
@@ -1009,7 +1009,14 @@
       "banking_ease": "excellent",
       "lifestyle_score": 7,
       "cost_of_living": "moderate",
-      "notable_for": "Estonian corporate model (0% on retained profits), investment account regime, e-residency (not a tax solution)"
+      "notable_for": "Estonian corporate model (0% on retained profits), investment account regime, e-residency (not a tax solution)",
+      "personal_income_tax_brackets": [
+        {
+          "min": 0,
+          "max": null,
+          "rate": 0.22
+        }
+      ]
     },
     "PARAGUAY": {
       "name": "Paraguay",
@@ -1195,7 +1202,39 @@
       "banking_ease": "moderate",
       "lifestyle_score": 9,
       "cost_of_living": "moderate",
-      "notable_for": "EUR 100k flat tax regime for HNWI similar to Italy, Golden Visa, EU member"
+      "notable_for": "EUR 100k flat tax regime for HNWI similar to Italy, Golden Visa, EU member",
+      "personal_income_tax_brackets": [
+        {
+          "min": 0,
+          "max": 10000,
+          "rate": 0.09
+        },
+        {
+          "min": 10001,
+          "max": 20000,
+          "rate": 0.2
+        },
+        {
+          "min": 20001,
+          "max": 30000,
+          "rate": 0.26
+        },
+        {
+          "min": 30001,
+          "max": 40000,
+          "rate": 0.34
+        },
+        {
+          "min": 40001,
+          "max": 60000,
+          "rate": 0.39
+        },
+        {
+          "min": 60001,
+          "max": null,
+          "rate": 0.44
+        }
+      ]
     },
     "SPAIN": {
       "name": "Spain",
