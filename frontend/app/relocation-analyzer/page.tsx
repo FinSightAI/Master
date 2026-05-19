@@ -231,19 +231,48 @@ const COUNTRIES: Country[] = [
 ];
 
 // Inline calculator — extracted from tax-data.js calcNet, adapted to local FX
-function calcNet(c: Country, grossMonthlyILS: number): { net: number; netUSD: number; tax: number; social: number; health: number; healthCost: number } {
+// Special regimes for new immigrants / returning residents.
+// Same catalog as /p/salary-compare — applied when user toggles "I'm a new immigrant"
+// in the UI. Each country with a defined regime here gets recalculated.
+type Regime = { label: { he: string; en: string }; flatRate?: number; exemptPct?: number; capEUR?: number; foreignExempt?: boolean };
+const REGIMES: Record<string, Regime> = {
+  PT: { label: { he: 'NHR/IFICI 20% flat (10 שנים)', en: 'NHR/IFICI 20% flat (10y)' }, flatRate: 20 },
+  CY: { label: { he: 'Non-Dom 50% פטור (17 שנים)', en: 'Non-Dom 50% exempt (17y)' }, exemptPct: 50 },
+  IT: { label: { he: 'Impatriati 50% פטור (5 שנים)', en: 'Impatriati 50% exempt (5y)' }, exemptPct: 50, capEUR: 600_000 },
+  IL: { label: { he: 'תושב חוזר ותיק — פטור הכנסה זרה (10 שנים)', en: 'Senior returning resident — foreign exempt (10y)' }, foreignExempt: true },
+};
+
+function calcNet(c: Country, grossMonthlyILS: number, applyRegime: boolean = false): { net: number; netUSD: number; tax: number; social: number; health: number; healthCost: number; regime: Regime | null } {
   const grossUSD = grossMonthlyILS * 0.27;
   const grossLocal = grossMonthlyILS * c.fxFromILS;
   const grossAnnual = grossLocal * 12;
+  const regime = applyRegime ? (REGIMES[c.code] || null) : null;
 
   let tax = 0, prev = 0;
-  for (const b of c.brackets) {
-    const slice = Math.min(grossAnnual, b.upTo) - prev;
-    if (slice <= 0) break;
-    tax += (slice * b.rate) / 100;
-    prev = b.upTo;
+  if (regime?.foreignExempt) {
+    tax = 0;
+  } else if (regime?.flatRate) {
+    tax = grossAnnual * (regime.flatRate / 100);
+  } else if (regime?.exemptPct) {
+    const cap = regime.capEUR && c.code === 'IT' ? regime.capEUR : Infinity;
+    const exempt = Math.min(grossAnnual, cap) * (regime.exemptPct / 100);
+    const taxable = Math.max(0, grossAnnual - exempt);
+    for (const b of c.brackets) {
+      const slice = Math.min(taxable, b.upTo) - prev;
+      if (slice <= 0) break;
+      tax += (slice * b.rate) / 100;
+      prev = b.upTo;
+    }
+    tax = Math.max(0, tax - c.credit);
+  } else {
+    for (const b of c.brackets) {
+      const slice = Math.min(grossAnnual, b.upTo) - prev;
+      if (slice <= 0) break;
+      tax += (slice * b.rate) / 100;
+      prev = b.upTo;
+    }
+    tax = Math.max(0, tax - c.credit);
   }
-  tax = Math.max(0, tax - c.credit);
 
   const ssBase = c.socialCeil ? Math.min(grossAnnual, c.socialCeil) : grossAnnual;
   const social = (ssBase * c.socialPct) / 100;
@@ -251,11 +280,9 @@ function calcNet(c: Country, grossMonthlyILS: number): { net: number; netUSD: nu
 
   const netAnnualLocal = grossAnnual - tax - social - health;
   const net = netAnnualLocal / 12;
-  // local → USD (inverse FX: 1 local = 1/(c.fxFromILS) ILS = 0.27/c.fxFromILS USD)
   const netUSD = net * (0.27 / c.fxFromILS);
-  // Subtract out-of-pocket health insurance per month
   const healthCostUSD = c.healthCostUSD;
-  return { net, netUSD: netUSD - healthCostUSD, tax: tax / 12, social: social / 12, health: health / 12, healthCost: healthCostUSD };
+  return { net, netUSD: netUSD - healthCostUSD, tax: tax / 12, social: social / 12, health: health / 12, healthCost: healthCostUSD, regime };
 }
 
 const TR = {
@@ -422,6 +449,7 @@ function fmtUSD(n: number): string {
 export default function RelocationAnalyzer() {
   const [lang, setLang] = useState<Lang>('he');
   const [gross, setGross] = useState(25000);
+  const [olim, setOlim] = useState(false);
 
   useEffect(() => {
     try {
@@ -435,7 +463,7 @@ export default function RelocationAnalyzer() {
 
   const rows = useMemo(() => {
     const r = COUNTRIES.map(c => {
-      const calc = calcNet(c, gross);
+      const calc = calcNet(c, gross, olim);
       const realPP = (calc.netUSD / c.col) * 100;
       const cum10 = calc.netUSD * 12 * 10;
       const cum10Real = realPP * 12 * 10;
@@ -447,7 +475,7 @@ export default function RelocationAnalyzer() {
       return b.realPP - a.realPP;
     });
     return r;
-  }, [gross]);
+  }, [gross, olim]);
 
   const ilRow = rows.find(r => r.code === 'IL')!;
   const best = rows.filter(r => r.code !== 'IL').reduce((m, x) => x.realPP > m.realPP ? x : m, rows[1]);
@@ -474,6 +502,13 @@ export default function RelocationAnalyzer() {
         <label style={{ display: 'block', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: '#9ca3af', letterSpacing: '.3px', marginBottom: 6 }}>{t.lblGross}</label>
         <input type="number" value={gross} onChange={e => setGross(parseFloat(e.target.value) || 0)} min={3000} max={500000} step={1000}
           style={{ width: '100%', maxWidth: 320, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '11px 14px', color: '#eef2ff', fontSize: 17, fontWeight: 600, outline: 'none' }} />
+        <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 14, padding: '10px 12px', background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: 10, cursor: 'pointer' }}>
+          <input type="checkbox" checked={olim} onChange={e => setOlim(e.target.checked)} style={{ width: 18, height: 18, accentColor: '#10b981', cursor: 'pointer' }} />
+          <div>
+            <div style={{ font: '700 13px Inter,sans-serif', color: '#6ee7b7' }}>{lang === 'he' ? '⭐ אני עולה חדש / תושב חוזר ותיק' : lang === 'pt' ? '⭐ Sou novo imigrante / residente retornando' : lang === 'es' ? '⭐ Soy nuevo inmigrante / residente que regresa' : '⭐ I\'m a new immigrant / returning resident'}</div>
+            <div style={{ font: '500 11.5px Inter,sans-serif', color: '#9ca3af', marginTop: 2 }}>{lang === 'he' ? 'החל משטרי מס: NHR (PT) · Non-Dom (CY) · Impatriati (IT) · ת״ח ותיק (IL)' : 'Apply special regimes: NHR (PT) · Non-Dom (CY) · Impatriati (IT) · Senior returning IL'}</div>
+          </div>
+        </label>
       </div>
 
       {/* Best pick callout */}
@@ -515,6 +550,9 @@ export default function RelocationAnalyzer() {
                   <td style={{ ...td, fontWeight: 800 }}>
                     <span style={{ fontSize: 22, marginInlineEnd: 6, verticalAlign: 'middle' }}>{r.flag}</span>
                     <span style={{ verticalAlign: 'middle' }}>{r.name[lang]}</span>
+                    {r.regime && (
+                      <span style={{ display: 'inline-block', marginInlineStart: 6, padding: '2px 7px', background: 'rgba(16,185,129,0.15)', color: '#6ee7b7', font: '700 9.5px Inter,sans-serif', borderRadius: 99, letterSpacing: '.3px', verticalAlign: 'middle' }}>⭐ {r.regime.label[lang as 'he' | 'en']}</span>
+                    )}
                     <div style={{ fontSize: 11, fontWeight: 500, color: '#9ca3af', marginTop: 2 }}>{r.city}</div>
                   </td>
                   <td style={{ ...td, fontFamily: 'JetBrains Mono,monospace', fontWeight: 700, fontSize: 14 }}>
