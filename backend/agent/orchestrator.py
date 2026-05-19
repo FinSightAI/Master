@@ -19,6 +19,14 @@ def _get_model():
             model_name=os.getenv("AI_CHAT_MODEL", "gemini-2.5-flash-lite"),
             system_instruction=SYSTEM_PROMPT,
             tools=_build_gemini_tools(),
+            # Phase 1 + 2 anti-hallucination: deterministic decoding.
+            # The system_prompt + ground-truth tools (get_tax_rate, get_special_regime,
+            # get_treaty) provide the RAG; temperature 0 prevents the model from
+            # filling gaps with creative drift instead of calling the tool.
+            generation_config=genai.types.GenerationConfig(
+                temperature=0,
+                top_p=0.1,
+            ),
         )
     return _model
 
