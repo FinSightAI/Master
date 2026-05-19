@@ -6,6 +6,7 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ['latin','latin-ext'], weight: ['50
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400','500','600'], variable: '--font-mono' });
 import Script from 'next/script';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import ThemeToggle from './theme-toggle';
 import { WizeBar, WizeOnboarding } from './wize-ui';
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
  <WizeOnboarding />
  {children}
  <SpeedInsights />
+ <Analytics />
  <ThemeToggle />
  <Script id="sw-register" strategy="afterInteractive">{`
  if ('serviceWorker' in navigator) {
