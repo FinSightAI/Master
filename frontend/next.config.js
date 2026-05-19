@@ -21,6 +21,7 @@ const securityHeaders = [
  "font-src 'self' https://fonts.gstatic.com",
  "img-src 'self' data: blob: https:",
  "connect-src 'self' https://wizelife.ai https://*.vercel.app https://mastermove.vercel.app https://api.groq.com https://generativelanguage.googleapis.com https://openrouter.ai https://*.googleapis.com https://*.firebaseio.com https://master-backend-79jx.onrender.com https://*.sentry.io https://*.ingest.sentry.io",
+ "frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://*.google.com",
  "frame-ancestors 'none'",
  "base-uri 'self'",
  "form-action 'self'",
