@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="referrer" content="strict-origin-when-cross-origin" />
  <Script id="wl_theme-early" strategy="beforeInteractive">{`(function(){try{var t=localStorage.getItem('wl_theme');var isLight=t==='light';var de=document.documentElement;de.setAttribute('data-theme',isLight?'light':'dark');if(isLight){de.classList.remove('dark');de.classList.add('light');if(document.body){document.body.classList.add('light');document.body.classList.remove('dark');}document.addEventListener('DOMContentLoaded',function(){document.body.classList.add('light');document.body.classList.remove('dark');});}else{de.classList.add('dark');de.classList.remove('light');}}catch(e){}})();`}</Script>
  </head>
- <body style={{ margin: 0, padding: 0, paddingTop: 36, overflow: 'hidden' }} suppressHydrationWarning>
+ <body style={{ margin: 0, padding: 0, paddingTop: 36 }} suppressHydrationWarning>
  <WizeBar />
  <WizeOnboarding />
  {children}
