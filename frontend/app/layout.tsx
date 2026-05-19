@@ -5,6 +5,7 @@ const inter = Inter({ subsets: ['latin','latin-ext'], variable: '--font-inter' }
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin','latin-ext'], weight: ['500','600','700','800'], variable: '--font-jakarta' });
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400','500','600'], variable: '--font-mono' });
 import Script from 'next/script';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 import ThemeToggle from './theme-toggle';
 import { WizeBar, WizeOnboarding } from './wize-ui';
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
  <WizeBar />
  <WizeOnboarding />
  {children}
+ <SpeedInsights />
  <ThemeToggle />
  <Script id="sw-register" strategy="afterInteractive">{`
  if ('serviceWorker' in navigator) {
