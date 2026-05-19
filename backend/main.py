@@ -19,6 +19,17 @@ from plan_guard import require_quota
 
 limiter = Limiter(key_func=get_remote_address)
 
+# Anti-hallucination guardrails — Phase 1 (free, ~200 tokens/req, $0.60/mo at scale).
+# Injected into every AI call's system prompt. Phase 2 (RAG injection) and Phase 3
+# (self-verification) are NOT applied here — those add cost and need per-feature QA.
+ANTI_HALLUCINATION_PREFIX = """GUARDRAILS (must follow):
+1. If you don't know a fact for certain, say "I don't know — not in my data" (in the user's language). Never guess numbers, dates, names, or laws.
+2. Every numerical claim must include a source tag: [PwC 2026], [user profile], [tax-data.js], or [web-search] if just retrieved.
+3. Banned hedge words — do NOT use: approximately / around / roughly / probably / I believe / generally / as far as I know — and their Hebrew (בערך/סביב/לרוב/בדרך כלל/אני מאמין/למיטב ידיעתי), Portuguese (aproximadamente/cerca de/geralmente/acredito), Spanish (aproximadamente/alrededor/generalmente/creo) equivalents. Use exact numbers or admit you don't know.
+4. If your confidence is below 70%, start your response with "⚠️" so the UI can flag it.
+5. Always end advice with: "AI may make mistakes. Verify with a licensed professional before deciding." (translated to user's language).
+"""
+
 app = FastAPI(title="Tax Master AI", version="1.0.0")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -209,10 +220,17 @@ async def ai_proxy(request: Request, body: AIProxyRequest):
     sys_text = body.system or ""
     if search_data:
         sys_text = sys_text + _format_search_block(search_data)
+    # Anti-hallucination guardrails — applied to every AI call.
+    # Cost: ~200 extra system-prompt tokens = $0.00000002/request at flash-lite.
+    sys_text = (sys_text + "\n\n" if sys_text else "") + ANTI_HALLUCINATION_PREFIX
 
     payload = {
         "contents": [{"role": m.role, "parts": m.parts} for m in body.messages],
-        "generationConfig": {"maxOutputTokens": body.maxTokens or 2048},
+        "generationConfig": {
+            "maxOutputTokens": body.maxTokens or 2048,
+            "temperature": 0,        # deterministic — kills creative drift
+            "topP": 0.1,             # narrow sampling
+        },
     }
     if sys_text:
         payload["system_instruction"] = {"parts": [{"text": sys_text}]}
