@@ -228,6 +228,93 @@ const COUNTRIES: Country[] = [
     },
     source: 'gov.uk (2025)',
   },
+  {
+    code: 'ES', flag: '🇪🇸', city: 'Madrid',
+    name: { he: 'ספרד', en: 'Spain', pt: 'Espanha', es: 'España' },
+    brackets: [
+      { upTo: 12_450, rate: 19 }, { upTo: 20_200, rate: 24 }, { upTo: 35_200, rate: 30 },
+      { upTo: 60_000, rate: 37 }, { upTo: 300_000, rate: 45 }, { upTo: Infinity, rate: 47 },
+    ],
+    credit: 0, socialPct: 6.5, socialCeil: 61_214, healthPct: 0,
+    fxFromILS: 0.249, col: 65, healthCostUSD: 0,
+    treaty: 'yes', qol: 158, safety: 65, healthcareQual: 77, pensionPctFinalSalary: 50,
+    notes: {
+      he: 'Beckham Law — עולים: 24% flat עד €600K ל-6 שנים. אקלים מצוין. אזורים אוטונומיים מוסיפים 0-7%.',
+      en: 'Beckham Law — new residents: 24% flat up to €600K for 6 years. Great climate. Regional adds 0-7%.',
+      pt: 'Beckham Law — 24% flat até €600K por 6 anos.',
+      es: 'Beckham Law — 24% flat hasta €600K por 6 años.',
+    },
+    source: 'AEAT 2026',
+  },
+  {
+    code: 'GR', flag: '🇬🇷', city: 'Athens',
+    name: { he: 'יוון', en: 'Greece', pt: 'Grécia', es: 'Grecia' },
+    brackets: [
+      { upTo: 10_000, rate: 9 }, { upTo: 20_000, rate: 22 }, { upTo: 30_000, rate: 28 },
+      { upTo: 40_000, rate: 36 }, { upTo: Infinity, rate: 44 },
+    ],
+    credit: 777, socialPct: 13.87, socialCeil: 93_143, healthPct: 0,
+    fxFromILS: 0.249, col: 60, healthCostUSD: 0,
+    treaty: 'yes', qol: 155, safety: 65, healthcareQual: 56, pensionPctFinalSalary: 50,
+    notes: {
+      he: 'תוכנית עולים: 7% flat על הכנסה זרה ל-15 שנה (Law 5246/2025). דיגיטל נומאד visa.',
+      en: 'Olim program: 7% flat on foreign income for 15 years (Law 5246/2025). Digital nomad visa.',
+      pt: 'Programa olim: 7% flat sobre renda estrangeira por 15 anos.',
+      es: 'Programa olim: 7% flat sobre renta extranjera por 15 años.',
+    },
+    source: 'AADE 2026',
+  },
+  {
+    code: 'MT', flag: '🇲🇹', city: 'Sliema',
+    name: { he: 'מלטה', en: 'Malta', pt: 'Malta', es: 'Malta' },
+    brackets: [
+      { upTo: 12_000, rate: 0 }, { upTo: 16_000, rate: 15 },
+      { upTo: 60_000, rate: 25 }, { upTo: Infinity, rate: 35 },
+    ],
+    credit: 0, socialPct: 10, socialCeil: 29_084, healthPct: 0,
+    fxFromILS: 0.249, col: 70, healthCostUSD: 0,
+    treaty: 'eu', qol: 160, safety: 75, healthcareQual: 70, pensionPctFinalSalary: 50,
+    notes: {
+      he: 'אנגלית רשמית. Non-Dom remittance — 0% על הכנסה זרה לא-remitted (מינ׳ €5K מס שנתי). קהילה ישראלית גדולה.',
+      en: 'English official. Non-Dom remittance — 0% on un-remitted foreign income (min €5K/yr tax). Large Israeli community.',
+      pt: 'Inglês oficial. Non-Dom remittance.',
+      es: 'Inglés oficial. Non-Dom remittance.',
+    },
+    source: 'PwC Malta 2026',
+  },
+  {
+    code: 'GE', flag: '🇬🇪', city: 'Tbilisi',
+    name: { he: 'גאורגיה', en: 'Georgia', pt: 'Geórgia', es: 'Georgia' },
+    brackets: [{ upTo: Infinity, rate: 20 }],
+    credit: 0, socialPct: 2, socialCeil: null, healthPct: 0,
+    fxFromILS: 0.75, col: 35, healthCostUSD: 50,
+    treaty: 'no', qol: 145, safety: 70, healthcareQual: 60, pensionPctFinalSalary: 25,
+    notes: {
+      he: '20% flat regular. אבל **Small Business 1%** עד $200K — מצוין לעצמאי/founder. Easy residency, ויזה ל-365 ימים לישראלים.',
+      en: '20% flat standard. But **Small Business 1%** up to $200K — great for solo/founder. Easy residency, 365-day visa for Israelis.',
+      pt: '20% flat. Small Business 1% até $200K.',
+      es: '20% flat. Small Business 1% hasta $200K.',
+    },
+    source: 'Revenue Service Georgia 2026',
+  },
+  {
+    code: 'BR', flag: '🇧🇷', city: 'São Paulo',
+    name: { he: 'ברזיל', en: 'Brazil', pt: 'Brasil', es: 'Brasil' },
+    brackets: [
+      { upTo: 26_963, rate: 0 }, { upTo: 33_919, rate: 7.5 }, { upTo: 45_012, rate: 15 },
+      { upTo: 55_976, rate: 22.5 }, { upTo: Infinity, rate: 27.5 },
+    ],
+    credit: 0, socialPct: 7.5, socialCeil: 90_396, healthPct: 0,
+    fxFromILS: 1.42, col: 50, healthCostUSD: 150,
+    treaty: 'no', qol: 130, safety: 35, healthcareQual: 56, pensionPctFinalSalary: 45,
+    notes: {
+      he: 'אין משטר עולים מיוחד. קהילה יהודית גדולה בסאו-פאולו. עלות מחיה נמוכה (50% מת״א). אזהרת ביטחון — מדדי בטיחות נמוכים. ביטוח רפואי פרטי ~$150/חודש.',
+      en: 'No special new-resident regime. Large Jewish community in São Paulo. Low cost of living (50% of TLV). Safety warning — low security index. Private health ~$150/mo.',
+      pt: 'Sem regime especial. Grande comunidade judaica em SP.',
+      es: 'Sin régimen especial. Gran comunidad judía en SP.',
+    },
+    source: 'Receita Federal 2026',
+  },
 ];
 
 // Inline calculator — extracted from tax-data.js calcNet, adapted to local FX
@@ -240,6 +327,10 @@ const REGIMES: Record<string, Regime> = {
   CY: { label: { he: 'Non-Dom 50% פטור (17 שנים)', en: 'Non-Dom 50% exempt (17y)' }, exemptPct: 50 },
   IT: { label: { he: 'Impatriati 50% פטור (5 שנים)', en: 'Impatriati 50% exempt (5y)' }, exemptPct: 50, capEUR: 600_000 },
   IL: { label: { he: 'תושב חוזר ותיק — פטור הכנסה זרה (10 שנים)', en: 'Senior returning resident — foreign exempt (10y)' }, foreignExempt: true },
+  ES: { label: { he: 'Beckham Law 24% flat (6 שנים)', en: 'Beckham Law 24% flat (6y)' }, flatRate: 24, capEUR: 600_000 },
+  GR: { label: { he: '7% flat על הכנסה זרה (15 שנים)', en: '7% flat on foreign income (15y)' }, flatRate: 7 },
+  MT: { label: { he: 'Non-Dom remittance', en: 'Non-Dom remittance' }, foreignExempt: true },
+  GE: { label: { he: 'Small Business 1% (עד $200K)', en: 'Small Business 1% (up to $200K)' }, flatRate: 1 },
 };
 
 function calcNet(c: Country, grossMonthlyILS: number, applyRegime: boolean = false): { net: number; netUSD: number; tax: number; social: number; health: number; healthCost: number; regime: Regime | null } {
