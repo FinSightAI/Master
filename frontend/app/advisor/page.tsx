@@ -9791,6 +9791,14 @@ export default function AdvisorPage() {
   const tr = useTranslation(lang);
   const dir = lang === 'he' ? 'rtl' : 'ltr';
 
+  // /advisor uses internal chat-style scroll containers — opt in to the
+  // page-level scroll lock that globals.css now scopes to data-route="advisor".
+  // All other routes scroll normally on mobile.
+  useEffect(() => {
+    document.body.setAttribute('data-route', 'advisor');
+    return () => { document.body.removeAttribute('data-route'); };
+  }, []);
+
   useEffect(() => {
     const saved = localStorage.getItem('tax_master_profile');
     const savedHistory = localStorage.getItem('tax_master_sessions');

@@ -52,6 +52,15 @@ body { transition: background 200ms ease; }
 
 html, body {
   height: 100%;
+}
+
+/* Scroll-lock the page-level only when the chat advisor route needs it
+   (Next.js sets `data-route` via the AdvisorLayout client component).
+   All other routes — /relocation-analyzer, /salary-compare,
+   /exit-tax-calculator, /social-compare — must scroll normally on mobile,
+   otherwise content below the fold and modal close buttons are unreachable. */
+body[data-route="advisor"],
+html[data-route="advisor"] body {
   overflow: hidden;
 }
 
