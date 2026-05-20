@@ -581,6 +581,17 @@ export default function RelocationAnalyzer() {
     try { localStorage.setItem('wl_selected_countries_pro', JSON.stringify(Array.from(selected))); } catch {}
   }, [selected]);
 
+  // Sync <html dir/lang> to the selected language. QA found EN/PT/ES left
+  // the document at dir="rtl" (only HE flipped) — page-level direction must
+  // follow the language toggle, not just the inner <div dir>.
+  useEffect(() => {
+    try {
+      const rtl = lang === 'he';
+      document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+      document.documentElement.lang = lang;
+    } catch {}
+  }, [lang]);
+
   function toggleCountry(code: string) {
     if (code === 'IL') return; // locked
     setSelected(prev => {
@@ -638,7 +649,7 @@ export default function RelocationAnalyzer() {
 
       <div style={{ background: '#11142a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: 18, marginBottom: 16 }}>
         <label style={{ display: 'block', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: '#9ca3af', letterSpacing: '.3px', marginBottom: 6 }}>{t.lblGross}</label>
-        <input type="number" value={gross} onChange={e => setGross(parseFloat(e.target.value) || 0)} min={3000} max={500000} step={1000}
+        <input type="number" value={gross} onChange={e => { const v = parseFloat(e.target.value); setGross(isNaN(v) ? 0 : Math.max(0, Math.min(v, 500000))); }} min={3000} max={500000} step={1000}
           style={{ width: '100%', maxWidth: 320, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '11px 14px', color: '#eef2ff', fontSize: 17, fontWeight: 600, outline: 'none' }} />
         <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 14, padding: '10px 12px', background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: 10, cursor: 'pointer' }}>
           <input type="checkbox" checked={olim} onChange={e => setOlim(e.target.checked)} style={{ width: 18, height: 18, accentColor: '#10b981', cursor: 'pointer' }} />
