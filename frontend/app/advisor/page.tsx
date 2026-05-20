@@ -1382,11 +1382,11 @@ function WealthProjectionChart({
           </div>
           {isHe ? (
             <>שיעורי המס מבוססים על פרסומי OECD Tax Database, KPMG Global Tax Rates,
-            ו-PwC Worldwide Tax Summaries. הנתונים עודכנו לאחרונה ב-{new Date().toLocaleDateString('he-IL', {year:'numeric', month:'long'})}.
+            ו-PwC Worldwide Tax Summaries. הנתונים עודכנו לאחרונה ב-<span suppressHydrationWarning>{new Date().toLocaleDateString('he-IL', {year:'numeric', month:'long'})}</span>.
             ההשוואה מתייחסת לאזרח ישראלי שעובר תושבות. אינו מהווה ייעוץ מס.</>
           ) : (
             <>Tax rates based on OECD Tax Database, KPMG Global Tax Rates, and PwC Worldwide
-            Tax Summaries. Last updated: {new Date().toLocaleDateString('en-US', {year:'numeric', month:'long'})}.
+            Tax Summaries. Last updated: <span suppressHydrationWarning>{new Date().toLocaleDateString('en-US', {year:'numeric', month:'long'})}</span>.
             Comparison assumes an Israeli resident relocating. Not tax advice.</>
           )}
         </div>
